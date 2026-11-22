@@ -201,30 +201,30 @@ const TRANSIT_DATA = {
     name: "Airport Aviation",
     legacyLabel: "Legacy Airport Gate FIDS Display & Speakers",
     legacyImage: "/flight_legacy_hardware.png",
-    terminal: "RGIA Hyderabad - Gate 14B",
+    terminal: "RGIA Hyderabad - Gate 08",
     announcements: {
       english: {
-        headline: "This is the final boarding call for IndiGo flight 6E 2154 to Dubai (DXB). All passengers please proceed to Gate 14B immediately.",
-        subtext: "Gate 14B • Rajiv Gandhi International Airport",
-        totalDuration: 10.5,
-        defaultTime: "00:00 / 00:11",
-        platform: "14B",
+        headline: "Attention please... This is a gate change announcement for IndiGo flight six-E, six-one-eight-two, to New Delhi. The boarding gate has been changed to gate number eight. Passengers are requested to proceed to gate number eight immediately. Thank you.",
+        subtext: "Gate 08 • Rajiv Gandhi International Airport (HYD)",
+        totalDuration: 17.08,
+        defaultTime: "00:00 / 00:17",
+        platform: "08",
         fontClass: "font-inter"
       },
       telugu: {
-        headline: "హైదరాబాద్ నుండి దుబాయ్ వెళ్ళే ఇండిగో విమానం 6E 2154 కి ఇది ఆఖరి బోర్డింగ్ పిలుపు. ప్రయాణికులు వెంటనే గేట్ 14B వద్దకు చేరుకోండి.",
-        subtext: "గేట్ 14B • రాజీవ్ గాంధీ అంతర్జాతీయ విమానాశ్రయం",
-        totalDuration: 11.2,
-        defaultTime: "00:00 / 00:11",
-        platform: "14B",
+        headline: "ప్రయాణికులకు ముఖ్య గమనిక... న్యూఢిల్లీ వెళ్ళే ఇండిగో విమానం నంబరు సిక్స్-ఈ, ఆరు-ఒకటి-ఎనిమిది-రెండు యొక్క బోర్డింగ్ గేట్ మార్చబడినది. ప్రయాణికులందరూ వెంటనే గేట్ నంబరు ఎనిమిది వద్దకు రావలసిందిగా కోరుచున్నాము. ధన్యవాదములు.",
+        subtext: "గేట్ 08 • రాజీవ్ గాంధీ అంతర్జాతీయ విమానాశ్రయం",
+        totalDuration: 18.68,
+        defaultTime: "00:00 / 00:18",
+        platform: "08",
         fontClass: "font-telugu"
       },
       hindi: {
-        headline: "इंडिगो की उड़ान 6E 2154, हैदराबाद से दुबई के लिए अंतिम बोर्डिंग कॉल। सभी यात्री तुरंत गेट 14B पर पहुंचे।",
-        subtext: "गेट 14B • राजीव गांधी अंतर्राष्ट्रीय हवाई अड्डा",
-        totalDuration: 10.8,
-        defaultTime: "00:00 / 00:11",
-        platform: "14B",
+        headline: "यात्रीगण कृपया ध्यान दें... नई दिल्ली जाने वाली इंडिगो की उड़ान संख्या छह-ई, छह-एक-आठ-दो के बोर्डिंग द्वार में परिवर्तन किया गया है। अब यह उड़ान द्वार संख्या आठ से प्रस्थान करेगी। सभी यात्रियों से अनुरोध है कि तुरंत द्वार संख्या आठ पर पहुँचें। धन्यवाद।",
+        subtext: "द्वार 08 • राजीव गांधी अंतर्राष्ट्रीय हवाई अड्डा",
+        totalDuration: 21.24,
+        defaultTime: "00:00 / 00:21",
+        platform: "08",
         fontClass: "font-hindi"
       }
     },
@@ -233,11 +233,11 @@ const TRANSIT_DATA = {
       subtitle: "Hyderabad RGIA Terminal 1",
       cols: ["Flight", "Time", "Gate"],
       items: [
-        { no: "6E 2154", name: "Dubai (DXB) • IndiGo", time: "10:15", status: "Final Call", badge: "Gate 14B", key: "active" },
-        { no: "AI 840", name: "Delhi (DEL) • Air India", time: "10:45", status: "Boarding", badge: "Gate 08A", key: "f1" },
+        { no: "6E 6182", name: "New Delhi (DEL) • IndiGo", time: "10:15", status: "Gate Change", badge: "Gate 08", key: "active" },
+        { no: "AI 840", name: "Mumbai (BOM) • Air India", time: "10:45", status: "Boarding", badge: "Gate 04", key: "f1" },
         { no: "EK 527", name: "Dubai (DXB) • Emirates", time: "11:20", status: "On Time", badge: "Gate 12", key: "f2" },
-        { no: "QP 1302", name: "Mumbai (BOM) • Akasa Air", time: "11:40", status: "Scheduled", badge: "Gate 04", key: "f3" },
-        { no: "6E 6128", name: "Bengaluru (BLR) • IndiGo", time: "12:05", status: "Scheduled", badge: "Gate 06B", key: "f4" }
+        { no: "QP 1302", name: "Bengaluru (BLR) • Akasa Air", time: "11:40", status: "Scheduled", badge: "Gate 06A", key: "f3" },
+        { no: "6E 2154", name: "Goa (GOX) • IndiGo", time: "12:05", status: "Scheduled", badge: "Gate 10", key: "f4" }
       ]
     }
   }
@@ -449,8 +449,14 @@ export default function App() {
 
     stopAudio();
 
+    let audioFile = null;
     if (transitMode === 'rail') {
-      const audioFile = `/audio/announcement-${phoneLang}.mp3`;
+      audioFile = `/audio/announcement-${phoneLang}.mp3`;
+    } else if (transitMode === 'flight') {
+      audioFile = `/audio/flight-${phoneLang}.mp3`;
+    }
+
+    if (audioFile) {
       const audio = new Audio(audioFile);
       audioRef.current = audio;
 
