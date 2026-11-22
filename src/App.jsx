@@ -580,12 +580,14 @@ const TRANSIT_DATA = {
 export default function App() {
   const [bentoVisible, setBentoVisible] = useState(false);
   const [solutionVisible, setSolutionVisible] = useState(false);
+  const [ecosystemVisible, setEcosystemVisible] = useState(false);
   const [transitMode, setTransitMode] = useState('rail');
   const [phoneLang, setPhoneLang] = useState('english');
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioProgress, setAudioProgress] = useState({ current: 0, total: 0 });
   const bentoRef = useRef(null);
   const solutionRef = useRef(null);
+  const ecosystemRef = useRef(null);
   const audioRef = useRef(null);
   const animFrameRef = useRef(null);
   const modePillRefs = useRef({});
@@ -894,6 +896,12 @@ export default function App() {
             } else if (entry.boundingClientRect.top > 0) {
               setSolutionVisible(false);
             }
+          } else if (entry.target === ecosystemRef.current) {
+            if (entry.isIntersecting) {
+              setEcosystemVisible(true);
+            } else if (entry.boundingClientRect.top > 0) {
+              setEcosystemVisible(false);
+            }
           }
         });
       },
@@ -905,6 +913,7 @@ export default function App() {
 
     if (bentoRef.current) observer.observe(bentoRef.current);
     if (solutionRef.current) observer.observe(solutionRef.current);
+    if (ecosystemRef.current) observer.observe(ecosystemRef.current);
 
     return () => observer.disconnect();
   }, []);
@@ -1723,10 +1732,312 @@ export default function App() {
         </div>
       </section>
 
-      {/* Continuation Canvas */}
-      <main className="flex-1 max-w-7xl mx-auto px-8 py-12 w-full">
-        {/* Next sections */}
-      </main>
+      {/* SECTION 9: THE COMPLETE TRANSIT ECOSYSTEM */}
+      <section ref={ecosystemRef} className="w-full relative py-20 sm:py-28 px-6 sm:px-12 overflow-hidden border-t border-slate-200/80 bg-white text-slate-900">
+        <div className="max-w-7xl mx-auto w-full flex flex-col items-center">
+          
+          {/* Section 9 Header: Pure Clean Signature Title (Matches Sec 3, 4, 6, 7 Pattern) */}
+          <div className="text-center mb-12 sm:mb-16 flex flex-col items-center">
+            <h2 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-extrabold text-slate-900 tracking-tight leading-[1.18] sm:leading-[1.15] [text-wrap:balance] max-w-4xl text-center">
+              The complete ecosystem for silent and connected transit.
+            </h2>
+          </div>
+
+          {/* 3 Separate Flat Cards: Perfectly Aligned Baselines, Single-Line Titles, Active Colors */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-8 w-full max-w-7xl mx-auto items-stretch">
+            
+            {/* Box 1: For Transit Authorities (Active Blue Accent) */}
+            <div className="rounded-3xl border border-blue-200/80 bg-white p-7 sm:p-9 lg:p-10 flex flex-col justify-between overflow-hidden">
+              <div>
+                {/* Audience Kicker: Clean Pill Badge (Aligned Height, Static) */}
+                <div className="mb-5 h-8 flex items-center">
+                  <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs sm:text-[13px] font-semibold bg-blue-50 text-blue-700 border border-blue-200/80">
+                    Airports • Railways • Bus Hubs
+                  </span>
+                </div>
+
+                {/* Title: Strictly Single Line (Static) */}
+                <div className="h-9 flex items-center mb-3">
+                  <h3 className="text-xl sm:text-[23px] lg:text-[22px] xl:text-[25px] font-bold text-slate-900 tracking-tight whitespace-nowrap">
+                    For Transit Authorities
+                  </h3>
+                </div>
+
+                {/* Concise Core Lead (Exact 2-Line Baseline Height, Static) */}
+                <p className="text-slate-600 text-[15px] sm:text-base leading-relaxed min-h-[48px] sm:min-h-[52px] mb-8 flex items-start">
+                  Transform noisy stations into calm, modern transit hubs with instant mobile audio sync.
+                </p>
+
+                {/* 3 Pillars Inside: Sliding Out from Left Vertical Line */}
+                <div className="space-y-6 w-full pt-7 border-t border-slate-100">
+                  {/* Pillar 1 */}
+                  <div className="flex items-start gap-4 min-h-[72px] overflow-hidden">
+                    <div className="w-[3px] self-stretch rounded-full bg-blue-500 shrink-0" />
+                    <div 
+                      className={`flex flex-col gap-1 flex-1 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                        ecosystemVisible 
+                          ? 'translate-x-0 opacity-100' 
+                          : '-translate-x-12 opacity-0'
+                      }`}
+                      style={{ transitionDelay: '120ms' }}
+                    >
+                      <h4 className="text-[15px] sm:text-base font-bold text-slate-900 tracking-tight">
+                        Zero Hardware CapEx
+                      </h4>
+                      <p className="text-xs sm:text-[13.5px] text-slate-600 leading-normal mt-0.5">
+                        Plugs into existing AODB & NTES dispatch APIs in 48 hours without new equipment.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Pillar 2 */}
+                  <div className="flex items-start gap-4 min-h-[72px] overflow-hidden">
+                    <div className="w-[3px] self-stretch rounded-full bg-blue-500 shrink-0" />
+                    <div 
+                      className={`flex flex-col gap-1 flex-1 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                        ecosystemVisible 
+                          ? 'translate-x-0 opacity-100' 
+                          : '-translate-x-12 opacity-0'
+                      }`}
+                      style={{ transitionDelay: '240ms' }}
+                    >
+                      <h4 className="text-[15px] sm:text-base font-bold text-slate-900 tracking-tight">
+                        Silent Station Compliance
+                      </h4>
+                      <p className="text-xs sm:text-[13.5px] text-slate-600 leading-normal mt-0.5">
+                        Eliminates speaker noise fatigue while ensuring 100% passenger announcement reach.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Pillar 3 */}
+                  <div className="flex items-start gap-4 min-h-[72px] overflow-hidden">
+                    <div className="w-[3px] self-stretch rounded-full bg-blue-500 shrink-0" />
+                    <div 
+                      className={`flex flex-col gap-1 flex-1 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                        ecosystemVisible 
+                          ? 'translate-x-0 opacity-100' 
+                          : '-translate-x-12 opacity-0'
+                      }`}
+                      style={{ transitionDelay: '360ms' }}
+                    >
+                      <h4 className="text-[15px] sm:text-base font-bold text-slate-900 tracking-tight">
+                        High-Yield Non-Fare Revenue
+                      </h4>
+                      <p className="text-xs sm:text-[13.5px] text-slate-600 leading-normal mt-0.5">
+                        Converts public announcement overhead into a continuous digital sponsor revenue channel.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Box 2: For Daily Passengers (Active Emerald Accent) */}
+            <div className="rounded-3xl border border-emerald-200/80 bg-white p-7 sm:p-9 lg:p-10 flex flex-col justify-between overflow-hidden">
+              <div>
+                {/* Audience Kicker: Clean Pill Badge (Aligned Height, Static) */}
+                <div className="mb-5 h-8 flex items-center">
+                  <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs sm:text-[13px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80">
+                    Passengers • Commuters
+                  </span>
+                </div>
+
+                {/* Title: Strictly Single Line (Static) */}
+                <div className="h-9 flex items-center mb-3">
+                  <h3 className="text-xl sm:text-[23px] lg:text-[22px] xl:text-[25px] font-bold text-slate-900 tracking-tight whitespace-nowrap">
+                    For Daily Passengers
+                  </h3>
+                </div>
+
+                {/* Concise Core Lead (Exact 2-Line Baseline Height, Static) */}
+                <p className="text-slate-600 text-[15px] sm:text-base leading-relaxed min-h-[48px] sm:min-h-[52px] mb-8 flex items-start">
+                  Get crystal-clear departure and platform updates streamed directly to your own earbuds.
+                </p>
+
+                {/* 3 Pillars Inside: Sliding Out from Left Vertical Line */}
+                <div className="space-y-6 w-full pt-7 border-t border-slate-100">
+                  {/* Pillar 1 */}
+                  <div className="flex items-start gap-4 min-h-[72px] overflow-hidden">
+                    <div className="w-[3px] self-stretch rounded-full bg-emerald-500 shrink-0" />
+                    <div 
+                      className={`flex flex-col gap-1 flex-1 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                        ecosystemVisible 
+                          ? 'translate-x-0 opacity-100' 
+                          : '-translate-x-12 opacity-0'
+                      }`}
+                      style={{ transitionDelay: '180ms' }}
+                    >
+                      <h4 className="text-[15px] sm:text-base font-bold text-slate-900 tracking-tight">
+                        In-Pocket Audio Stream
+                      </h4>
+                      <p className="text-xs sm:text-[13.5px] text-slate-600 leading-normal mt-0.5">
+                        Hear boarding calls over personal earphones even in packed, noisy terminal concourses.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Pillar 2 */}
+                  <div className="flex items-start gap-4 min-h-[72px] overflow-hidden">
+                    <div className="w-[3px] self-stretch rounded-full bg-emerald-500 shrink-0" />
+                    <div 
+                      className={`flex flex-col gap-1 flex-1 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                        ecosystemVisible 
+                          ? 'translate-x-0 opacity-100' 
+                          : '-translate-x-12 opacity-0'
+                      }`}
+                      style={{ transitionDelay: '300ms' }}
+                    >
+                      <h4 className="text-[15px] sm:text-base font-bold text-slate-900 tracking-tight">
+                        12+ Native Languages
+                      </h4>
+                      <p className="text-xs sm:text-[13.5px] text-slate-600 leading-normal mt-0.5">
+                        Instant regional AI voice synthesis eliminates language confusion for all travelers.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Pillar 3 */}
+                  <div className="flex items-start gap-4 min-h-[72px] overflow-hidden">
+                    <div className="w-[3px] self-stretch rounded-full bg-emerald-500 shrink-0" />
+                    <div 
+                      className={`flex flex-col gap-1 flex-1 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                        ecosystemVisible 
+                          ? 'translate-x-0 opacity-100' 
+                          : '-translate-x-12 opacity-0'
+                      }`}
+                      style={{ transitionDelay: '420ms' }}
+                    >
+                      <h4 className="text-[15px] sm:text-base font-bold text-slate-900 tracking-tight">
+                        Live Sync Pocket Board
+                      </h4>
+                      <p className="text-xs sm:text-[13.5px] text-slate-600 leading-normal mt-0.5">
+                        Real-time departure status and boarding countdowns mirror station screens with zero lag.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Box 3: For Brand Advertisers (Active Violet Accent) */}
+            <div className="rounded-3xl border border-violet-200/80 bg-white p-7 sm:p-9 lg:p-10 flex flex-col justify-between overflow-hidden">
+              <div>
+                {/* Audience Kicker: Clean Pill Badge (Aligned Height, Static) */}
+                <div className="mb-5 h-8 flex items-center">
+                  <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs sm:text-[13px] font-semibold bg-violet-50 text-violet-700 border border-violet-200/80">
+                    Brands • Enterprise Sponsors
+                  </span>
+                </div>
+
+                {/* Title: Strictly Single Line (Static) */}
+                <div className="h-9 flex items-center mb-3">
+                  <h3 className="text-xl sm:text-[23px] lg:text-[22px] xl:text-[25px] font-bold text-slate-900 tracking-tight whitespace-nowrap">
+                    For Brand Advertisers
+                  </h3>
+                </div>
+
+                {/* Concise Core Lead (Exact 2-Line Baseline Height, Static) */}
+                <p className="text-slate-600 text-[15px] sm:text-base leading-relaxed min-h-[48px] sm:min-h-[52px] mb-8 flex items-start">
+                  Engage high-intent passengers at the exact moment their attention is 100% focused.
+                </p>
+
+                {/* 3 Pillars Inside: Sliding Out from Left Vertical Line */}
+                <div className="space-y-6 w-full pt-7 border-t border-slate-100">
+                  {/* Pillar 1 */}
+                  <div className="flex items-start gap-4 min-h-[72px] overflow-hidden">
+                    <div className="w-[3px] self-stretch rounded-full bg-violet-500 shrink-0" />
+                    <div 
+                      className={`flex flex-col gap-1 flex-1 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                        ecosystemVisible 
+                          ? 'translate-x-0 opacity-100' 
+                          : '-translate-x-12 opacity-0'
+                      }`}
+                      style={{ transitionDelay: '240ms' }}
+                    >
+                      <h4 className="text-[15px] sm:text-base font-bold text-slate-900 tracking-tight">
+                        100% Attentive Audience
+                      </h4>
+                      <p className="text-xs sm:text-[13.5px] text-slate-600 leading-normal mt-0.5">
+                        Travelers actively listen to critical departure announcements, bypassing ad blindness.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Pillar 2 */}
+                  <div className="flex items-start gap-4 min-h-[72px] overflow-hidden">
+                    <div className="w-[3px] self-stretch rounded-full bg-violet-500 shrink-0" />
+                    <div 
+                      className={`flex flex-col gap-1 flex-1 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                        ecosystemVisible 
+                          ? 'translate-x-0 opacity-100' 
+                          : '-translate-x-12 opacity-0'
+                      }`}
+                      style={{ transitionDelay: '360ms' }}
+                    >
+                      <h4 className="text-[15px] sm:text-base font-bold text-slate-900 tracking-tight">
+                        Contextual Geofencing
+                      </h4>
+                      <p className="text-xs sm:text-[13.5px] text-slate-600 leading-normal mt-0.5">
+                        Deliver terminal retail offers and dining vouchers aligned with flight gates and routes.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Pillar 3 */}
+                  <div className="flex items-start gap-4 min-h-[72px] overflow-hidden">
+                    <div className="w-[3px] self-stretch rounded-full bg-violet-500 shrink-0" />
+                    <div 
+                      className={`flex flex-col gap-1 flex-1 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                        ecosystemVisible 
+                          ? 'translate-x-0 opacity-100' 
+                          : '-translate-x-12 opacity-0'
+                      }`}
+                      style={{ transitionDelay: '480ms' }}
+                    >
+                      <h4 className="text-[15px] sm:text-base font-bold text-slate-900 tracking-tight">
+                        Direct In-Pocket CTAs
+                      </h4>
+                      <p className="text-xs sm:text-[13.5px] text-slate-600 leading-normal mt-0.5">
+                        Companion visual cards enable immediate one-tap coupon redemption inside airport retail.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Bottom Action Button to View Complete Ecosystem (Static on Hover: Zero Hover Transform) */}
+          <div className="mt-14 sm:mt-18 flex justify-center">
+            <button className="inline-flex items-center gap-3 px-8 sm:px-10 py-4 rounded-xl bg-slate-900 text-white font-semibold text-base sm:text-[17px] tracking-normal shadow-sm cursor-pointer select-none">
+              <span>View Full Ecosystem Documentation</span>
+              <svg 
+                className="w-4 h-4 text-slate-400" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor" 
+                strokeWidth="2"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      {/* SECTION 10: CLOSING CANVAS */}
+      <section className="w-full relative py-16 sm:py-20 lg:py-24 px-6 flex flex-col items-center justify-center bg-black text-white border-t border-zinc-900/90 overflow-hidden">
+        <div className="max-w-7xl mx-auto w-full flex flex-col items-center justify-center text-center">
+          <img 
+            src="/echotransit_outro_logo.png" 
+            alt="EchoTransit" 
+            className="w-full max-w-[300px] sm:max-w-[400px] md:max-w-[480px] lg:max-w-[540px] xl:max-w-[580px] h-auto object-contain select-none pointer-events-none"
+          />
+        </div>
+      </section>
 
     </div>
   );
