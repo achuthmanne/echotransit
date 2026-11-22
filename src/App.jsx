@@ -156,30 +156,30 @@ const TRANSIT_DATA = {
     name: "Smart Bus Transit",
     legacyLabel: "Legacy Bus Depot Horns & Electronic Display Board",
     legacyImage: "/bus_legacy_hardware.png",
-    terminal: "Central Bus Station - Platform 04",
+    terminal: "Central Bus Station - Platform 02",
     announcements: {
       english: {
-        headline: "Garuda Plus service 4012 to Vijayawada scheduled at 08:45 is now boarding at Platform 04. Passengers please have your tickets ready.",
-        subtext: "Platform 04 • Central Intercity Bus Terminal",
-        totalDuration: 10.2,
-        defaultTime: "00:00 / 00:10",
-        platform: "04",
+        headline: "Attention please... Indra A/C bus service number five-five-zero-nine, bound for Bengaluru, is arriving shortly at platform number two. Passengers bound for Bengaluru are requested to wait at platform number two. Thank you.",
+        subtext: "Platform 02 • Central Intercity Bus Terminal",
+        totalDuration: 14.76,
+        defaultTime: "00:00 / 00:15",
+        platform: "02",
         fontClass: "font-inter"
       },
       telugu: {
-        headline: "ఉదయం 08:45 గంటలకు విజయవాడ వెళ్ళే గరుడ ప్లస్ సర్వీస్ 4012 బస్సు ప్లాట్‌ఫారమ్ 04 వద్ద సిద్ధంగా ఉంది. ప్రయాణికులు ఎక్కవచ్చును.",
-        subtext: "ప్లాట్‌ఫారమ్ 04 • సెంట్రల్ ఇంటర్‌సిటీ బస్ టెర్మినల్",
-        totalDuration: 11.0,
-        defaultTime: "00:00 / 00:11",
-        platform: "04",
+        headline: "ప్రయాణికులకు ముఖ్య గమనిక... బెంగళూరు వెళ్ళు ఇంద్ర ఏసీ సర్వీసు నంబరు... ఐదు-ఐదు-సున్నా-తొమ్మిది... ప్లాట్ఫారమ్ నంబరు రెండు పైకి వస్తోంది. బెంగళూరు వెళ్ళు ప్రయాణికులు ప్లాట్ఫారమ్ నంబరు రెండు వద్ద సిద్ధంగా ఉండగలరు.",
+        subtext: "ప్లాట్‌ఫారమ్ 02 • సెంట్రల్ ఇంటర్‌సిటీ బస్ టెర్మినల్",
+        totalDuration: 14.99,
+        defaultTime: "00:00 / 00:15",
+        platform: "02",
         fontClass: "font-telugu"
       },
       hindi: {
-        headline: "सुबह 08:45 बजे विजयवाड़ा जाने वाली गरुड़ प्लस सेवा 4012 प्लेटफॉर्म 04 पर तैयार है। कृपया टिकट तैयार रखें।",
-        subtext: "प्लेटफॉर्म 04 • सेंट्रल इंटरसिटी बस टर्मिनल",
-        totalDuration: 10.5,
-        defaultTime: "00:00 / 00:11",
-        platform: "04",
+        headline: "यात्रीगण कृपया ध्यान दें... बेंगलुरु जाने वाली इंद्रा एसी बस सेवा क्रमांक... पाँच-पाँच-शून्य-नौ... प्लेटफार्म संख्या दो पर आ रही है। बेंगलुरु जाने वाले यात्री प्लेटफार्म संख्या दो पर तैयार रहें। धन्यवाद।",
+        subtext: "प्लेटफॉर्म 02 • सेंट्रल इंटरसिटी बस टर्मिनल",
+        totalDuration: 16.12,
+        defaultTime: "00:00 / 00:16",
+        platform: "02",
         fontClass: "font-hindi"
       }
     },
@@ -188,9 +188,9 @@ const TRANSIT_DATA = {
       subtitle: "Central Intercity Bus Terminal",
       cols: ["Service / Route", "Time", "Platform"],
       items: [
-        { no: "4012", name: "Vijayawada • Garuda Plus", time: "08:45", status: "Boarding", badge: "PF 04", key: "active" },
-        { no: "2185", name: "Hyderabad • Super Luxury", time: "09:00", status: "On Time", badge: "PF 07", key: "b1" },
-        { no: "5509", name: "Bengaluru • Indra A/C", time: "09:15", status: "Scheduled", badge: "PF 02", key: "b2" },
+        { no: "5509", name: "Bengaluru • Indra A/C", time: "09:15", status: "Arriving", badge: "PF 02", key: "active" },
+        { no: "4012", name: "Vijayawada • Garuda Plus", time: "08:45", status: "Boarding", badge: "PF 04", key: "b1" },
+        { no: "2185", name: "Hyderabad • Super Luxury", time: "09:00", status: "On Time", badge: "PF 07", key: "b2" },
         { no: "1140", name: "Chennai • Express", time: "09:30", status: "Scheduled", badge: "PF 09", key: "b3" },
         { no: "3308", name: "Tirupati • Venkatadri", time: "09:45", status: "Scheduled", badge: "PF 05", key: "b4" }
       ]
@@ -454,6 +454,8 @@ export default function App() {
       audioFile = `/audio/announcement-${phoneLang}.mp3`;
     } else if (transitMode === 'flight') {
       audioFile = `/audio/flight-${phoneLang}.mp3`;
+    } else if (transitMode === 'bus') {
+      audioFile = `/audio/bus-${phoneLang}.mp3`;
     }
 
     if (audioFile) {
