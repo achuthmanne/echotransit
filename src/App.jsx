@@ -101,14 +101,14 @@ const WAVEFORM_BASE = [
 ];
 
 const TRANSIT_MODES = [
-  { id: 'rail', label: 'Rail' },
-  { id: 'flight', label: 'Flight' },
-  { id: 'bus', label: 'Bus' }
+  { id: 'rail', label: 'Railway' },
+  { id: 'bus', label: 'Roadway' },
+  { id: 'flight', label: 'Airway' }
 ];
 
 const TRANSIT_DATA = {
   rail: {
-    name: "Rail Transit",
+    name: "Railway Transit",
     legacyLabel: "Legacy Station Horns & LED Display Board",
     legacyImage: "/fine_neg_80_front.png",
     terminal: {
@@ -264,7 +264,7 @@ const TRANSIT_DATA = {
   },
 
   bus: {
-    name: "Smart Bus Transit",
+    name: "Roadway Transit",
     legacyLabel: "Legacy Bus Depot Horns & Electronic Display Board",
     legacyImage: "/bus_legacy_hardware.png",
     terminal: {
@@ -420,7 +420,7 @@ const TRANSIT_DATA = {
   },
 
   flight: {
-    name: "Airport Aviation",
+    name: "Airway Transit",
     legacyLabel: "Legacy Airport Gate FIDS Display & Speakers",
     legacyImage: "/flight_legacy_hardware.png",
     terminal: {
@@ -1302,7 +1302,7 @@ export default function App() {
             Transforming transit hardware into pocket software.
           </h2>
 
-          {/* MULTI-MODAL PILL SWITCHER: Rail, Flight, Bus (Smooth Sliding Pill Indicator) */}
+          {/* MULTI-MODAL PILL SWITCHER: Railway, Roadway, Airway (Smooth Sliding Pill Indicator) */}
           <div className="mt-12 sm:mt-16 flex items-center justify-center">
             <div className="relative inline-flex p-1.5 rounded-full bg-slate-100/90 border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)] gap-1">
               
