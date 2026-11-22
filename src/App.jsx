@@ -230,14 +230,14 @@ const TRANSIT_DATA = {
     },
     board: {
       title: "Flight Gate Board",
-      subtitle: "Hyderabad RGIA Terminal 1",
+      subtitle: "Departures Concourse - Gate 08",
       cols: ["Flight", "Time", "Gate"],
       items: [
-        { no: "6E 6182", name: "New Delhi (DEL) • IndiGo", time: "10:15", status: "Gate Change", badge: "Gate 08", key: "active" },
-        { no: "AI 840", name: "Mumbai (BOM) • Air India", time: "10:45", status: "Boarding", badge: "Gate 04", key: "f1" },
-        { no: "EK 527", name: "Dubai (DXB) • Emirates", time: "11:20", status: "On Time", badge: "Gate 12", key: "f2" },
-        { no: "QP 1302", name: "Bengaluru (BLR) • Akasa Air", time: "11:40", status: "Scheduled", badge: "Gate 06A", key: "f3" },
-        { no: "6E 2154", name: "Goa (GOX) • IndiGo", time: "12:05", status: "Scheduled", badge: "Gate 10", key: "f4" }
+        { no: "6E 6182", name: "New Delhi (DEL) • IndiGo", time: "21:00", status: "Gate Change", badge: "Gate 08", key: "active" },
+        { no: "6E 204", name: "Hyderabad (HYD) • IndiGo", time: "20:15", status: "Boarding", badge: "Gate 12", key: "f1" },
+        { no: "AI 542", name: "Bengaluru (BLR) • Air India", time: "20:30", status: "Delayed", badge: "Gate 04", key: "f2" },
+        { no: "UK 876", name: "Mumbai (BOM) • Vistara", time: "20:45", status: "On Time", badge: "Gate 15", key: "f3" },
+        { no: "SG 409", name: "Chennai (MAA) • SpiceJet", time: "21:15", status: "Boarding", badge: "Gate 02", key: "f4" }
       ]
     }
   }
