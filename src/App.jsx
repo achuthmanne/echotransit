@@ -101,60 +101,16 @@ const WAVEFORM_BASE = [
 ];
 
 const TRANSIT_MODES = [
-  { id: 'metro', label: 'Metro' },
   { id: 'rail', label: 'Rail' },
-  { id: 'bus', label: 'Bus' },
-  { id: 'flight', label: 'Flight' }
+  { id: 'flight', label: 'Flight' },
+  { id: 'bus', label: 'Bus' }
 ];
 
 const TRANSIT_DATA = {
-  metro: {
-    name: "Metro Rapid Transit",
-    legacyLabel: "Legacy Metro Station CRT & Horns",
-    terminal: "Ameerpet Interchange - Platform 1",
-    announcements: {
-      english: {
-        headline: "Metro train towards Raidurg is arriving on Platform 1. Please stand behind the yellow line and let passengers deboard first.",
-        subtext: "Platform 1 • Hyderabad Metro Rail",
-        totalDuration: 9.8,
-        defaultTime: "00:00 / 00:10",
-        platform: "1",
-        fontClass: "font-inter"
-      },
-      telugu: {
-        headline: "రాయదుర్గం వైపు వెళ్లే మెట్రో రైలు ప్లాట్‌ఫారమ్ 1 పైకి చేరుకుంటోంది. ప్రయాణికులు దయచేసి పసుపు గీత వెనుక వేచి ఉండండి.",
-        subtext: "ప్లాట్‌ఫారమ్ 1 • హైదరాబాద్ మెట్రో రైల్",
-        totalDuration: 10.4,
-        defaultTime: "00:00 / 00:10",
-        platform: "1",
-        fontClass: "font-telugu"
-      },
-      hindi: {
-        headline: "रायदुर्ग की ओर जाने वाली मेट्रो ट्रेन प्लेटफार्म 1 पर आ रही है। कृपया पीली रेखा के पीछे खड़े रहें।",
-        subtext: "प्लेटफार्म 1 • हैदराबाद मेट्रो रेल",
-        totalDuration: 9.5,
-        defaultTime: "00:00 / 00:10",
-        platform: "1",
-        fontClass: "font-hindi"
-      }
-    },
-    board: {
-      title: "Platform Departures",
-      subtitle: "Ameerpet Interchange Station",
-      cols: ["Line / Destination", "ETA", "Platform"],
-      items: [
-        { no: "Blue Line", name: "Towards Raidurg (Hi-Tec)", time: "1 min", status: "Approaching", badge: "PF 1", key: "active" },
-        { no: "Red Line", name: "Towards LB Nagar", time: "3 min", status: "On Time", badge: "PF 2", key: "m1" },
-        { no: "Blue Line", name: "Towards Nagole", time: "6 min", status: "On Time", badge: "PF 3", key: "m2" },
-        { no: "Red Line", name: "Towards Miyapur", time: "8 min", status: "Scheduled", badge: "PF 2", key: "m3" },
-        { no: "Green Line", name: "Towards MGBS Central", time: "11 min", status: "Scheduled", badge: "PF 4", key: "m4" }
-      ]
-    }
-  },
-
   rail: {
     name: "Rail Transit",
     legacyLabel: "Legacy Station Horns & LED Display Board",
+    legacyImage: "/fine_neg_80_front.png",
     terminal: "Secunderabad Jn - Platform 2",
     announcements: {
       english: {
@@ -199,6 +155,7 @@ const TRANSIT_DATA = {
   bus: {
     name: "Smart Bus Transit",
     legacyLabel: "Legacy Bus Depot Horns & Chalkboard",
+    legacyImage: "/fine_neg_80_front.png",
     terminal: "MGBS Central Bus Station - Bay 12",
     announcements: {
       english: {
@@ -242,7 +199,8 @@ const TRANSIT_DATA = {
 
   flight: {
     name: "Airport Aviation",
-    legacyLabel: "Legacy Airport Gate PA & Split-Flap Display",
+    legacyLabel: "Legacy Airport Gate FIDS Display & Speakers",
+    legacyImage: "/flight_legacy_hardware.png",
     terminal: "RGIA Hyderabad - Gate 14B",
     announcements: {
       english: {
@@ -342,7 +300,7 @@ export default function App() {
     }
   };
 
-  // Multi-Modal Transit Chime Synthesizer (Rail, Flight, Metro, Bus)
+  // Multi-Modal Transit Chime Synthesizer (Rail, Flight, Bus)
   const playTransitChime = (mode, onComplete) => {
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -365,13 +323,6 @@ export default function App() {
           { freq: 523.25, start: 0.34, dur: 0.55 }
         ];
         totalWait = 950;
-      } else if (mode === 'metro') {
-        // High-Pitched Sleek Metro Departure Beep: E5 (659.25) -> B5 (987.77)
-        chimeNotes = [
-          { freq: 659.25, start: 0.0, dur: 0.20 },
-          { freq: 987.77, start: 0.22, dur: 0.35 }
-        ];
-        totalWait = 650;
       } else if (mode === 'bus') {
         // Classic Intercity Bus Terminal Bell: G4 (392.00) -> D5 (587.33)
         chimeNotes = [
@@ -961,12 +912,12 @@ export default function App() {
       <section className="w-full bg-white py-24 sm:py-32 px-6 sm:px-12 border-t border-slate-100 overflow-hidden">
         <div className="max-w-7xl mx-auto flex flex-col items-center">
           
-          {/* Main Title Only (No Subtitle, Covers All 4 Modes) */}
+          {/* Main Title Only (No Subtitle, Covers All 3 Modes) */}
           <h2 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-extrabold text-slate-900 tracking-tight leading-[1.18] sm:leading-[1.15] [text-wrap:balance] max-w-4xl text-center">
             Transforming transit hardware into pocket software.
           </h2>
 
-          {/* MULTI-MODAL PILL SWITCHER: Metro, Rail, Bus, Flight (Pure Typography, Zero Emojis) */}
+          {/* MULTI-MODAL PILL SWITCHER: Rail, Flight, Bus (Pure Typography, Zero Emojis) */}
           <div className="mt-12 sm:mt-16 flex items-center justify-center">
             <div className="inline-flex p-1.5 rounded-full bg-slate-100/90 border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)] gap-1">
               {TRANSIT_MODES.map((mode) => {
@@ -992,14 +943,14 @@ export default function App() {
           {/* Side-by-Side: Only the Two Physical Images on the Left Side */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 xl:gap-20 items-center mt-20 sm:mt-24 max-w-7xl w-full">
 
-            {/* Left Side: Attached Legacy Hardware Unit (fine_neg_80_front) */}
+            {/* Left Side: Attached Legacy Hardware Unit (Rail / Bus or Flight Screen) */}
             <div className="lg:col-span-6 flex flex-col items-center lg:items-start w-full max-w-lg lg:max-w-xl mx-auto lg:mx-0">
               
               {/* Suspended Hardware Assembly (Speakers & Board Integrated with Red Cross Strike-Through) */}
               <div className="relative w-full flex justify-center lg:justify-start items-center">
                 <img 
-                  src="/fine_neg_80_front.png" 
-                  alt="Legacy Station Hardware Unit" 
+                  src={currentTransit.legacyImage} 
+                  alt={currentTransit.legacyLabel} 
                   className="w-full h-auto object-contain block"
                 />
 
