@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import SoundWaveHero from './components/SoundWaveHero';
 import DeepWaveSection from './components/DeepWaveSection';
 import DialogueShowcaseSection from './components/DialogueShowcaseSection';
@@ -587,6 +587,50 @@ export default function App() {
   const solutionRef = useRef(null);
   const audioRef = useRef(null);
   const animFrameRef = useRef(null);
+  const modePillRefs = useRef({});
+  const [modeSliderStyle, setModeSliderStyle] = useState({ left: 6, top: 6, width: 0, height: 0, opacity: 0 });
+  const langPillRefs = useRef({});
+  const [langSliderStyle, setLangSliderStyle] = useState({ left: 4, top: 4, width: 0, height: 0, opacity: 0 });
+
+  const updateModeSlider = useCallback(() => {
+    const el = modePillRefs.current[transitMode];
+    if (el) {
+      setModeSliderStyle({
+        left: el.offsetLeft,
+        top: el.offsetTop,
+        width: el.offsetWidth,
+        height: el.offsetHeight,
+        opacity: 1
+      });
+    }
+  }, [transitMode]);
+
+  const updateLangSlider = useCallback(() => {
+    const el = langPillRefs.current[phoneLang];
+    if (el) {
+      setLangSliderStyle({
+        left: el.offsetLeft,
+        top: el.offsetTop,
+        width: el.offsetWidth,
+        height: el.offsetHeight,
+        opacity: 1
+      });
+    }
+  }, [phoneLang]);
+
+  useEffect(() => {
+    updateModeSlider();
+    const handleResize = () => {
+      updateModeSlider();
+      updateLangSlider();
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [updateModeSlider, updateLangSlider]);
+
+  useEffect(() => {
+    updateLangSlider();
+  }, [updateLangSlider]);
 
   const currentTransit = TRANSIT_DATA[transitMode];
   const activeAnnouncement = currentTransit.announcements[phoneLang];
@@ -1258,20 +1302,34 @@ export default function App() {
             Transforming transit hardware into pocket software.
           </h2>
 
-          {/* MULTI-MODAL PILL SWITCHER: Rail, Flight, Bus (Pure Typography, Zero Emojis) */}
+          {/* MULTI-MODAL PILL SWITCHER: Rail, Flight, Bus (Smooth Sliding Pill Indicator) */}
           <div className="mt-12 sm:mt-16 flex items-center justify-center">
-            <div className="inline-flex p-1.5 rounded-full bg-slate-100/90 border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)] gap-1">
+            <div className="relative inline-flex p-1.5 rounded-full bg-slate-100/90 border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)] gap-1">
+              
+              {/* Sliding Active Pill Background (Smooth Fluid Transition) */}
+              <div
+                className="absolute rounded-full bg-slate-900 shadow-sm transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none"
+                style={{
+                  left: `${modeSliderStyle.left}px`,
+                  top: `${modeSliderStyle.top}px`,
+                  width: `${modeSliderStyle.width}px`,
+                  height: `${modeSliderStyle.height}px`,
+                  opacity: modeSliderStyle.opacity
+                }}
+              />
+
               {TRANSIT_MODES.map((mode) => {
                 const isActive = transitMode === mode.id;
                 return (
                   <button
                     key={mode.id}
+                    ref={(el) => (modePillRefs.current[mode.id] = el)}
                     type="button"
                     onClick={() => handleModeChange(mode.id)}
-                    className={`px-6 sm:px-8 py-2.5 rounded-full text-xs sm:text-[13px] tracking-tight transition-all duration-200 select-none cursor-pointer ${
+                    className={`relative z-10 px-6 sm:px-8 py-2.5 rounded-full text-xs sm:text-[13px] tracking-tight transition-colors duration-200 select-none cursor-pointer ${
                       isActive
-                        ? 'bg-slate-900 text-white font-semibold shadow-sm'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-white/70 font-medium'
+                        ? 'text-white font-semibold'
+                        : 'text-slate-600 hover:text-slate-900 font-medium'
                     }`}
                   >
                     {mode.label}
@@ -1290,9 +1348,10 @@ export default function App() {
               {/* Suspended Hardware Assembly (Speakers & Board Integrated with Red Cross Strike-Through) */}
               <div className="relative w-full flex justify-center lg:justify-start items-center">
                 <img 
+                  key={currentTransit.legacyImage}
                   src={currentTransit.legacyImage} 
                   alt={currentTransit.legacyLabel} 
-                  className="w-full h-auto object-contain block"
+                  className="w-full h-auto object-contain block animate-fadeIn"
                 />
 
                 {/* Natural Organic Red Cross Strike-Through (Clean, No Glow, Balanced Size) */}
@@ -1450,36 +1509,51 @@ export default function App() {
 
                       </div>
 
-                      {/* 4. LANGUAGES SELECTOR (Telugu | English in Middle | Hindi) */}
-                      <div className="flex items-center justify-center gap-1.5 p-1 bg-zinc-900/90 border border-zinc-800 rounded-full w-full h-9 shrink-0">
+                      {/* 4. LANGUAGES SELECTOR (Telugu | English in Middle | Hindi with Smooth Sliding Pill) */}
+                      <div className="relative flex items-center justify-center gap-1.5 p-1 bg-zinc-900/90 border border-zinc-800 rounded-full w-full h-9 shrink-0">
+                        {/* Sliding Active Background */}
+                        <div
+                          className="absolute rounded-full bg-white/15 border border-white/20 shadow-sm transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none"
+                          style={{
+                            left: `${langSliderStyle.left}px`,
+                            top: `${langSliderStyle.top}px`,
+                            width: `${langSliderStyle.width}px`,
+                            height: `${langSliderStyle.height}px`,
+                            opacity: langSliderStyle.opacity
+                          }}
+                        />
+
                         <button 
+                          ref={(el) => (langPillRefs.current['telugu'] = el)}
                           type="button" 
                           onClick={() => handleLangChange('telugu')}
-                          className={`flex-1 py-1 rounded-full text-xs transition-all font-telugu ${
+                          className={`relative z-10 flex-1 py-1 rounded-full text-xs transition-colors duration-200 font-telugu select-none cursor-pointer ${
                             phoneLang === 'telugu'
-                              ? 'bg-white/15 text-white font-semibold border border-white/20 shadow-sm'
+                              ? 'text-white font-semibold'
                               : 'text-zinc-400 hover:text-zinc-200 font-medium'
                           }`}
                         >
                           తెలుగు
                         </button>
                         <button 
+                          ref={(el) => (langPillRefs.current['english'] = el)}
                           type="button" 
                           onClick={() => handleLangChange('english')}
-                          className={`flex-1 py-1 rounded-full text-xs transition-all font-inter ${
+                          className={`relative z-10 flex-1 py-1 rounded-full text-xs transition-colors duration-200 font-inter select-none cursor-pointer ${
                             phoneLang === 'english'
-                              ? 'bg-white/15 text-white font-semibold border border-white/20 shadow-sm'
+                              ? 'text-white font-semibold'
                               : 'text-zinc-400 hover:text-zinc-200 font-medium'
                           }`}
                         >
                           English
                         </button>
                         <button 
+                          ref={(el) => (langPillRefs.current['hindi'] = el)}
                           type="button" 
                           onClick={() => handleLangChange('hindi')}
-                          className={`flex-1 py-1 rounded-full text-xs transition-all font-hindi ${
+                          className={`relative z-10 flex-1 py-1 rounded-full text-xs transition-colors duration-200 font-hindi select-none cursor-pointer ${
                             phoneLang === 'hindi'
-                              ? 'bg-white/15 text-white font-semibold border border-white/20 shadow-sm'
+                              ? 'text-white font-semibold'
                               : 'text-zinc-400 hover:text-zinc-200 font-medium'
                           }`}
                         >
