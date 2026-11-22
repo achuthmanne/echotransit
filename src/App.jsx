@@ -1658,6 +1658,13 @@ export default function App() {
         </div>
       </section>
 
+      {/* SECTION 8: BUSINESS & ADVERTISING MONETIZATION MODEL */}
+      <section className="w-full relative py-28 sm:py-36 px-6 sm:px-12 overflow-hidden border-t border-slate-200/80 bg-[linear-gradient(to_right,#020617_0%,#0f172a_25%,#1e293b_45%,#475569_60%,#94a3b8_75%,#e2e8f0_88%,#ffffff_100%)] min-h-[580px] flex items-center justify-center">
+        <div className="max-w-7xl mx-auto w-full flex flex-col items-center">
+          {/* Section 8 Container - Ready for Business Model & Ads Content */}
+        </div>
+      </section>
+
       {/* Continuation Canvas */}
       <main className="flex-1 max-w-7xl mx-auto px-8 py-12 w-full">
         {/* Next sections */}
