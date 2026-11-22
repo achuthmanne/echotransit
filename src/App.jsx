@@ -1013,11 +1013,11 @@ export default function App() {
                       <div className="text-xs font-semibold text-zinc-300 font-inter tracking-tight h-5 flex items-center">
                         {currentTransit.terminal}
                       </div>
-                      <div className="mt-2 px-4 py-3 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 h-[122px] max-h-[122px] flex flex-col justify-center w-full overflow-hidden shrink-0">
-                        <p className={`text-[13px] sm:text-[13.5px] font-semibold text-white tracking-normal leading-[1.38] transition-opacity duration-150 line-clamp-4 ${activeAnnouncement.fontClass}`}>
+                      <div className="mt-2 px-4 py-3.5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 flex flex-col justify-center w-full transition-all duration-200">
+                        <p className={`text-[13px] sm:text-[13.5px] font-semibold text-white tracking-normal leading-[1.48] transition-opacity duration-150 ${activeAnnouncement.fontClass}`}>
                           {activeAnnouncement.headline}
                         </p>
-                        <p className={`text-[11px] text-zinc-400 mt-1.5 font-normal tracking-tight transition-opacity duration-150 truncate ${activeAnnouncement.fontClass}`}>
+                        <p className={`text-[11px] text-zinc-400 mt-2 font-normal tracking-tight transition-opacity duration-150 ${activeAnnouncement.fontClass}`}>
                           {activeAnnouncement.subtext}
                         </p>
                       </div>
