@@ -154,45 +154,45 @@ const TRANSIT_DATA = {
 
   bus: {
     name: "Smart Bus Transit",
-    legacyLabel: "Legacy Bus Depot Horns & Chalkboard",
-    legacyImage: "/fine_neg_80_front.png",
-    terminal: "MGBS Central Bus Station - Bay 12",
+    legacyLabel: "Legacy Bus Depot Horns & Electronic Display Board",
+    legacyImage: "/bus_legacy_hardware.png",
+    terminal: "Central Bus Station - Platform 04",
     announcements: {
       english: {
-        headline: "Garuda Plus AC Express to Bengaluru scheduled at 10:30 is now boarding at Bay 12. Passengers please have your tickets ready.",
-        subtext: "Bay 12 • MGBS Central Intercity Terminal",
+        headline: "Garuda Plus service 4012 to Vijayawada scheduled at 08:45 is now boarding at Platform 04. Passengers please have your tickets ready.",
+        subtext: "Platform 04 • Central Intercity Bus Terminal",
         totalDuration: 10.2,
         defaultTime: "00:00 / 00:10",
-        platform: "12",
+        platform: "04",
         fontClass: "font-inter"
       },
       telugu: {
-        headline: "ఉదయం 10:30 గంటలకు బెంగళూరు వెళ్ళే గరుడ ప్లస్ ఎక్స్‌ప్రెస్ బస్సు బే నెంబరు 12 వద్ద సిద్ధంగా ఉంది. ప్రయాణికులు ఎక్కవచ్చును.",
-        subtext: "బే 12 • మహాత్మా గాంధీ బస్ స్టేషన్ (MGBS)",
+        headline: "ఉదయం 08:45 గంటలకు విజయవాడ వెళ్ళే గరుడ ప్లస్ సర్వీస్ 4012 బస్సు ప్లాట్‌ఫారమ్ 04 వద్ద సిద్ధంగా ఉంది. ప్రయాణికులు ఎక్కవచ్చును.",
+        subtext: "ప్లాట్‌ఫారమ్ 04 • సెంట్రల్ ఇంటర్‌సిటీ బస్ టెర్మినల్",
         totalDuration: 11.0,
         defaultTime: "00:00 / 00:11",
-        platform: "12",
+        platform: "04",
         fontClass: "font-telugu"
       },
       hindi: {
-        headline: "सुबह 10:30 बजे बेंगलुरु जाने वाली गरुड़ प्लस एसी एक्सप्रेस प्लेटफॉर्म/बे 12 पर तैयार है। कृपया टिकट तैयार रखें।",
-        subtext: "बे 12 • एमजीबीएस सेंट्रल बस स्टेशन",
+        headline: "सुबह 08:45 बजे विजयवाड़ा जाने वाली गरुड़ प्लस सेवा 4012 प्लेटफॉर्म 04 पर तैयार है। कृपया टिकट तैयार रखें।",
+        subtext: "प्लेटफॉर्म 04 • सेंट्रल इंटरसिटी बस टर्मिनल",
         totalDuration: 10.5,
         defaultTime: "00:00 / 00:11",
-        platform: "12",
+        platform: "04",
         fontClass: "font-hindi"
       }
     },
     board: {
-      title: "Intercity Bay Schedule",
-      subtitle: "MGBS Central Bus Terminal",
-      cols: ["Service / Route", "Time", "Bay"],
+      title: "Bus Departures Board",
+      subtitle: "Central Intercity Bus Terminal",
+      cols: ["Service / Route", "Time", "Platform"],
       items: [
-        { no: "TS-09-Z-4412", name: "Garuda Plus • Bengaluru (KBS)", time: "10:30", status: "Boarding", badge: "Bay 12", key: "active" },
-        { no: "TS-07-Z-8819", name: "Rajadhani AC • Vijayawada", time: "10:50", status: "On Time", badge: "Bay 06", key: "b1" },
-        { no: "KA-01-F-9921", name: "Airavat Club • Mysuru", time: "11:15", status: "Scheduled", badge: "Bay 14", key: "b2" },
-        { no: "TS-10-Z-3301", name: "Super Luxury • Warangal", time: "11:30", status: "On Time", badge: "Bay 03", key: "b3" },
-        { no: "AP-29-Z-1055", name: "Ultra Deluxe • Tirupati", time: "12:00", status: "Scheduled", badge: "Bay 09", key: "b4" }
+        { no: "4012", name: "Vijayawada • Garuda Plus", time: "08:45", status: "Boarding", badge: "PF 04", key: "active" },
+        { no: "2185", name: "Hyderabad • Super Luxury", time: "09:00", status: "On Time", badge: "PF 07", key: "b1" },
+        { no: "5509", name: "Bengaluru • Indra A/C", time: "09:15", status: "Scheduled", badge: "PF 02", key: "b2" },
+        { no: "1140", name: "Chennai • Express", time: "09:30", status: "Scheduled", badge: "PF 09", key: "b3" },
+        { no: "3308", name: "Tirupati • Venkatadri", time: "09:45", status: "Scheduled", badge: "PF 05", key: "b4" }
       ]
     }
   },
