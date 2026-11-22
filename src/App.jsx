@@ -111,7 +111,11 @@ const TRANSIT_DATA = {
     name: "Rail Transit",
     legacyLabel: "Legacy Station Horns & LED Display Board",
     legacyImage: "/fine_neg_80_front.png",
-    terminal: "Secunderabad Jn - Platform 2",
+    terminal: {
+      english: "Secunderabad Jn • Platform 2",
+      telugu: "సికింద్రాబాద్ జంక్షన్ • ప్లాట్‌ఫారమ్ 2",
+      hindi: "सिकंदराबाद जंक्शन • प्लेटफार्म 2"
+    },
     announcements: {
       english: {
         headline: "Train number 1 7 6 4 6, Repalle Secunderabad Express, will arrive shortly on platform number 2.",
@@ -139,15 +143,122 @@ const TRANSIT_DATA = {
       }
     },
     board: {
-      title: "Station Board",
-      subtitle: "Secunderabad Junction",
-      cols: ["Train", "Time", "Platform"],
+      title: {
+        english: "Station Board",
+        telugu: "రైళ్ల డిపార్చర్స్ బోర్డ్",
+        hindi: "स्टेशन प्रस्थान बोर्ड"
+      },
+      subtitle: {
+        english: "Secunderabad Junction",
+        telugu: "సికింద్రాబాద్ జంక్షన్",
+        hindi: "सिकंदराबाद जंक्शन"
+      },
+      cols: {
+        english: ["Train", "Time", "Platform"],
+        telugu: ["రైలు", "సమయం", "ప్లాట్‌ఫారమ్"],
+        hindi: ["गाड़ी", "समय", "प्लेटफार्म"]
+      },
       items: [
-        { no: "17646", name: "Repalle - Secunderabad Exp.", time: "03:30", status: "Arriving", badge: "PF 2", key: "english" },
-        { no: "17645", name: "Secunderabad - Repalle Exp.", time: "04:15", status: "Arriving", badge: "PF 1", key: "telugu" },
-        { no: "12804", name: "Swarna Jayanti SF Exp.", time: "05:20", status: "Arriving", badge: "PF 3", key: "hindi" },
-        { no: "12760", name: "Charminar Express", time: "06:00", status: "On Time", badge: "PF 4", key: "other1" },
-        { no: "12723", name: "Telangana Express", time: "07:15", status: "Scheduled", badge: "PF 5", key: "other2" }
+        {
+          no: "17646",
+          name: {
+            english: "Repalle - Secunderabad Exp.",
+            telugu: "రేపల్లె - సికింద్రాబాద్ ఎక్స్.",
+            hindi: "रेपल्ले - सिकंदराबाद एक्सप्रेस"
+          },
+          time: "03:30",
+          status: {
+            english: "Arriving",
+            telugu: "చేరుకుంటోంది",
+            hindi: "आ रही है"
+          },
+          badge: {
+            english: "PF 2",
+            telugu: "PF 2",
+            hindi: "PF 2"
+          },
+          key: "english"
+        },
+        {
+          no: "17645",
+          name: {
+            english: "Secunderabad - Repalle Exp.",
+            telugu: "సికింద్రాబాద్ - రేపల్లె ఎక్స్.",
+            hindi: "सिकंदराबाद - रेपल्ले एक्सप्रेस"
+          },
+          time: "04:15",
+          status: {
+            english: "Arriving",
+            telugu: "చేరుకుంటోంది",
+            hindi: "आ रही है"
+          },
+          badge: {
+            english: "PF 1",
+            telugu: "PF 1",
+            hindi: "PF 1"
+          },
+          key: "telugu"
+        },
+        {
+          no: "12804",
+          name: {
+            english: "Swarna Jayanti SF Exp.",
+            telugu: "స్వర్ణ జయంతి ఎక్స్‌ప్రెస్",
+            hindi: "स्वर्ण जयंती एक्सप्रेस"
+          },
+          time: "05:20",
+          status: {
+            english: "Arriving",
+            telugu: "చేరుకుంటోంది",
+            hindi: "आ रही है"
+          },
+          badge: {
+            english: "PF 3",
+            telugu: "PF 3",
+            hindi: "PF 3"
+          },
+          key: "hindi"
+        },
+        {
+          no: "12760",
+          name: {
+            english: "Charminar Express",
+            telugu: "చార్మినార్ ఎక్స్‌ప్రెస్",
+            hindi: "चारमीनार एक्सप्रेस"
+          },
+          time: "06:00",
+          status: {
+            english: "On Time",
+            telugu: "సమయానికి",
+            hindi: "समय पर"
+          },
+          badge: {
+            english: "PF 4",
+            telugu: "PF 4",
+            hindi: "PF 4"
+          },
+          key: "other1"
+        },
+        {
+          no: "12723",
+          name: {
+            english: "Telangana Express",
+            telugu: "తెలంగాణ ఎక్స్‌ప్రెస్",
+            hindi: "तेलंगाना एक्सप्रेस"
+          },
+          time: "07:15",
+          status: {
+            english: "Scheduled",
+            telugu: "షెడ్యూల్డ్",
+            hindi: "निर्धारित"
+          },
+          badge: {
+            english: "PF 5",
+            telugu: "PF 5",
+            hindi: "PF 5"
+          },
+          key: "other2"
+        }
       ]
     }
   },
@@ -156,7 +267,11 @@ const TRANSIT_DATA = {
     name: "Smart Bus Transit",
     legacyLabel: "Legacy Bus Depot Horns & Electronic Display Board",
     legacyImage: "/bus_legacy_hardware.png",
-    terminal: "Central Bus Station - Platform 02",
+    terminal: {
+      english: "Central Bus Station • Platform 02",
+      telugu: "సెంట్రల్ బస్ స్టేషన్ • ప్లాట్‌ఫారమ్ 02",
+      hindi: "सेंट्रल बस स्टेशन • प्लेटफार्म 02"
+    },
     announcements: {
       english: {
         headline: "Attention please... Indra A/C bus service number five-five-zero-nine, bound for Bengaluru, is arriving shortly at platform number two. Passengers bound for Bengaluru are requested to wait at platform number two. Thank you.",
@@ -184,15 +299,122 @@ const TRANSIT_DATA = {
       }
     },
     board: {
-      title: "Bus Departures Board",
-      subtitle: "Central Intercity Bus Terminal",
-      cols: ["Service / Route", "Time", "Platform"],
+      title: {
+        english: "Bus Departures Board",
+        telugu: "బస్సుల డిపార్చర్స్ బోర్డ్",
+        hindi: "बस प्रस्थान बोर्ड"
+      },
+      subtitle: {
+        english: "Central Intercity Bus Terminal",
+        telugu: "సెంట్రల్ ఇంటర్‌సిటీ బస్ టెర్మినల్",
+        hindi: "सेंट्रल इंटरसिटी बस टर्मिनल"
+      },
+      cols: {
+        english: ["Service", "Time", "Platform"],
+        telugu: ["సర్వీసు", "సమయం", "ప్లాట్‌ఫారమ్"],
+        hindi: ["सेवा", "समय", "प्लेटफार्म"]
+      },
       items: [
-        { no: "5509", name: "Bengaluru • Indra A/C", time: "09:15", status: "Arriving", badge: "PF 02", key: "active" },
-        { no: "4012", name: "Vijayawada • Garuda Plus", time: "08:45", status: "Boarding", badge: "PF 04", key: "b1" },
-        { no: "2185", name: "Hyderabad • Super Luxury", time: "09:00", status: "On Time", badge: "PF 07", key: "b2" },
-        { no: "1140", name: "Chennai • Express", time: "09:30", status: "Scheduled", badge: "PF 09", key: "b3" },
-        { no: "3308", name: "Tirupati • Venkatadri", time: "09:45", status: "Scheduled", badge: "PF 05", key: "b4" }
+        {
+          no: "5509",
+          name: {
+            english: "Bengaluru • Indra A/C",
+            telugu: "బెంగళూరు • ఇంద్ర ఏసీ",
+            hindi: "बेंगलुरु • इंद्रा एसी"
+          },
+          time: "09:15",
+          status: {
+            english: "Arriving",
+            telugu: "చేరుకుంటోంది",
+            hindi: "आ रही है"
+          },
+          badge: {
+            english: "PF 02",
+            telugu: "PF 02",
+            hindi: "PF 02"
+          },
+          key: "active"
+        },
+        {
+          no: "4012",
+          name: {
+            english: "Vijayawada • Garuda Plus",
+            telugu: "విజయవాడ • గరుడ ప్లస్",
+            hindi: "विजयवाड़ा • गरुड़ प्लस"
+          },
+          time: "08:45",
+          status: {
+            english: "Boarding",
+            telugu: "బోర్డింగ్",
+            hindi: "बोर्डिंग"
+          },
+          badge: {
+            english: "PF 04",
+            telugu: "PF 04",
+            hindi: "PF 04"
+          },
+          key: "b1"
+        },
+        {
+          no: "2185",
+          name: {
+            english: "Hyderabad • Super Luxury",
+            telugu: "హైదరాబాద్ • సూపర్ లగ్జరీ",
+            hindi: "हैदराबाद • सुपर लक्जरी"
+          },
+          time: "09:00",
+          status: {
+            english: "On Time",
+            telugu: "సమయానికి",
+            hindi: "समय पर"
+          },
+          badge: {
+            english: "PF 07",
+            telugu: "PF 07",
+            hindi: "PF 07"
+          },
+          key: "b2"
+        },
+        {
+          no: "1140",
+          name: {
+            english: "Chennai • Express",
+            telugu: "చెన్నై • ఎక్స్‌ప్రెస్",
+            hindi: "चेन्नई • एक्सप्रेस"
+          },
+          time: "09:30",
+          status: {
+            english: "Scheduled",
+            telugu: "షెడ్యూల్డ్",
+            hindi: "निर्धारित"
+          },
+          badge: {
+            english: "PF 09",
+            telugu: "PF 09",
+            hindi: "PF 09"
+          },
+          key: "b3"
+        },
+        {
+          no: "3308",
+          name: {
+            english: "Tirupati • Venkatadri",
+            telugu: "తిరుపతి • వెంకటాద్రి",
+            hindi: "तिरुपति • वेंकटाद्रि"
+          },
+          time: "09:45",
+          status: {
+            english: "Scheduled",
+            telugu: "షెడ్యూల్డ్",
+            hindi: "निर्धारित"
+          },
+          badge: {
+            english: "PF 05",
+            telugu: "PF 05",
+            hindi: "PF 05"
+          },
+          key: "b4"
+        }
       ]
     }
   },
@@ -201,7 +423,11 @@ const TRANSIT_DATA = {
     name: "Airport Aviation",
     legacyLabel: "Legacy Airport Gate FIDS Display & Speakers",
     legacyImage: "/flight_legacy_hardware.png",
-    terminal: "RGIA Hyderabad - Gate 08",
+    terminal: {
+      english: "RGIA Airport • Gate 08",
+      telugu: "రాజీవ్ గాంధీ విమానాశ్రయం • గేట్ 08",
+      hindi: "राजीव गांधी अंतर्राष्ट्रीय हवाई अड्डा • द्वार 08"
+    },
     announcements: {
       english: {
         headline: "Attention please... This is a gate change announcement for IndiGo flight six-E, six-one-eight-two, to New Delhi. The boarding gate has been changed to gate number eight. Passengers are requested to proceed to gate number eight immediately. Thank you.",
@@ -229,15 +455,122 @@ const TRANSIT_DATA = {
       }
     },
     board: {
-      title: "Flight Gate Board",
-      subtitle: "Departures Concourse - Gate 08",
-      cols: ["Flight", "Time", "Gate"],
+      title: {
+        english: "Flight Gate Board",
+        telugu: "విమానాల డిపార్చర్స్ బోర్డ్",
+        hindi: "उड़ान प्रस्थान बोर्ड"
+      },
+      subtitle: {
+        english: "Departures Concourse - Gate 08",
+        telugu: "డిపార్చర్స్ కాన్‌కోర్స్ - గేట్ 08",
+        hindi: "प्रस्थान कॉनकोर्स - द्वार 08"
+      },
+      cols: {
+        english: ["Flight", "Time", "Gate"],
+        telugu: ["విమానం", "సమయం", "గేట్"],
+        hindi: ["उड़ान", "समय", "द्वार"]
+      },
       items: [
-        { no: "6E 6182", name: "New Delhi (DEL) • IndiGo", time: "21:00", status: "Gate Change", badge: "Gate 08", key: "active" },
-        { no: "6E 204", name: "Hyderabad (HYD) • IndiGo", time: "20:15", status: "Boarding", badge: "Gate 12", key: "f1" },
-        { no: "AI 542", name: "Bengaluru (BLR) • Air India", time: "20:30", status: "Delayed", badge: "Gate 04", key: "f2" },
-        { no: "UK 876", name: "Mumbai (BOM) • Vistara", time: "20:45", status: "On Time", badge: "Gate 15", key: "f3" },
-        { no: "SG 409", name: "Chennai (MAA) • SpiceJet", time: "21:15", status: "Boarding", badge: "Gate 02", key: "f4" }
+        {
+          no: "6E 6182",
+          name: {
+            english: "New Delhi (DEL) • IndiGo",
+            telugu: "న్యూఢిల్లీ (DEL) • ఇండిగో",
+            hindi: "नई दिल्ली (DEL) • इंडिगो"
+          },
+          time: "21:00",
+          status: {
+            english: "Gate Change",
+            telugu: "గేట్ మార్పు",
+            hindi: "द्वार परिवर्तन"
+          },
+          badge: {
+            english: "Gate 08",
+            telugu: "గేట్ 08",
+            hindi: "द्वार 08"
+          },
+          key: "active"
+        },
+        {
+          no: "6E 204",
+          name: {
+            english: "Hyderabad (HYD) • IndiGo",
+            telugu: "హైదరాబాద్ (HYD) • ఇండిగో",
+            hindi: "हैदराबाद (HYD) • इंडिगो"
+          },
+          time: "20:15",
+          status: {
+            english: "Boarding",
+            telugu: "బోర్డింగ్",
+            hindi: "बोर्डिंग"
+          },
+          badge: {
+            english: "Gate 12",
+            telugu: "గేట్ 12",
+            hindi: "द्वार 12"
+          },
+          key: "f1"
+        },
+        {
+          no: "AI 542",
+          name: {
+            english: "Bengaluru (BLR) • Air India",
+            telugu: "బెంగళూరు (BLR) • ఎయిర్ ఇండియా",
+            hindi: "बेंगलुरु (BLR) • एयर इंडिया"
+          },
+          time: "20:30",
+          status: {
+            english: "Delayed",
+            telugu: "ఆలస్యం",
+            hindi: "विलंबित"
+          },
+          badge: {
+            english: "Gate 04",
+            telugu: "గేట్ 04",
+            hindi: "द्वार 04"
+          },
+          key: "f2"
+        },
+        {
+          no: "UK 876",
+          name: {
+            english: "Mumbai (BOM) • Vistara",
+            telugu: "ముంబై (BOM) • విస్తారా",
+            hindi: "मुंबई (BOM) • विस्तारा"
+          },
+          time: "20:45",
+          status: {
+            english: "On Time",
+            telugu: "సమయానికి",
+            hindi: "समय पर"
+          },
+          badge: {
+            english: "Gate 15",
+            telugu: "గేట్ 15",
+            hindi: "द्वार 15"
+          },
+          key: "f3"
+        },
+        {
+          no: "SG 409",
+          name: {
+            english: "Chennai (MAA) • SpiceJet",
+            telugu: "చెన్నై (MAA) • స్పైస్‌జెట్",
+            hindi: "चेन्नई (MAA) • स्पाइसजेट"
+          },
+          time: "21:15",
+          status: {
+            english: "Boarding",
+            telugu: "బోర్డింగ్",
+            hindi: "बोर्डिंग"
+          },
+          badge: {
+            english: "Gate 02",
+            telugu: "గేట్ 02",
+            hindi: "द्वार 02"
+          },
+          key: "f4"
+        }
       ]
     }
   }
@@ -1010,8 +1343,8 @@ export default function App() {
 
                     {/* 1. TOP ANNOUNCEMENT DISPLAY */}
                     <div className="text-center flex flex-col items-center w-full">
-                      <div className="text-xs font-semibold text-zinc-300 font-inter tracking-tight h-5 flex items-center">
-                        {currentTransit.terminal}
+                      <div className={`text-xs font-semibold text-zinc-300 tracking-tight h-5 flex items-center ${activeAnnouncement.fontClass}`}>
+                        {typeof currentTransit.terminal === 'object' ? currentTransit.terminal[phoneLang] : currentTransit.terminal}
                       </div>
                       <div className="mt-2 px-4 py-3.5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 flex flex-col justify-center w-full transition-all duration-200">
                         <p className={`text-[13px] sm:text-[13.5px] font-semibold text-white tracking-normal leading-[1.48] transition-opacity duration-150 ${activeAnnouncement.fontClass}`}>
@@ -1085,7 +1418,9 @@ export default function App() {
                           <button 
                             type="button" 
                             onClick={handlePlayToggle}
-                            className="flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white text-zinc-950 font-inter font-semibold text-xs shadow-md hover:bg-zinc-100 active:scale-95 transition-all shrink-0 cursor-pointer"
+                            className={`flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white text-zinc-950 font-semibold text-xs shadow-md hover:bg-zinc-100 active:scale-95 transition-all shrink-0 cursor-pointer ${
+                              phoneLang === 'telugu' ? 'font-telugu' : phoneLang === 'hindi' ? 'font-hindi' : 'font-inter'
+                            }`}
                             aria-label={isPlaying ? "Pause Announcement" : "Play Announcement"}
                           >
                             {isPlaying ? (
@@ -1093,14 +1428,14 @@ export default function App() {
                                 <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24">
                                   <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
                                 </svg>
-                                <span>Pause</span>
+                                <span>{phoneLang === 'telugu' ? 'ఆపండి' : phoneLang === 'hindi' ? 'रोकें' : 'Pause'}</span>
                               </>
                             ) : (
                               <>
                                 <svg className="w-3 h-3 fill-current ml-0.5" viewBox="0 0 24 24">
                                   <path d="M8 5v14l11-7z" />
                                 </svg>
-                                <span>Listen</span>
+                                <span>{phoneLang === 'telugu' ? 'వినండి' : phoneLang === 'hindi' ? 'सुनें' : 'Listen'}</span>
                               </>
                             )}
                           </button>
@@ -1120,18 +1455,18 @@ export default function App() {
                         <button 
                           type="button" 
                           onClick={() => handleLangChange('telugu')}
-                          className={`flex-1 py-1 rounded-full text-xs transition-all ${
+                          className={`flex-1 py-1 rounded-full text-xs transition-all font-telugu ${
                             phoneLang === 'telugu'
                               ? 'bg-white/15 text-white font-semibold border border-white/20 shadow-sm'
                               : 'text-zinc-400 hover:text-zinc-200 font-medium'
                           }`}
                         >
-                          Telugu
+                          తెలుగు
                         </button>
                         <button 
                           type="button" 
                           onClick={() => handleLangChange('english')}
-                          className={`flex-1 py-1 rounded-full text-xs transition-all ${
+                          className={`flex-1 py-1 rounded-full text-xs transition-all font-inter ${
                             phoneLang === 'english'
                               ? 'bg-white/15 text-white font-semibold border border-white/20 shadow-sm'
                               : 'text-zinc-400 hover:text-zinc-200 font-medium'
@@ -1142,13 +1477,13 @@ export default function App() {
                         <button 
                           type="button" 
                           onClick={() => handleLangChange('hindi')}
-                          className={`flex-1 py-1 rounded-full text-xs transition-all ${
+                          className={`flex-1 py-1 rounded-full text-xs transition-all font-hindi ${
                             phoneLang === 'hindi'
                               ? 'bg-white/15 text-white font-semibold border border-white/20 shadow-sm'
                               : 'text-zinc-400 hover:text-zinc-200 font-medium'
                           }`}
                         >
-                          Hindi
+                          हिन्दी
                         </button>
                       </div>
 
@@ -1157,27 +1492,37 @@ export default function App() {
                     {/* 5. DIGITAL TRANSIT BOARD (Icon-free, High-Clarity Typography) */}
                     <div className="bg-zinc-900/70 border border-zinc-800/90 rounded-2xl p-4 flex flex-col gap-2.5">
                       
-                      {/* Board Header (Dynamic Title & Subtitle) */}
+                      {/* Board Header (Dynamic Title & Subtitle in Current Language) */}
                       <div className="flex items-baseline justify-between pb-2 border-b border-zinc-800/60">
-                        <h4 className="text-xs sm:text-[13px] font-semibold text-white tracking-tight font-inter">
-                          {currentTransit.board.title}
+                        <h4 className={`text-xs sm:text-[13px] font-semibold text-white tracking-tight ${activeAnnouncement.fontClass}`}>
+                          {typeof currentTransit.board.title === 'object' ? currentTransit.board.title[phoneLang] : currentTransit.board.title}
                         </h4>
-                        <span className="text-[11px] font-medium text-zinc-400 font-inter">
-                          {currentTransit.board.subtitle}
+                        <span className={`text-[11px] font-medium text-zinc-400 ${activeAnnouncement.fontClass}`}>
+                          {typeof currentTransit.board.subtitle === 'object' ? currentTransit.board.subtitle[phoneLang] : currentTransit.board.subtitle}
                         </span>
                       </div>
 
-                      {/* Board Column Titles */}
-                      <div className="grid grid-cols-12 text-[11px] font-medium text-zinc-400 font-inter px-2 pt-1 pb-0.5">
-                        <span className="col-span-6">{currentTransit.board.cols[0]}</span>
-                        <span className="col-span-3 text-center">{currentTransit.board.cols[1]}</span>
-                        <span className="col-span-3 text-right">{currentTransit.board.cols[2]}</span>
+                      {/* Board Column Titles in Current Language (col-5, col-4, col-3) */}
+                      <div className="grid grid-cols-12 text-[11px] font-medium text-zinc-400 px-2 pt-1 pb-0.5">
+                        <span className={`col-span-5 ${activeAnnouncement.fontClass}`}>
+                          {Array.isArray(currentTransit.board.cols) ? currentTransit.board.cols[0] : currentTransit.board.cols[phoneLang][0]}
+                        </span>
+                        <span className={`col-span-4 text-center ${activeAnnouncement.fontClass}`}>
+                          {Array.isArray(currentTransit.board.cols) ? currentTransit.board.cols[1] : currentTransit.board.cols[phoneLang][1]}
+                        </span>
+                        <span className={`col-span-3 text-right ${activeAnnouncement.fontClass}`}>
+                          {Array.isArray(currentTransit.board.cols) ? currentTransit.board.cols[2] : currentTransit.board.cols[phoneLang][2]}
+                        </span>
                       </div>
 
-                      {/* Rows (Pure Inter Clarity, Zero Icons, Active Item Always First in Emerald) */}
+                      {/* Rows (Pure Inter/Regional Clarity, Active Item in Emerald) */}
                       <div className="flex flex-col gap-1.5">
                         {sortedBoardItems.map((item, idx) => {
                           const isActive = idx === 0;
+                          const itemName = typeof item.name === 'object' ? item.name[phoneLang] : item.name;
+                          const itemStatus = typeof item.status === 'object' ? item.status[phoneLang] : item.status;
+                          const itemBadge = typeof item.badge === 'object' ? item.badge[phoneLang] : item.badge;
+
                           return (
                             <div 
                               key={item.no + idx}
@@ -1187,30 +1532,30 @@ export default function App() {
                                   : 'px-2.5 py-2 rounded-lg border-b border-zinc-800/40'
                               }`}
                             >
-                              <div className="col-span-6">
+                              <div className="col-span-5 min-w-0 pr-1">
                                 <div className={`font-inter text-xs font-bold tabular-nums ${isActive ? 'text-emerald-400' : 'text-zinc-400'}`}>
                                   {item.no}
                                 </div>
-                                <div className={`text-xs font-semibold tracking-tight truncate ${isActive ? 'text-white' : 'text-zinc-200'}`}>
-                                  {item.name}
+                                <div className={`text-xs font-semibold tracking-tight truncate ${isActive ? 'text-white' : 'text-zinc-200'} ${activeAnnouncement.fontClass}`}>
+                                  {itemName}
                                 </div>
                               </div>
-                              <div className="col-span-3 text-center">
+                              <div className="col-span-4 text-center px-1">
                                 <div className={`font-inter text-xs tabular-nums ${isActive ? 'text-zinc-100 font-semibold' : 'text-zinc-300 font-medium'}`}>
                                   {item.time}
                                 </div>
-                                <div className={`text-[10px] font-medium ${isActive ? 'text-emerald-400' : 'text-zinc-400'}`}>
-                                  {item.status}
+                                <div className={`text-[10px] font-medium truncate ${isActive ? 'text-emerald-400 font-semibold' : 'text-zinc-400'} ${activeAnnouncement.fontClass}`}>
+                                  {itemStatus}
                                 </div>
                               </div>
-                              <div className="col-span-3 text-right">
+                              <div className="col-span-3 flex justify-end">
                                 {isActive ? (
-                                  <span className="px-2 py-0.5 rounded bg-emerald-500 text-zinc-950 font-inter font-bold text-xs">
-                                    {item.badge}
+                                  <span className={`inline-flex items-center justify-center px-2 py-0.5 rounded bg-emerald-500 text-zinc-950 font-bold text-xs whitespace-nowrap shadow-sm ${phoneLang === 'telugu' ? 'font-telugu text-[11px]' : phoneLang === 'hindi' ? 'font-hindi text-[11px]' : 'font-inter'}`}>
+                                    {itemBadge}
                                   </span>
                                 ) : (
-                                  <span className="text-zinc-300 font-inter font-semibold text-xs">
-                                    {item.badge}
+                                  <span className={`text-zinc-300 font-semibold text-xs whitespace-nowrap ${phoneLang === 'telugu' ? 'font-telugu text-[11px]' : phoneLang === 'hindi' ? 'font-hindi text-[11px]' : 'font-inter'}`}>
+                                    {itemBadge}
                                   </span>
                                 )}
                               </div>
