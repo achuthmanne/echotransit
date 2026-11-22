@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import SoundWaveHero from './components/SoundWaveHero';
 import DeepWaveSection from './components/DeepWaveSection';
 import DialogueShowcaseSection from './components/DialogueShowcaseSection';
+import CircularAcousticWave from './components/CircularAcousticWave';
 
 // Custom Dual-Tone Hand-Crafted Icons with Crimson Red Accents
 function IconVolumeX() {
@@ -1659,9 +1660,66 @@ export default function App() {
       </section>
 
       {/* SECTION 8: BUSINESS & ADVERTISING MONETIZATION MODEL */}
-      <section className="w-full relative py-28 sm:py-36 px-6 sm:px-12 overflow-hidden border-t border-slate-200/80 bg-[linear-gradient(to_right,#020617_0%,#0f172a_25%,#1e293b_45%,#475569_60%,#94a3b8_75%,#e2e8f0_88%,#ffffff_100%)] min-h-[580px] flex items-center justify-center">
-        <div className="max-w-7xl mx-auto w-full flex flex-col items-center">
-          {/* Section 8 Container - Ready for Business Model & Ads Content */}
+      <section className="w-full relative py-12 sm:py-16 lg:py-20 px-6 sm:px-12 lg:px-16 flex flex-col items-center justify-center border-t border-zinc-900/90 overflow-hidden bg-black text-white">
+
+        <div className="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          
+          {/* Left Column: Big Sharp Headline & Button */}
+          <div className="lg:col-span-6 flex flex-col items-start text-left space-y-6 sm:space-y-8">
+            
+            {/* Big Sharp Headline with PT Sans Regular 400 (Direct In-Announcement Ads Messaging) */}
+            <h2 className="text-5xl sm:text-7xl lg:text-8xl xl:text-[84px] 2xl:text-[92px] font-normal tracking-normal text-white leading-[1.08] font-ptsans">
+              Run Targeted Brand Ads{' '}
+              <span 
+                className="font-normal transition-all duration-300 select-none inline-block"
+                style={{
+                  backgroundImage: 'linear-gradient(135deg, var(--wave-c1, #22d3ee) 0%, var(--wave-c2, #2dd4bf) 50%, var(--wave-c3, #10b981) 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                Inside Every Transit Announcement.
+              </span>
+            </h2>
+
+            {/* Transparent Action Button (Hero Section Style: border-white/20, hover:bg-white/5) */}
+            <div className="pt-2">
+              <button className="inline-flex items-center gap-3 px-7 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-transparent border border-white/20 hover:border-white/40 hover:bg-white/5 text-white font-ptsans font-normal text-base sm:text-lg tracking-normal hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 group cursor-pointer select-none">
+                <span className="font-ptsans font-normal text-white">Explore In-Pocket Ads</span>
+                <svg 
+                  className="w-5 h-5 text-white/80 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-white" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor" 
+                  strokeWidth="1.75"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              </button>
+            </div>
+
+          </div>
+
+          {/* Right Column: Production-Grade 60fps High-DPI Circular Acoustic Wave (Clean, Zero Glows) */}
+          <div className="lg:col-span-6 w-full flex items-center justify-center relative min-h-[460px] sm:min-h-[540px] lg:min-h-[620px] xl:min-h-[680px]">
+
+            {/* Container for High-DPI Canvas Wave - Crisp Clean Vector Lines, Zero Blur Glows */}
+            <div className="relative w-full max-w-[520px] sm:max-w-[600px] lg:max-w-[660px] xl:max-w-[720px] aspect-square flex items-center justify-center">
+              
+              {/* Pure High-DPI Canvas Acoustic Wave (Same Architecture as SoundWaveHero & DeepWaveSection) */}
+              <CircularAcousticWave className="w-full h-full" />
+
+              {/* Natural Free Center Void for Mic Image (Framed purely by the living waves) */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-44 h-44 sm:w-52 sm:h-52 md:w-60 md:h-60 lg:w-68 lg:h-68 flex items-center justify-center pointer-events-auto">
+                  {/* Dedicated open space ready for Announcement Mic image */}
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
       </section>
 
