@@ -114,33 +114,33 @@ const TRANSIT_DATA = {
     legacyLabel: "Legacy Station Horns & LED Display Board",
     legacyImage: "/fine_neg_80_front.png",
     terminal: {
-      english: "Secunderabad Jn • Platform 2",
-      telugu: "సికింద్రాబాద్ జంక్షన్ • ప్లాట్‌ఫారమ్ 2",
-      hindi: "सिकंदराबाद जंक्शन • प्लेटफार्म 2"
+      english: "Hyderabad Deccan • Platform 4",
+      telugu: "హైదరాబాద్ దక్కన్ • ప్లాట్‌ఫారమ్ 4",
+      hindi: "हैदराबाद दक्कन • प्लेटफार्म 4"
     },
     announcements: {
       english: {
-        headline: "Train number 1 7 6 4 6, Repalle Secunderabad Express, will arrive shortly on platform number 2.",
-        subtext: "Platform 2 • Secunderabad Junction",
-        totalDuration: 11.16,
-        defaultTime: "00:00 / 00:11",
-        platform: "2",
+        headline: "May I have your attention please. Train number 12723, Telangana Express, from Hyderabad to New Delhi, is arriving shortly on platform number 4. Thank you.",
+        subtext: "Platform 4 • Hyderabad Deccan",
+        totalDuration: 20.3,
+        defaultTime: "00:00 / 00:20",
+        platform: "4",
         fontClass: "font-inter"
       },
       telugu: {
-        headline: "రైలు నంబర్ 1 7 6 4 5, సికింద్రాబాద్ - రేపల్లె ఎక్స్ప్రెస్, మరికొద్ది నిమిషములలో ఒకటోవ నంబరు ప్లాట్ఫామ్నకు రానున్నది.",
-        subtext: "ప్లాట్‌ఫారమ్ 1 • సికింద్రాబాద్ జంక్షన్",
-        totalDuration: 10.8,
-        defaultTime: "00:00 / 00:11",
-        platform: "1",
+        headline: "ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు 12723, తెలంగాణ ఎక్స్ప్రెస్, హైదరాబాద్ నుండి న్యూఢిల్లీ వరకు వెళ్ళునది, మరికొద్ది నిమిషములలో నాలుగవ నంబరు ప్లాట్ఫారమ్ పైకి రానున్నది. ధన్యవాదములు.",
+        subtext: "ప్లాట్‌ఫారమ్ 4 • హైదరాబాద్ దక్కన్",
+        totalDuration: 19.3,
+        defaultTime: "00:00 / 00:19",
+        platform: "4",
         fontClass: "font-telugu"
       },
       hindi: {
-        headline: "यात्री कृपया ध्यान दें, गाड़ी क्रमांक 1 2 8 0 4, सुपरफास्ट स्वर्ण जयंती एक्सप्रेस, थोड़ी ही देर में प्लेटफार्म क्रमांक तीन पर आ रही है।",
-        subtext: "प्लेटफार्म 3 • सिकंदराबाद जंक्शन",
-        totalDuration: 15.1,
-        defaultTime: "00:00 / 00:15",
-        platform: "3",
+        headline: "यात्रीगण कृपया ध्यान दें। गाड़ी संख्या 12723, तेलंगाना एक्सप्रेस, हैदराबाद से चलकर नई दिल्ली को जाने वाली, थोड़ी ही देर में प्लेटफार्म संख्या 4 पर आ रही है। धन्यवाद।",
+        subtext: "प्लेटफार्म 4 • हैदराबाद दक्कन",
+        totalDuration: 22.6,
+        defaultTime: "00:00 / 00:23",
+        platform: "4",
         fontClass: "font-hindi"
       }
     },
@@ -162,22 +162,22 @@ const TRANSIT_DATA = {
       },
       items: [
         {
-          no: "17646",
+          no: "12723",
           name: {
-            english: "Repalle - Secunderabad Exp.",
-            telugu: "రేపల్లె - సికింద్రాబాద్ ఎక్స్.",
-            hindi: "रेपल्ले - सिकंदराबाद एक्सप्रेस"
+            english: "Telangana Express",
+            telugu: "తెలంగాణ ఎక్స్‌ప్రెస్",
+            hindi: "तेलंगाना एक्सप्रेस"
           },
-          time: "03:30",
+          time: "06:25",
           status: {
             english: "Arriving",
             telugu: "చేరుకుంటోంది",
             hindi: "आ रही है"
           },
           badge: {
-            english: "PF 2",
-            telugu: "PF 2",
-            hindi: "PF 2"
+            english: "PF 4",
+            telugu: "PF 4",
+            hindi: "PF 4"
           },
           key: "english"
         },
@@ -235,18 +235,18 @@ const TRANSIT_DATA = {
             hindi: "समय पर"
           },
           badge: {
-            english: "PF 4",
-            telugu: "PF 4",
-            hindi: "PF 4"
+            english: "PF 2",
+            telugu: "PF 2",
+            hindi: "PF 2"
           },
           key: "other1"
         },
         {
-          no: "12723",
+          no: "17646",
           name: {
-            english: "Telangana Express",
-            telugu: "తెలంగాణ ఎక్స్‌ప్రెస్",
-            hindi: "तेलंगाना एक्सप्रेस"
+            english: "Repalle - Secunderabad Exp.",
+            telugu: "రేపల్లె - సికింద్రాబాద్ ఎక్స్.",
+            hindi: "रेपल्ले - सिकंदराबाद एक्सप्रेस"
           },
           time: "07:15",
           status: {
@@ -586,8 +586,6 @@ export default function App() {
   const [phoneLang, setPhoneLang] = useState('english');
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioProgress, setAudioProgress] = useState({ current: 0, total: 0 });
-  const [testAudioPlaying, setTestAudioPlaying] = useState(false);
-  const testAudioRef = useRef(null);
   const railwayPlayerRef = useRef(null);
   const bentoRef = useRef(null);
   const solutionRef = useRef(null);
@@ -760,54 +758,11 @@ export default function App() {
       audioRef.current.currentTime = 0;
       audioRef.current = null;
     }
-    if (testAudioRef.current) {
-      testAudioRef.current.pause();
-      testAudioRef.current.currentTime = 0;
-      setTestAudioPlaying(false);
-    }
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
     }
     setIsPlaying(false);
     setAudioProgress({ current: 0, total: 0 });
-  };
-
-  const toggleTestAudio = () => {
-    if (testAudioPlaying || (isPlaying && transitMode === 'rail')) {
-      stopAudio();
-      return;
-    }
-
-    stopAudio();
-
-    const sequence = buildRailwayAudioSequence({
-      language: phoneLang === 'telugu' ? 'telugu' : phoneLang === 'hindi' ? 'hindi' : 'english',
-      trainNumber: '17646',
-      trainKey: 'secunderabad_repalle_express',
-      platform: '2',
-      status: 'arriving'
-    });
-
-    const player = new RailwayAnnouncementPlayer({
-      onProgress: ({ current, total }) => {
-        setAudioProgress({ current, total });
-      },
-      onEnded: () => {
-        setIsPlaying(false);
-        setTestAudioPlaying(false);
-        setAudioProgress({ current: 0, total: 0 });
-      },
-      onError: () => {
-        setIsPlaying(false);
-        setTestAudioPlaying(false);
-        setAudioProgress({ current: 0, total: 0 });
-      }
-    });
-
-    railwayPlayerRef.current = player;
-    setTestAudioPlaying(true);
-    setIsPlaying(true);
-    player.play({ sequence, withChime: true });
   };
 
   const playTransitFallback = () => {
@@ -881,13 +836,41 @@ export default function App() {
     stopAudio();
 
     if (transitMode === 'rail') {
-      const sequence = buildRailwayAudioSequence({
-        language: phoneLang === 'telugu' ? 'telugu' : phoneLang === 'hindi' ? 'hindi' : 'english',
-        trainNumber: '17646',
-        trainKey: 'secunderabad_repalle_express',
-        platform: '2',
+      let config = {
+        language: phoneLang,
         status: 'arriving'
-      });
+      };
+
+      if (phoneLang === 'english') {
+        config = {
+          ...config,
+          trainNumber: '12723',
+          trainKey: 'telangana_express',
+          fromStation: 'hyderabad',
+          toStation: 'new_delhi',
+          platform: '4'
+        };
+      } else if (phoneLang === 'telugu') {
+        config = {
+          ...config,
+          trainNumber: '12723',
+          trainKey: 'telangana_express',
+          fromStation: 'hyderabad',
+          toStation: 'new_delhi',
+          platform: '4'
+        };
+      } else if (phoneLang === 'hindi') {
+        config = {
+          ...config,
+          trainNumber: '12723',
+          trainKey: 'telangana_express',
+          fromStation: 'hyderabad',
+          toStation: 'new_delhi',
+          platform: '4'
+        };
+      }
+
+      const sequence = buildRailwayAudioSequence(config);
 
       const player = new RailwayAnnouncementPlayer({
         onProgress: ({ current, total }) => {
@@ -895,19 +878,17 @@ export default function App() {
         },
         onEnded: () => {
           setIsPlaying(false);
-          setTestAudioPlaying(false);
           setAudioProgress({ current: 0, total: 0 });
         },
         onError: () => {
           setIsPlaying(false);
-          setTestAudioPlaying(false);
           setAudioProgress({ current: 0, total: 0 });
         }
       });
 
       railwayPlayerRef.current = player;
       setIsPlaying(true);
-      player.play({ sequence, withChime: true });
+      player.play({ sequence, withChime: true, withAmbience: true });
       return;
     }
 
@@ -1013,37 +994,8 @@ export default function App() {
           />
         </div>
 
-        {/* Right: Direct Enterprise Action & Quick Test Audio */}
+        {/* Right: Direct Enterprise Action */}
         <div className="flex items-center gap-3">
-          {/* Quick Test Audio Button for Uploaded Authentic Voice */}
-          <button
-            onClick={toggleTestAudio}
-            className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all select-none cursor-pointer border ${
-              testAudioPlaying
-                ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm shadow-emerald-500/30 animate-pulse'
-                : 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100 hover:border-emerald-400'
-            }`}
-            title="Click to test authentic Indian Railways announcement audio"
-          >
-            {testAudioPlaying ? (
-              <>
-                <span className="w-2 h-2 rounded-full bg-white animate-ping" />
-                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                  <rect x="6" y="4" width="4" height="16" rx="1" />
-                  <rect x="14" y="4" width="4" height="16" rx="1" />
-                </svg>
-                <span>Playing Voice (Stop)</span>
-              </>
-            ) : (
-              <>
-                <svg className="w-3.5 h-3.5 fill-current text-emerald-600" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-                <span>Test Announcement Voice 🔊</span>
-              </>
-            )}
-          </button>
-
           <button className="px-4 py-2 rounded-lg bg-black text-white text-sm font-semibold hover:bg-neutral-800 transition-colors">
             Open Console
           </button>
