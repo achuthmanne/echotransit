@@ -157,7 +157,10 @@ export function buildRailwayAudioSequence({
     sequence.push('/audio_assets/phrases_te/dhanyavaadamulu.mp3');
 
   } else if (language === 'malayalam') {
-    // Malayalam Platform Number Demo
+    // Malayalam Train Number Digits
+    digits.forEach(d => {
+      sequence.push(`/audio_assets/numbers_ml/${d}.mp3`);
+    });
     if (TRAIN_ASSETS[trainKey]) {
       sequence.push(TRAIN_ASSETS[trainKey].file);
     }
