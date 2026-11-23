@@ -2028,16 +2028,92 @@ export default function App() {
         </div>
       </section>
 
-      {/* SECTION 10: CLOSING CANVAS */}
-      <section className="w-full relative py-16 sm:py-20 lg:py-24 px-6 flex flex-col items-center justify-center bg-black text-white border-t border-zinc-900/90 overflow-hidden">
-        <div className="max-w-7xl mx-auto w-full flex flex-col items-center justify-center text-center">
-          <img 
-            src="/echotransit_outro_logo.png" 
-            alt="EchoTransit" 
-            className="w-full max-w-[300px] sm:max-w-[400px] md:max-w-[480px] lg:max-w-[540px] xl:max-w-[580px] h-auto object-contain select-none pointer-events-none"
-          />
+      {/* SECTION 10: ENTERPRISE FOOTER & OUTRO */}
+      <footer className="w-full relative bg-black text-white border-t border-zinc-900/90 pt-16 sm:pt-20 pb-12 px-6 sm:px-12 overflow-hidden">
+        <div className="max-w-7xl mx-auto w-full flex flex-col">
+          
+          {/* MAIN FOOTER ROW: LEFT 2 COLS | CENTER LOGO | RIGHT 2 COLS */}
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-6 pb-14 sm:pb-16 w-full">
+            
+            {/* LEFT 2 COLUMNS (PLATFORM & SOLUTIONS) - Flush to Left Edge */}
+            <div className="w-full lg:flex-1 flex justify-start">
+              <div className="grid grid-cols-2 gap-8 sm:gap-12 lg:gap-14 w-full sm:w-auto">
+                {/* Column 1: PLATFORM */}
+                <div className="flex flex-col gap-3.5">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-zinc-300 font-inter">Platform</span>
+                  <ul className="flex flex-col gap-2.5 text-sm font-inter font-light tracking-wide text-zinc-400">
+                    <li><a href="#platform" className="hover:text-white transition-colors duration-200">Acoustic Engine</a></li>
+                    <li><a href="#board" className="hover:text-white transition-colors duration-200">Pocket Board</a></li>
+                    <li><a href="#ads" className="hover:text-white transition-colors duration-200">In-Pocket Ads</a></li>
+                    <li><a href="#edge" className="hover:text-white transition-colors duration-200">Station Edge</a></li>
+                  </ul>
+                </div>
+
+                {/* Column 2: SOLUTIONS */}
+                <div className="flex flex-col gap-3.5">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-zinc-300 font-inter">Solutions</span>
+                  <ul className="flex flex-col gap-2.5 text-sm font-inter font-light tracking-wide text-zinc-400">
+                    <li><a href="#airports" className="hover:text-white transition-colors duration-200">Airports (AODB)</a></li>
+                    <li><a href="#railways" className="hover:text-white transition-colors duration-200">Indian Railways</a></li>
+                    <li><a href="#metro" className="hover:text-white transition-colors duration-200">Metro Networks</a></li>
+                    <li><a href="#advertisers" className="hover:text-white transition-colors duration-200">Brand Advertisers</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* MIDDLE LOGO - Dead Center */}
+            <div className="shrink-0 flex items-center justify-center py-6 lg:py-0 px-2 lg:px-6 border-y border-zinc-900/50 lg:border-none">
+              <img 
+                src="/echotransit_outro_logo.png" 
+                alt="EchoTransit" 
+                className="w-full max-w-[240px] sm:max-w-[280px] md:max-w-[320px] lg:max-w-[350px] h-auto object-contain select-none pointer-events-none drop-shadow-[0_0_25px_rgba(255,255,255,0.06)]"
+              />
+            </div>
+
+            {/* RIGHT 2 COLUMNS (RESOURCES & COMPANY) - Flush to Right Edge */}
+            <div className="w-full lg:flex-1 flex justify-end">
+              <div className="grid grid-cols-2 gap-8 sm:gap-12 lg:gap-14 w-full sm:w-auto">
+                {/* Column 3: RESOURCES */}
+                <div className="flex flex-col gap-3.5">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-zinc-300 font-inter">Resources</span>
+                  <ul className="flex flex-col gap-2.5 text-sm font-inter font-light tracking-wide text-zinc-400">
+                    <li><a href="#api" className="hover:text-white transition-colors duration-200">API Reference</a></li>
+                    <li><a href="#gtfs" className="hover:text-white transition-colors duration-200">GTFS-RT Guide</a></li>
+                    <li><a href="#deployment" className="hover:text-white transition-colors duration-200">Deployment Docs</a></li>
+                    <li><a href="#latency" className="hover:text-white transition-colors duration-200">Latency Proof</a></li>
+                  </ul>
+                </div>
+
+                {/* Column 4: COMPANY */}
+                <div className="flex flex-col gap-3.5">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-zinc-300 font-inter">Company</span>
+                  <ul className="flex flex-col gap-2.5 text-sm font-inter font-light tracking-wide text-zinc-400">
+                    <li><a href="#about" className="hover:text-white transition-colors duration-200">About Us</a></li>
+                    <li><a href="#rfp" className="hover:text-white transition-colors duration-200">Govt RFP</a></li>
+                    <li><a href="#privacy" className="hover:text-white transition-colors duration-200">Privacy Policy</a></li>
+                    <li><a href="#contact" className="hover:text-white transition-colors duration-200">Contact Us</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* BOTTOM BAR */}
+          <div className="pt-8 border-t border-zinc-900/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-inter font-light tracking-wide text-zinc-500">
+            <div>
+              © 2026 EchoTransit. All rights reserved.
+            </div>
+            <div>
+              <a href="#terms" className="text-zinc-400 hover:text-white transition-colors duration-200">
+                Terms and Conditions
+              </a>
+            </div>
+          </div>
+
         </div>
-      </section>
+      </footer>
 
     </div>
   );
