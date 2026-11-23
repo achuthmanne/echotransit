@@ -3,6 +3,7 @@ import SoundWaveHero from './components/SoundWaveHero';
 import DeepWaveSection from './components/DeepWaveSection';
 import DialogueShowcaseSection from './components/DialogueShowcaseSection';
 import CircularAcousticWave from './components/CircularAcousticWave';
+import { RailwayAnnouncementPlayer, buildRailwayAudioSequence } from './utils/announcementAudioEngine';
 
 // Custom Dual-Tone Hand-Crafted Icons with Crimson Red Accents
 function IconVolumeX() {
@@ -585,6 +586,9 @@ export default function App() {
   const [phoneLang, setPhoneLang] = useState('english');
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioProgress, setAudioProgress] = useState({ current: 0, total: 0 });
+  const [testAudioPlaying, setTestAudioPlaying] = useState(false);
+  const testAudioRef = useRef(null);
+  const railwayPlayerRef = useRef(null);
   const bentoRef = useRef(null);
   const solutionRef = useRef(null);
   const ecosystemRef = useRef(null);
@@ -747,16 +751,63 @@ export default function App() {
 
   const stopAudio = () => {
     stopAnimLoop();
+    if (railwayPlayerRef.current) {
+      railwayPlayerRef.current.stop();
+      railwayPlayerRef.current = null;
+    }
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
       audioRef.current = null;
+    }
+    if (testAudioRef.current) {
+      testAudioRef.current.pause();
+      testAudioRef.current.currentTime = 0;
+      setTestAudioPlaying(false);
     }
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
     }
     setIsPlaying(false);
     setAudioProgress({ current: 0, total: 0 });
+  };
+
+  const toggleTestAudio = () => {
+    if (testAudioPlaying || (isPlaying && transitMode === 'rail')) {
+      stopAudio();
+      return;
+    }
+
+    stopAudio();
+
+    const sequence = buildRailwayAudioSequence({
+      language: phoneLang === 'telugu' ? 'telugu' : phoneLang === 'hindi' ? 'hindi' : 'english',
+      trainNumber: '17646',
+      trainKey: 'secunderabad_repalle_express',
+      platform: '2',
+      status: 'arriving'
+    });
+
+    const player = new RailwayAnnouncementPlayer({
+      onProgress: ({ current, total }) => {
+        setAudioProgress({ current, total });
+      },
+      onEnded: () => {
+        setIsPlaying(false);
+        setTestAudioPlaying(false);
+        setAudioProgress({ current: 0, total: 0 });
+      },
+      onError: () => {
+        setIsPlaying(false);
+        setTestAudioPlaying(false);
+        setAudioProgress({ current: 0, total: 0 });
+      }
+    });
+
+    railwayPlayerRef.current = player;
+    setTestAudioPlaying(true);
+    setIsPlaying(true);
+    player.play({ sequence, withChime: true });
   };
 
   const playTransitFallback = () => {
@@ -829,10 +880,39 @@ export default function App() {
 
     stopAudio();
 
-    let audioFile = null;
     if (transitMode === 'rail') {
-      audioFile = `/audio/announcement-${phoneLang}.mp3`;
-    } else if (transitMode === 'flight') {
+      const sequence = buildRailwayAudioSequence({
+        language: phoneLang === 'telugu' ? 'telugu' : phoneLang === 'hindi' ? 'hindi' : 'english',
+        trainNumber: '17646',
+        trainKey: 'secunderabad_repalle_express',
+        platform: '2',
+        status: 'arriving'
+      });
+
+      const player = new RailwayAnnouncementPlayer({
+        onProgress: ({ current, total }) => {
+          setAudioProgress({ current, total });
+        },
+        onEnded: () => {
+          setIsPlaying(false);
+          setTestAudioPlaying(false);
+          setAudioProgress({ current: 0, total: 0 });
+        },
+        onError: () => {
+          setIsPlaying(false);
+          setTestAudioPlaying(false);
+          setAudioProgress({ current: 0, total: 0 });
+        }
+      });
+
+      railwayPlayerRef.current = player;
+      setIsPlaying(true);
+      player.play({ sequence, withChime: true });
+      return;
+    }
+
+    let audioFile = null;
+    if (transitMode === 'flight') {
       audioFile = `/audio/flight-${phoneLang}.mp3`;
     } else if (transitMode === 'bus') {
       audioFile = `/audio/bus-${phoneLang}.mp3`;
@@ -933,8 +1013,37 @@ export default function App() {
           />
         </div>
 
-        {/* Right: Direct Enterprise Action in Pure Solid Black */}
-        <div className="flex items-center">
+        {/* Right: Direct Enterprise Action & Quick Test Audio */}
+        <div className="flex items-center gap-3">
+          {/* Quick Test Audio Button for Uploaded Authentic Voice */}
+          <button
+            onClick={toggleTestAudio}
+            className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all select-none cursor-pointer border ${
+              testAudioPlaying
+                ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm shadow-emerald-500/30 animate-pulse'
+                : 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100 hover:border-emerald-400'
+            }`}
+            title="Click to test authentic Indian Railways announcement audio"
+          >
+            {testAudioPlaying ? (
+              <>
+                <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                  <rect x="6" y="4" width="4" height="16" rx="1" />
+                  <rect x="14" y="4" width="4" height="16" rx="1" />
+                </svg>
+                <span>Playing Voice (Stop)</span>
+              </>
+            ) : (
+              <>
+                <svg className="w-3.5 h-3.5 fill-current text-emerald-600" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+                <span>Test Announcement Voice 🔊</span>
+              </>
+            )}
+          </button>
+
           <button className="px-4 py-2 rounded-lg bg-black text-white text-sm font-semibold hover:bg-neutral-800 transition-colors">
             Open Console
           </button>
