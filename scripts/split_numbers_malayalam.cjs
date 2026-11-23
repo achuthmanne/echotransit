@@ -31,7 +31,7 @@ async function main() {
     { num: 24, ml: 'ഇരുപത്തിനാല്', start: 34.60, end: 36.10 }
   ];
 
-  const outDir = 'public/audio_assets/numbers_ml';
+  const outDir = 'public/audio_assets/platforms_ml';
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
   segments.forEach((s, idx) => {

@@ -17,7 +17,7 @@ async function main() {
     { num: 9, ml: 'ഒൻപത്', start: 8.65, end: 9.50 }
   ];
 
-  const outDir = 'public/audio_assets/numbers_ml';
+  const outDir = 'public/audio_assets/digits_ml';
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
   segments.forEach((s, idx) => {
