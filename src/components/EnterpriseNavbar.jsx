@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-export default function EnterpriseNavbar({ onNavigate, onModeChange }) {
+export default function EnterpriseNavbar({ onNavigate, onModeChange, onOpenConsole }) {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileActivePillar, setMobileActivePillar] = useState(null);
@@ -366,7 +366,7 @@ export default function EnterpriseNavbar({ onNavigate, onModeChange }) {
         </div>
 
         {/* Center: Desktop Navigation (DEAD CENTER) */}
-        <nav className="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
+        <nav className="hidden lg:flex items-center gap-2.5 absolute left-1/2 -translate-x-1/2">
           {NAV_PILLARS.map((pillar) => {
             const isOpen = activeDropdown === pillar.id;
 
@@ -379,20 +379,20 @@ export default function EnterpriseNavbar({ onNavigate, onModeChange }) {
               >
                 <button 
                   type="button"
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13.5px] font-medium transition-colors select-none cursor-pointer tracking-[-0.01em] ${
+                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-[14.5px] font-medium transition-colors select-none cursor-pointer tracking-[-0.01em] ${
                     isOpen
-                      ? 'text-zinc-950 bg-zinc-100'
-                      : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100/70'
+                      ? 'text-zinc-950 bg-zinc-100 font-semibold'
+                      : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100/80'
                   }`}
                   aria-expanded={isOpen}
                 >
                   <span>{pillar.name}</span>
                   <svg 
-                    className={`w-3.5 h-3.5 text-zinc-400 transition-transform duration-200 ${isOpen ? 'rotate-180 text-zinc-950' : 'group-hover:text-zinc-600'}`} 
+                    className={`w-3.5 h-3.5 text-zinc-400 transition-transform duration-200 ${isOpen ? 'rotate-180 text-zinc-950' : 'group-hover:text-zinc-700'}`} 
                     viewBox="0 0 24 24" 
                     fill="none" 
                     stroke="currentColor" 
-                    strokeWidth="2" 
+                    strokeWidth="2.2" 
                     strokeLinecap="round" 
                     strokeLinejoin="round"
                   >
@@ -422,7 +422,7 @@ export default function EnterpriseNavbar({ onNavigate, onModeChange }) {
                               onClick={(e) => handleLinkClick(e, item)}
                               className="group/item flex items-start gap-3 p-3 rounded-xl hover:bg-zinc-50 transition-all text-left select-none cursor-pointer border border-transparent hover:border-zinc-200/50"
                             >
-                              <div className="w-8 h-8 rounded-lg bg-zinc-100 border border-zinc-200/60 flex items-center justify-center shrink-0 text-zinc-800 group-hover/item:bg-black group-hover/item:text-white group-hover/item:border-black transition-all duration-150 mt-0.5 shadow-sm">
+                              <div className="w-8 h-8 rounded-lg bg-black border border-black flex items-center justify-center shrink-0 text-white group-hover/item:bg-zinc-800 group-hover/item:scale-105 transition-all duration-150 mt-0.5 shadow-sm">
                                 {item.icon}
                               </div>
                               <div className="flex-1 min-w-0">
@@ -460,8 +460,15 @@ export default function EnterpriseNavbar({ onNavigate, onModeChange }) {
           
           {/* Primary High-Contrast Action: Open Transit Console */}
           <a
-            href="#console"
-            onClick={(e) => handleLinkClick(e, { targetId: 'console' })}
+            href="/console"
+            onClick={(e) => {
+              e.preventDefault();
+              if (onOpenConsole) {
+                onOpenConsole();
+              } else {
+                handleLinkClick(e, { targetId: 'console' });
+              }
+            }}
             className="px-5 py-2.5 rounded-lg bg-black text-white text-[13px] font-semibold hover:bg-neutral-800 active:scale-[0.98] transition-colors select-none cursor-pointer tracking-[-0.01em] shadow-sm"
           >
             Open Transit Console
@@ -533,7 +540,7 @@ export default function EnterpriseNavbar({ onNavigate, onModeChange }) {
                           onClick={(e) => handleLinkClick(e, item)}
                           className="flex items-center gap-3 p-2 rounded-lg hover:bg-zinc-100 transition-colors"
                         >
-                          <div className="w-7 h-7 rounded-md bg-zinc-100 border border-zinc-200/60 flex items-center justify-center shrink-0 text-zinc-800">
+                          <div className="w-7 h-7 rounded-md bg-black border border-black flex items-center justify-center shrink-0 text-white">
                             {item.icon}
                           </div>
                           <div>
@@ -552,8 +559,16 @@ export default function EnterpriseNavbar({ onNavigate, onModeChange }) {
           {/* Mobile Bottom Action */}
           <div className="pt-6 border-t border-zinc-200/80 flex flex-col gap-2.5">
             <a
-              href="#console"
-              onClick={(e) => handleLinkClick(e, { targetId: 'console' })}
+              href="/console"
+              onClick={(e) => {
+                e.preventDefault();
+                setMobileMenuOpen(false);
+                if (onOpenConsole) {
+                  onOpenConsole();
+                } else {
+                  handleLinkClick(e, { targetId: 'console' });
+                }
+              }}
               className="w-full py-3 rounded-lg bg-black text-white text-sm font-semibold text-center flex items-center justify-center tracking-[-0.01em] shadow-sm"
             >
               Open Transit Console

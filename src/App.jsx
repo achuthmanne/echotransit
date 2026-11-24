@@ -4,6 +4,8 @@ import DeepWaveSection from './components/DeepWaveSection';
 import DialogueShowcaseSection from './components/DialogueShowcaseSection';
 import CircularAcousticWave from './components/CircularAcousticWave';
 import EnterpriseNavbar from './components/EnterpriseNavbar';
+import TransitConsolePage from './components/TransitConsolePage';
+import { useAppRouter } from './utils/router';
 import { RailwayAnnouncementPlayer, buildRailwayAudioSequence } from './utils/announcementAudioEngine';
 
 // Custom Dual-Tone Hand-Crafted Icons with Crimson Red Accents
@@ -580,6 +582,7 @@ const TRANSIT_DATA = {
 };
 
 export default function App() {
+  const { view, mode, navigateTo } = useAppRouter();
   const [bentoVisible, setBentoVisible] = useState(false);
   const [solutionVisible, setSolutionVisible] = useState(false);
   const [ecosystemVisible, setEcosystemVisible] = useState(false);
@@ -971,11 +974,24 @@ export default function App() {
     return () => observer.disconnect();
   }, []);
 
+  if (view === 'console') {
+    return (
+      <TransitConsolePage 
+        activeMode={mode}
+        onBackToLanding={() => navigateTo('/')} 
+        onSelectMode={(selectedMode) => navigateTo('/console', { mode: selectedMode })}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white text-slate-900 flex flex-col font-sans">
       
       {/* ENTERPRISE SAAS NAVBAR */}
-      <EnterpriseNavbar onModeChange={handleModeChange} />
+      <EnterpriseNavbar 
+        onModeChange={handleModeChange} 
+        onOpenConsole={() => navigateTo('/console')} 
+      />
 
       {/* HERO SECTION */}
       <section id="hero" className="relative w-full">
