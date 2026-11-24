@@ -3,6 +3,7 @@ import SoundWaveHero from './components/SoundWaveHero';
 import DeepWaveSection from './components/DeepWaveSection';
 import DialogueShowcaseSection from './components/DialogueShowcaseSection';
 import CircularAcousticWave from './components/CircularAcousticWave';
+import EnterpriseNavbar from './components/EnterpriseNavbar';
 import { RailwayAnnouncementPlayer, buildRailwayAudioSequence } from './utils/announcementAudioEngine';
 
 // Custom Dual-Tone Hand-Crafted Icons with Crimson Red Accents
@@ -122,24 +123,24 @@ const TRANSIT_DATA = {
       english: {
         headline: "May I have your attention please. Train number 12723, Telangana Express, from Hyderabad to New Delhi, is arriving shortly on platform number 4. Thank you.",
         subtext: "Platform 4 • Hyderabad Deccan",
-        totalDuration: 20.3,
-        defaultTime: "00:00 / 00:20",
+        totalDuration: 22.0,
+        defaultTime: "00:00 / 00:22",
         platform: "4",
         fontClass: "font-inter"
       },
       telugu: {
         headline: "ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు 12723, తెలంగాణ ఎక్స్ప్రెస్, హైదరాబాద్ నుండి న్యూఢిల్లీ వరకు వెళ్ళునది, మరికొద్ది నిమిషములలో నాలుగవ నంబరు ప్లాట్ఫారమ్ పైకి రానున్నది. ధన్యవాదములు.",
         subtext: "ప్లాట్‌ఫారమ్ 4 • హైదరాబాద్ దక్కన్",
-        totalDuration: 19.3,
-        defaultTime: "00:00 / 00:19",
+        totalDuration: 21.8,
+        defaultTime: "00:00 / 00:22",
         platform: "4",
         fontClass: "font-telugu"
       },
       hindi: {
         headline: "यात्रीगण कृपया ध्यान दें। गाड़ी संख्या 12723, तेलंगाना एक्सप्रेस, हैदराबाद से चलकर नई दिल्ली को जाने वाली, थोड़ी ही देर में प्लेटफार्म संख्या 4 पर आ रही है। धन्यवाद।",
         subtext: "प्लेटफार्म 4 • हैदराबाद दक्कन",
-        totalDuration: 22.6,
-        defaultTime: "00:00 / 00:23",
+        totalDuration: 24.0,
+        defaultTime: "00:00 / 00:24",
         platform: "4",
         fontClass: "font-hindi"
       }
@@ -151,9 +152,9 @@ const TRANSIT_DATA = {
         hindi: "स्टेशन प्रस्थान बोर्ड"
       },
       subtitle: {
-        english: "Secunderabad Junction",
-        telugu: "సికింద్రాబాద్ జంక్షన్",
-        hindi: "सिकंदराबाद जंक्शन"
+        english: "Hyderabad Deccan",
+        telugu: "హైదరాబాద్ దక్కన్",
+        hindi: "हैदराबाद दक्कन"
       },
       cols: {
         english: ["Train", "Time", "Platform"],
@@ -641,17 +642,8 @@ export default function App() {
   const activeAnnouncement = currentTransit.announcements[phoneLang];
 
   const sortedBoardItems = useMemo(() => {
-    return [...currentTransit.board.items].sort((a, b) => {
-      if (transitMode === 'rail') {
-        if (a.key === phoneLang) return -1;
-        if (b.key === phoneLang) return 1;
-        return 0;
-      }
-      if (a.key === 'active') return -1;
-      if (b.key === 'active') return 1;
-      return 0;
-    });
-  }, [transitMode, phoneLang, currentTransit]);
+    return currentTransit.board.items;
+  }, [currentTransit]);
 
   const formatAudioTime = (sec) => {
     if (!sec || isNaN(sec)) return "00:00";
@@ -983,28 +975,10 @@ export default function App() {
     <div className="min-h-screen bg-white text-slate-900 flex flex-col font-sans">
       
       {/* ENTERPRISE SAAS NAVBAR */}
-      <header className="sticky top-0 z-50 bg-white border-b border-slate-200/80 px-8 sm:px-12 h-20 flex items-center justify-between">
-        
-        {/* Left: Brand Logo */}
-        <div className="flex items-center">
-          <img 
-            src="/logo.png" 
-            alt="EchoTransit" 
-            className="h-12 sm:h-14 w-auto object-contain select-none"
-          />
-        </div>
-
-        {/* Right: Direct Enterprise Action */}
-        <div className="flex items-center gap-3">
-          <button className="px-4 py-2 rounded-lg bg-black text-white text-sm font-semibold hover:bg-neutral-800 transition-colors">
-            Open Console
-          </button>
-        </div>
-
-      </header>
+      <EnterpriseNavbar onModeChange={handleModeChange} />
 
       {/* HERO SECTION */}
-      <section className="relative w-full">
+      <section id="hero" className="relative w-full">
         <SoundWaveHero>
           <div className="max-w-6xl mx-auto flex flex-col items-center">
             
@@ -1021,12 +995,26 @@ export default function App() {
 
             {/* HERO CTA BUTTONS */}
             <div className="mt-7 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 w-full sm:w-auto">
-              <button className="w-full sm:w-auto px-6 py-3 rounded-lg bg-white text-black text-sm sm:text-base font-bold tracking-tight hover:bg-slate-100 transition-all active:scale-[0.98] select-none shadow-sm">
+              <a 
+                href="#console"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('console')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="w-full sm:w-auto px-6 py-3 rounded-lg bg-white text-black text-sm sm:text-base font-bold tracking-tight hover:bg-slate-100 transition-all active:scale-[0.98] select-none shadow-sm cursor-pointer inline-flex items-center justify-center"
+              >
                 Explore Modes
-              </button>
-              <button className="w-full sm:w-auto px-6 py-3 rounded-lg bg-transparent border border-white/20 hover:border-white/40 hover:bg-white/5 text-white text-sm sm:text-base font-semibold tracking-tight transition-all active:scale-[0.98] select-none">
+              </a>
+              <a 
+                href="#architecture"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('architecture')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="w-full sm:w-auto px-6 py-3 rounded-lg bg-transparent border border-white/20 hover:border-white/40 hover:bg-white/5 text-white text-sm sm:text-base font-semibold tracking-tight transition-all active:scale-[0.98] select-none cursor-pointer inline-flex items-center justify-center"
+              >
                 View Architecture
-              </button>
+              </a>
             </div>
 
           </div>
@@ -1034,7 +1022,7 @@ export default function App() {
       </section>
 
       {/* SECTION 2: THE PROBLEM (Reversed Offsets with Wider Equal Cards) */}
-      <section className="w-full bg-white pt-24 pb-16 sm:pt-32 sm:pb-24 px-6 sm:px-12 border-t border-slate-100 overflow-hidden">
+      <section id="problem" className="w-full bg-white pt-24 pb-16 sm:pt-32 sm:pb-24 px-6 sm:px-12 border-t border-slate-100 overflow-hidden scroll-mt-20">
         <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
           
           {/* Question Heading */}
@@ -1149,7 +1137,7 @@ export default function App() {
       </section>
 
       {/* SECTION 3: THE SOLUTION (Continuous Same BG, Zero Divider Lines) */}
-      <section className="w-full bg-white pt-16 pb-24 sm:pt-24 sm:pb-32 px-6 sm:px-12 overflow-hidden">
+      <section id="solution" className="w-full bg-white pt-16 pb-24 sm:pt-24 sm:pb-32 px-6 sm:px-12 overflow-hidden scroll-mt-20">
         <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
           
           {/* Solution Heading */}
@@ -1264,10 +1252,12 @@ export default function App() {
       </section>
 
       {/* FLAGSHIP DEEP WAVE SECTION (Black Canvas with Parametric Magenta-Red Wave) */}
-      <DeepWaveSection />
+      <div id="deep-wave" className="scroll-mt-20">
+        <DeepWaveSection />
+      </div>
 
       {/* SECTION 5: THE OPERATING ARCHITECTURE */}
-      <section className="w-full bg-white py-24 sm:py-32 px-6 sm:px-12 border-t border-slate-100 overflow-hidden">
+      <section id="architecture" className="w-full bg-white py-24 sm:py-32 px-6 sm:px-12 border-t border-slate-100 overflow-hidden scroll-mt-20">
         <div className="max-w-7xl mx-auto flex flex-col items-center">
           
           {/* Main Title Only */}
@@ -1362,10 +1352,12 @@ export default function App() {
       </section>
 
       {/* SECTION 6: PRODUCT DIALOGUE & WIREFRAME MESH SHOWCASE */}
-      <DialogueShowcaseSection />
+      <div id="dialogue" className="scroll-mt-20">
+        <DialogueShowcaseSection />
+      </div>
 
       {/* SECTION 7: HARDWARE TO SOFTWARE TRANSFORMATION */}
-      <section className="w-full bg-white py-24 sm:py-32 px-6 sm:px-12 border-t border-slate-100 overflow-hidden">
+      <section id="console" className="w-full bg-white py-24 sm:py-32 px-6 sm:px-12 border-t border-slate-100 overflow-hidden scroll-mt-20">
         <div className="max-w-7xl mx-auto flex flex-col items-center">
           
           {/* Main Title Only (No Subtitle, Covers All 3 Modes) */}
@@ -1730,7 +1722,7 @@ export default function App() {
       </section>
 
       {/* SECTION 8: BUSINESS & ADVERTISING MONETIZATION MODEL */}
-      <section className="w-full relative py-12 sm:py-16 lg:py-20 px-6 sm:px-12 lg:px-16 flex flex-col items-center justify-center border-t border-zinc-900/90 overflow-hidden bg-black text-white">
+      <section id="monetization" className="w-full relative py-12 sm:py-16 lg:py-20 px-6 sm:px-12 lg:px-16 flex flex-col items-center justify-center border-t border-zinc-900/90 overflow-hidden bg-black text-white scroll-mt-20">
 
         <div className="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
@@ -1794,7 +1786,7 @@ export default function App() {
       </section>
 
       {/* SECTION 9: THE COMPLETE TRANSIT ECOSYSTEM */}
-      <section ref={ecosystemRef} className="w-full relative py-20 sm:py-28 px-6 sm:px-12 overflow-hidden border-t border-slate-200/80 bg-white text-slate-900">
+      <section id="ecosystem" ref={ecosystemRef} className="w-full relative py-20 sm:py-28 px-6 sm:px-12 overflow-hidden border-t border-slate-200/80 bg-white text-slate-900 scroll-mt-20">
         <div className="max-w-7xl mx-auto w-full flex flex-col items-center">
           
           {/* Section 9 Header: Pure Clean Signature Title (Matches Sec 3, 4, 6, 7 Pattern) */}
@@ -2090,7 +2082,7 @@ export default function App() {
       </section>
 
       {/* SECTION 10: ENTERPRISE FOOTER & OUTRO */}
-      <footer className="w-full relative bg-black text-white border-t border-zinc-900/90 pt-16 sm:pt-20 pb-12 px-6 sm:px-12 overflow-hidden">
+      <footer id="footer" className="w-full relative bg-black text-white border-t border-zinc-900/90 pt-16 sm:pt-20 pb-12 px-6 sm:px-12 overflow-hidden scroll-mt-20">
         <div className="max-w-7xl mx-auto w-full flex flex-col">
           
           {/* MAIN FOOTER ROW: LEFT 2 COLS | CENTER LOGO | RIGHT 2 COLS */}

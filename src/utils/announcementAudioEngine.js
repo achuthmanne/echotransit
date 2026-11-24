@@ -242,6 +242,12 @@ export function buildRailwayAudioSequence({
     sequence.push(`/audio_assets/numbers_ml/${safePlat}.mp3`);
   }
 
+  // Opening mic key-tone / chirp (plays right after the 3-tone chime)
+  sequence.unshift('/audio_assets/mic_chirp.mp3');
+
+  // Closing mic key-tone / chirp (plays at the very end of the announcement)
+  sequence.push('/audio_assets/mic_chirp.mp3');
+
   return sequence;
 }
 
@@ -356,10 +362,21 @@ export class RailwayAnnouncementPlayer {
     this.animId = null;
   }
 
-  async play({ sequence, withChime = true, withAmbience = true }) {
+  async play({ sequence, withChime = true, withAmbience = true, withChirp = true }) {
     this.stop();
     this.isPlaying = true;
-    this.sequence = sequence;
+
+    // Ensure opening and closing mic chirps are present if withChirp is enabled
+    let fullSequence = [...sequence];
+    if (withChirp) {
+      if (fullSequence.length > 0 && fullSequence[0] !== '/audio_assets/mic_chirp.mp3') {
+        fullSequence.unshift('/audio_assets/mic_chirp.mp3');
+      }
+      if (fullSequence.length > 0 && fullSequence[fullSequence.length - 1] !== '/audio_assets/mic_chirp.mp3') {
+        fullSequence.push('/audio_assets/mic_chirp.mp3');
+      }
+    }
+    this.sequence = fullSequence;
     this.currentIndex = 0;
     this.elapsedBefore = 0;
 
@@ -387,7 +404,7 @@ export class RailwayAnnouncementPlayer {
     }
 
     // 3. Pre-calculate total duration
-    const meta = await calculateSequenceDuration(sequence);
+    const meta = await calculateSequenceDuration(this.sequence);
     this.totalDuration = meta.total;
     this.durations = meta.durations;
 
