@@ -32,6 +32,57 @@ export const TRAIN_ASSETS = {
   'venkatadri_express': { name: 'Venkatadri Express', file: '/audio_assets/trains/venkatadri_express.mp3' }
 };
 
+export const PHRASE_ASSETS = {
+  en: {
+    attention_please: '/audio_assets/phrases/attention_please.mp3',
+    urgent_attention_please: '/audio_assets/phrases/urgent_attention_please.mp3',
+    at: '/audio_assets/phrases/at.mp3',
+    is_approaching: '/audio_assets/phrases/is_approaching.mp3',
+    arriving_shortly: '/audio_assets/phrases/arriving_shortly_on_platform.mp3',
+    has_arrived: '/audio_assets/phrases/has_arrived_on_platform.mp3',
+    ready_to_leave: '/audio_assets/phrases/ready_to_leave_platform.mp3',
+    running_late: '/audio_assets/phrases/running_late_by.mp3',
+    cancelled: '/audio_assets/phrases/has_been_cancelled.mp3',
+    thank_you: '/audio_assets/phrases/thank_you.mp3',
+  },
+  hi: {
+    attention_please: '/audio_assets/phrases_hi/yatrigan_kripya_dhyan_dein.mp3',
+    urgent_attention_please: '/audio_assets/phrases_hi/aavashyak_soochna.mp3',
+    at: '/audio_assets/phrases_hi/bajkar.mp3',
+    is_approaching: '/audio_assets/phrases_hi/nikat_aa_rahi_hai.mp3',
+    thodi_hi_der_mein: '/audio_assets/phrases_hi/thodi_hi_der_mein.mp3',
+    par_aa_chuki_hai: '/audio_assets/phrases_hi/par_aa_chuki_hai.mp3',
+    se_prasthan_karne_ke_liye_taiyar_hai: '/audio_assets/phrases_hi/se_prasthan_karne_ke_liye_taiyar_hai.mp3',
+    radd_kar_di_gayi_hai: '/audio_assets/phrases_hi/radd_kar_di_gayi_hai.mp3',
+    dhanyawaad: '/audio_assets/phrases_hi/dhanyawaad.mp3',
+  },
+  te: {
+    attention_please: '/audio_assets/phrases_te/prayaanikulaku_vignapthi.mp3',
+    urgent_attention_please: '/audio_assets/phrases_te/atyavasara_gamanika.mp3',
+    at: '/audio_assets/phrases_te/nimishalaku.mp3',
+    is_approaching: '/audio_assets/phrases_te/sameepisthunnadi.mp3',
+    marikoddi_nimishamulalo: '/audio_assets/phrases_te/marikoddi_nimishamulalo.mp3',
+    paiki_raanunnadi: '/audio_assets/phrases_te/number_platform_paiki_raanunnadi.mp3',
+    paiki_cherukunnadi: '/audio_assets/phrases_te/number_platform_paiki_cherukunnadi.mp3',
+    raddu_cheyabadinadi: '/audio_assets/phrases_te/raddu_cheyabadinadi.mp3',
+    dhanyavaadamulu: '/audio_assets/phrases_te/dhanyavaadamulu.mp3',
+  },
+  ta: {
+    attention_please: '/audio_assets/phrases_ta/payanigalin_gavanathirku.mp3',
+    urgent_attention_please: '/audio_assets/phrases_ta/avasara_arivippu.mp3',
+    at: '/audio_assets/phrases_ta/manikku.mp3',
+    is_approaching: '/audio_assets/phrases_ta/nerungi_kondirukkiradhu.mp3',
+    nandri: '/audio_assets/phrases_ta/nandri.mp3',
+  },
+  ml: {
+    attention_please: '/audio_assets/phrases_ml/yathrakkarude_shraddhaykku.mp3',
+    urgent_attention_please: '/audio_assets/phrases_ml/adiyanthara_ariyippu.mp3',
+    at: '/audio_assets/phrases_ml/manikku.mp3',
+    is_approaching: '/audio_assets/phrases_ml/aduthethiyirikkunnu.mp3',
+    nanni: '/audio_assets/phrases_ml/nanni.mp3',
+  },
+};
+
 /**
  * Builds the sequence of authentic MP3 file paths for the given announcement configuration.
  */
@@ -42,7 +93,8 @@ export function buildRailwayAudioSequence({
   fromStation = 'hyderabad',
   toStation = 'new_delhi',
   platform = '4',
-  status = 'arriving', // 'arriving' | 'arrived' | 'ready_to_leave' | 'running_late' | 'cancelled'
+  status = 'arriving', // 'approaching' | 'arriving' | 'arrived' | 'ready_to_leave' | 'running_late' | 'cancelled'
+  isUrgent = false,
   delayHours = 0,
   delayMinutes = 15
 } = {}) {
@@ -51,8 +103,12 @@ export function buildRailwayAudioSequence({
   const platNum = parseInt(platform, 10) || 1;
 
   if (language === 'english') {
-    // 1. Attention Please ("May I have your attention please")
-    sequence.push('/audio_assets/phrases/attention_please.mp3');
+    // 1. Attention Please / Urgent Notice
+    if (isUrgent) {
+      sequence.push('/audio_assets/phrases/urgent_attention_please.mp3');
+    } else {
+      sequence.push('/audio_assets/phrases/attention_please.mp3');
+    }
 
     // 2. Train Number ("Train number")
     sequence.push('/audio_assets/phrases/train_number.mp3');
@@ -80,7 +136,10 @@ export function buildRailwayAudioSequence({
     }
 
     // 7. Status / Platform
-    if (status === 'arriving') {
+    if (status === 'approaching') {
+      sequence.push('/audio_assets/phrases/is_approaching.mp3');
+      sequence.push(`/audio_assets/numbers_en/${platNum}.mp3`);
+    } else if (status === 'arriving') {
       sequence.push('/audio_assets/phrases/arriving_shortly_on_platform.mp3');
       sequence.push(`/audio_assets/numbers_en/${platNum}.mp3`);
     } else if (status === 'arrived') {
@@ -109,8 +168,12 @@ export function buildRailwayAudioSequence({
     sequence.push('/audio_assets/phrases/thank_you.mp3');
 
   } else if (language === 'hindi') {
-    // 1. Yatrigan kripya dhyan dein ("यात्रीगण कृपया ध्यान दें")
-    sequence.push('/audio_assets/phrases_hi/yatrigan_kripya_dhyan_dein.mp3');
+    // 1. Yatrigan kripya dhyan dein / Aavashyak Soochna
+    if (isUrgent) {
+      sequence.push('/audio_assets/phrases_hi/aavashyak_soochna.mp3');
+    } else {
+      sequence.push('/audio_assets/phrases_hi/yatrigan_kripya_dhyan_dein.mp3');
+    }
 
     // 2. Gaadi sankhya ("गाड़ी संख्या")
     sequence.push('/audio_assets/phrases_hi/gaadi_sankhya.mp3');
@@ -139,7 +202,11 @@ export function buildRailwayAudioSequence({
     }
 
     // 7. Status / Platform ("थोड़ी ही देर में प्लेटफार्म संख्या 4 पर आ रही है")
-    if (status === 'arriving') {
+    if (status === 'approaching') {
+      sequence.push('/audio_assets/phrases_hi/platform_sankhya_core.mp3');
+      sequence.push(`/audio_assets/numbers_hi/${platNum}.mp3`);
+      sequence.push('/audio_assets/phrases_hi/nikat_aa_rahi_hai.mp3');
+    } else if (status === 'arriving') {
       sequence.push('/audio_assets/phrases_hi/thodi_hi_der_mein.mp3');
       sequence.push('/audio_assets/phrases_hi/platform_sankhya_core.mp3');
       sequence.push(`/audio_assets/numbers_hi/${platNum}.mp3`);
@@ -172,8 +239,12 @@ export function buildRailwayAudioSequence({
     sequence.push('/audio_assets/phrases_hi/dhanyawaad.mp3');
 
   } else if (language === 'telugu') {
-    // 1. Attention: Prayaanikulaku vignapthi ("ప్రయాణికులకు విజ్ఞప్తి.")
-    sequence.push('/audio_assets/phrases_te/prayaanikulaku_vignapthi.mp3');
+    // 1. Attention: Prayaanikulaku vignapthi / Atyavasara Gamanika
+    if (isUrgent) {
+      sequence.push('/audio_assets/phrases_te/atyavasara_gamanika.mp3');
+    } else {
+      sequence.push('/audio_assets/phrases_te/prayaanikulaku_vignapthi.mp3');
+    }
 
     // 2. Railu number ("రైలు నంబరు")
     sequence.push('/audio_assets/phrases_te/railu_number.mp3');
@@ -200,7 +271,11 @@ export function buildRailwayAudioSequence({
     }
 
     // 7. Status & Platform
-    if (status === 'arriving') {
+    if (status === 'approaching') {
+      const safePlat = Math.min(24, Math.max(1, platNum));
+      sequence.push(`/audio_assets/platforms_te/${safePlat}.mp3`);
+      sequence.push('/audio_assets/phrases_te/sameepisthunnadi.mp3');
+    } else if (status === 'arriving') {
       sequence.push('/audio_assets/phrases_te/marikoddi_nimishamulalo.mp3');
       const safePlat = Math.min(24, Math.max(1, platNum));
       sequence.push(`/audio_assets/platforms_te/${safePlat}.mp3`);
@@ -230,16 +305,42 @@ export function buildRailwayAudioSequence({
     // 8. Closing: Dhanyavaadamulu ("ధన్యవాదములు.")
     sequence.push('/audio_assets/phrases_te/dhanyavaadamulu.mp3');
 
-  } else if (language === 'malayalam') {
-    // Malayalam Train Number Digits
+  } else if (language === 'tamil') {
+    if (isUrgent) {
+      sequence.push('/audio_assets/phrases_ta/avasara_arivippu.mp3');
+    } else {
+      sequence.push('/audio_assets/phrases_ta/payanigalin_gavanathirku.mp3');
+    }
+    sequence.push('/audio_assets/phrases_ta/vandi_en.mp3');
     digits.forEach(d => {
-      sequence.push(`/audio_assets/numbers_ml/${d}.mp3`);
+      sequence.push(`/audio_assets/digits_ta/${d}.mp3`);
+    });
+    sequence.push(`/audio_assets/trains_ta/${trainKey}.mp3`);
+    const safePlat = Math.min(24, Math.max(1, platNum));
+    sequence.push(`/audio_assets/platforms_ta/${safePlat}.mp3`);
+    if (status === 'approaching') {
+      sequence.push('/audio_assets/phrases_ta/nerungi_kondirukkiradhu.mp3');
+    }
+    sequence.push('/audio_assets/phrases_ta/nandri.mp3');
+
+  } else if (language === 'malayalam') {
+    if (isUrgent) {
+      sequence.push('/audio_assets/phrases_ml/adiyanthara_ariyippu.mp3');
+    } else {
+      sequence.push('/audio_assets/phrases_ml/yathrakkarude_shraddhaykku.mp3');
+    }
+    digits.forEach(d => {
+      sequence.push(`/audio_assets/digits_ml/${d}.mp3`);
     });
     if (TRAIN_ASSETS[trainKey]) {
       sequence.push(TRAIN_ASSETS[trainKey].file);
     }
     const safePlat = Math.min(24, Math.max(1, platNum));
-    sequence.push(`/audio_assets/numbers_ml/${safePlat}.mp3`);
+    sequence.push(`/audio_assets/platforms_ml/${safePlat}.mp3`);
+    if (status === 'approaching') {
+      sequence.push('/audio_assets/phrases_ml/aduthethiyirikkunnu.mp3');
+    }
+    sequence.push('/audio_assets/phrases_ml/nanni.mp3');
   }
 
   // Opening mic key-tone / chirp (plays right after the 3-tone chime)

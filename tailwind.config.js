@@ -25,6 +25,7 @@ export default {
       },
       fontFamily: {
         sans: ['"Inter"', '"Plus Jakarta Sans"', 'sans-serif'],
+        outfit: ['"Outfit"', '"Plus Jakarta Sans"', 'sans-serif'],
         ptsans: ['"PT Sans"', 'sans-serif'],
         inter: ['"Inter"', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
