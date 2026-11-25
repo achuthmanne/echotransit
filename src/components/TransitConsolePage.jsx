@@ -1,6 +1,47 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+
+const RAILWAY_TRAINS = [
+  { no: '12723', name: 'Telangana Express', from: 'HYB (Hyderabad)', to: 'NDLS (New Delhi)', type: 'Superfast' },
+  { no: '20833', name: 'Vande Bharat Express', from: 'SC (Secunderabad)', to: 'VSKP (Visakhapatnam)', type: 'Vande Bharat' },
+  { no: '12760', name: 'Charminar Express', from: 'HYB (Hyderabad)', to: 'TBM (Tambaram)', type: 'Superfast' },
+  { no: '12806', name: 'Janmabhoomi Express', from: 'LPI (Lingampalli)', to: 'VSKP (Visakhapatnam)', type: 'Express' },
+  { no: '12604', name: 'Chennai Central Mail', from: 'HYB (Hyderabad)', to: 'MAS (Chennai)', type: 'Mail' },
+];
+
+const OPERATIONAL_PHASES = [
+  { id: 'approaching', label: 'Approaching' },
+  { id: 'arriving', label: 'Arriving' },
+  { id: 'on_platform', label: 'On Platform' },
+  { id: 'ready_to_depart', label: 'Ready to Depart' },
+  { id: 'delayed', label: 'Delayed' },
+  { id: 'platform_change', label: 'Platform Change' },
+];
 
 export default function TransitConsolePage({ onBackToLanding, activeMode, onSelectMode }) {
+  const [selectedTrain, setSelectedTrain] = useState(RAILWAY_TRAINS[0]);
+  const [isTrainDropdownOpen, setIsTrainDropdownOpen] = useState(false);
+  const [trainSearchQuery, setTrainSearchQuery] = useState('');
+  const [selectedPhase, setSelectedPhase] = useState('arriving');
+  const dropdownRef = useRef(null);
+
+  // Close dropdown when clicked outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsTrainDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const filteredTrains = RAILWAY_TRAINS.filter(
+    (t) =>
+      t.no.toLowerCase().includes(trainSearchQuery.toLowerCase()) ||
+      t.name.toLowerCase().includes(trainSearchQuery.toLowerCase()) ||
+      t.from.toLowerCase().includes(trainSearchQuery.toLowerCase()) ||
+      t.to.toLowerCase().includes(trainSearchQuery.toLowerCase())
+  );
   const modeData = [
     {
       id: 'rail',
@@ -102,17 +143,153 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
       {/* Main Content Area (Centered in viewport with zero scroll) */}
       <main className="relative z-10 flex-1 w-full flex flex-col items-center justify-center px-6 sm:px-10 py-4 sm:py-6 overflow-y-auto">
         
-        {/* If a Dedicated Mode is Active (/console/rail, /console/road, /console/air) */}
-        {activeMode ? (
+        {/* Dedicated Rail Console View (/console/rail) */}
+        {activeMode === 'rail' ? (
+          <div className="w-full max-w-[1380px] bg-black border border-zinc-800 rounded-xl p-6 sm:p-8 flex flex-col">
+            
+            {/* Top Center: Station Name & Code */}
+            <div className="w-full py-2 flex items-center justify-center text-center">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white font-sans select-none">
+                Secunderabad Junction (SC)
+              </h1>
+            </div>
+
+            {/* Hairline Divider Line */}
+            <div className="w-full h-px bg-zinc-800/80 my-5" />
+
+            {/* Controls Section: 2-Column Input Grid (Wider Columns) */}
+            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+              
+              {/* Column 1: Train Selection Input */}
+              <div className="relative w-full" ref={dropdownRef}>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-zinc-400 font-sans mb-2 select-none">
+                  Select Train
+                </label>
+
+                <button
+                  type="button"
+                  onClick={() => setIsTrainDropdownOpen(!isTrainDropdownOpen)}
+                  className="w-full h-11 px-3.5 rounded-lg bg-transparent border border-zinc-800 hover:border-zinc-600 text-left flex items-center justify-between text-xs sm:text-[13px] font-sans transition-colors cursor-pointer select-none"
+                >
+                  <div className="flex items-center gap-2.5 truncate">
+                    <svg className="w-4 h-4 text-zinc-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="4" y="3" width="16" height="15" rx="2" />
+                      <line x1="4" y1="11" x2="20" y2="11" />
+                      <line x1="8" y1="15" x2="8.01" y2="15" strokeWidth="2.5" />
+                      <line x1="16" y1="15" x2="16.01" y2="15" strokeWidth="2.5" />
+                      <path d="m8 18-2 3" />
+                      <path d="m16 18 2 3" />
+                    </svg>
+                    {selectedTrain ? (
+                      <span className="text-white font-normal truncate">
+                        <span className="font-medium text-zinc-300">{selectedTrain.no}</span> — {selectedTrain.name}
+                      </span>
+                    ) : (
+                      <span className="text-zinc-500 font-normal">Search Train Number or Name...</span>
+                    )}
+                  </div>
+                  <svg 
+                    className={`w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200 ${isTrainDropdownOpen ? 'rotate-180 text-white' : ''}`} 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </button>
+
+                {/* Dropdown Menu (Full Width of Column) */}
+                {isTrainDropdownOpen && (
+                  <div className="absolute left-0 top-[calc(100%+6px)] w-full rounded-lg bg-black border border-zinc-800 shadow-2xl z-30 overflow-hidden font-sans">
+                    <div className="p-2 border-b border-zinc-800/80">
+                      <input
+                        type="text"
+                        placeholder="Search train no or name..."
+                        value={trainSearchQuery}
+                        onChange={(e) => setTrainSearchQuery(e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg bg-transparent border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 font-normal"
+                        autoFocus
+                      />
+                    </div>
+                    <div className="max-h-60 overflow-y-auto divide-y divide-zinc-900">
+                      {filteredTrains.length > 0 ? (
+                        filteredTrains.map((train) => (
+                          <button
+                            key={train.no}
+                            type="button"
+                            onClick={() => {
+                              setSelectedTrain(train);
+                              setIsTrainDropdownOpen(false);
+                              setTrainSearchQuery('');
+                            }}
+                            className="w-full p-3 text-left hover:bg-zinc-900/60 flex items-center justify-between transition-colors cursor-pointer"
+                          >
+                            <div>
+                              <div className="text-xs sm:text-[13px] font-normal text-white tracking-tight">
+                                <span className="font-medium text-zinc-300">{train.no}</span> • {train.name}
+                              </div>
+                              <div className="text-[11px] text-zinc-400 mt-0.5 font-normal">
+                                {train.from} → {train.to}
+                              </div>
+                            </div>
+                            <span className="text-[10px] font-medium text-zinc-400 px-2 py-0.5 rounded bg-transparent border border-zinc-800">
+                              {train.type}
+                            </span>
+                          </button>
+                        ))
+                      ) : (
+                        <div className="p-4 text-center text-xs text-zinc-500 font-normal">
+                          No train found matching "{trainSearchQuery}"
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Column 2: Operational Phase Pills (6 Phases) */}
+              <div className="w-full">
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-zinc-400 font-sans mb-2 select-none">
+                  Operational Phase
+                </label>
+
+                {/* 6 Phases in a Single Unified Row (No wrapping) */}
+                <div className="flex items-center gap-1.5 sm:gap-2 flex-nowrap overflow-x-auto no-scrollbar">
+                  {OPERATIONAL_PHASES.map((phase) => {
+                    const isSelected = selectedPhase === phase.id;
+
+                    return (
+                      <button
+                        key={phase.id}
+                        type="button"
+                        onClick={() => setSelectedPhase(phase.id)}
+                        className={`h-11 px-2.5 sm:px-3 rounded-lg text-xs font-sans whitespace-nowrap shrink-0 transition-colors cursor-pointer select-none flex items-center justify-center ${
+                          isSelected
+                            ? 'bg-white text-black font-semibold border border-white shadow-sm'
+                            : 'bg-transparent border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-600 font-normal'
+                        }`}
+                      >
+                        {phase.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        ) : activeMode ? (
           <div className="w-full max-w-xl bg-black border border-zinc-800 rounded-xl p-8 flex flex-col items-center text-center">
             <div className="w-14 h-14 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-white mb-4">
               <img
                 src={
                   activeMode === 'road'
                     ? '/road_coach_bus.png'
-                    : activeMode === 'air'
-                    ? '/air_plane_cockpit.png'
-                    : '/rail_bullet_train.png'
+                    : '/air_plane_cockpit.png'
                 }
                 alt="Active Mode Vehicle"
                 className="h-10 w-auto object-contain"
@@ -125,9 +302,7 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
               {activeMode === 'road'
                 ? 'Roadways Fleet Console'
-                : activeMode === 'air'
-                ? 'Airways Terminal Console'
-                : 'Railways Control Console'}
+                : 'Airways Terminal Console'}
             </h2>
             <p className="text-sm text-zinc-400 mt-2 max-w-md">
               Route: <span className="font-mono text-white">/console/{activeMode}</span> • Multi-lingual automated dispatch &amp; real-time passenger sync engine.
