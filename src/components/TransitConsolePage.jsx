@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 const RAILWAY_TRAINS = [
-  { no: '12723', name: 'Telangana Express', from: 'HYB (Hyderabad)', to: 'NDLS (New Delhi)', type: 'Superfast' },
-  { no: '20833', name: 'Vande Bharat Express', from: 'SC (Secunderabad)', to: 'VSKP (Visakhapatnam)', type: 'Vande Bharat' },
-  { no: '12760', name: 'Charminar Express', from: 'HYB (Hyderabad)', to: 'TBM (Tambaram)', type: 'Superfast' },
-  { no: '12806', name: 'Janmabhoomi Express', from: 'LPI (Lingampalli)', to: 'VSKP (Visakhapatnam)', type: 'Express' },
-  { no: '12604', name: 'Chennai Central Mail', from: 'HYB (Hyderabad)', to: 'MAS (Chennai)', type: 'Mail' },
+  { no: '12723', name: 'Telangana Express', from: 'HYB (Hyderabad)', to: 'NDLS (New Delhi)', type: 'Superfast', platform: 'PF 1', sta: '06:25' },
+  { no: '20833', name: 'Vande Bharat Express', from: 'SC (Secunderabad)', to: 'VSKP (Visakhapatnam)', type: 'Vande Bharat', platform: 'PF 1', sta: '15:00' },
+  { no: '12760', name: 'Charminar Express', from: 'HYB (Hyderabad)', to: 'TBM (Tambaram)', type: 'Superfast', platform: 'PF 5', sta: '18:00' },
+  { no: '12806', name: 'Janmabhoomi Express', from: 'LPI (Lingampalli)', to: 'VSKP (Visakhapatnam)', type: 'Express', platform: 'PF 2', sta: '07:00' },
+  { no: '12604', name: 'Chennai Central Mail', from: 'HYB (Hyderabad)', to: 'MAS (Chennai)', type: 'Mail', platform: 'PF 4', sta: '16:45' },
 ];
 
 const OPERATIONAL_PHASES = [
@@ -17,12 +17,33 @@ const OPERATIONAL_PHASES = [
   { id: 'platform_change', label: 'Platform Change' },
 ];
 
+const PLATFORMS = ['PF 1', 'PF 2', 'PF 3', 'PF 4', 'PF 5', 'PF 6', 'PF 7', 'PF 8'];
+
+const DELAY_OPTIONS = [
+  { id: 'on_time', label: 'On Time' },
+  { id: '10m', label: '+10 Min' },
+  { id: '20m', label: '+20 Min' },
+  { id: '45m', label: '+45 Min' },
+  { id: '60m', label: '+1 Hr' },
+];
+
 export default function TransitConsolePage({ onBackToLanding, activeMode, onSelectMode }) {
   const [selectedTrain, setSelectedTrain] = useState(RAILWAY_TRAINS[0]);
   const [isTrainDropdownOpen, setIsTrainDropdownOpen] = useState(false);
   const [trainSearchQuery, setTrainSearchQuery] = useState('');
   const [selectedPhase, setSelectedPhase] = useState('arriving');
+  const [selectedPlatform, setSelectedPlatform] = useState('PF 1');
+  const [selectedDelay, setSelectedDelay] = useState('on_time');
+  const [scheduledTime, setScheduledTime] = useState('06:25');
   const dropdownRef = useRef(null);
+
+  const handleSelectTrain = (train) => {
+    setSelectedTrain(train);
+    if (train.platform) setSelectedPlatform(train.platform);
+    if (train.sta) setScheduledTime(train.sta);
+    setIsTrainDropdownOpen(false);
+    setTrainSearchQuery('');
+  };
 
   // Close dropdown when clicked outside
   useEffect(() => {
@@ -158,10 +179,10 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
             <div className="w-full h-px bg-zinc-800/80 my-5" />
 
             {/* Controls Section: 2-Column Input Grid (Wider Columns) */}
-            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-6 sm:gap-y-7 items-start">
               
-              {/* Column 1: Train Selection Input */}
-              <div className="relative w-full" ref={dropdownRef}>
+              {/* Row 1 - Column 1: Train Selection Input */}
+              <div className="relative z-20 w-full" ref={dropdownRef}>
                 <label className="block text-[11px] font-semibold uppercase tracking-wider text-zinc-400 font-sans mb-2 select-none">
                   Select Train
                 </label>
@@ -169,7 +190,7 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
                 <button
                   type="button"
                   onClick={() => setIsTrainDropdownOpen(!isTrainDropdownOpen)}
-                  className="w-full h-11 px-3.5 rounded-lg bg-transparent border border-zinc-800 hover:border-zinc-600 text-left flex items-center justify-between text-xs sm:text-[13px] font-sans transition-colors cursor-pointer select-none"
+                  className="w-full h-11 px-3.5 rounded-lg bg-transparent border border-white/25 hover:border-white/50 text-left flex items-center justify-between text-xs sm:text-[13px] font-sans transition-colors cursor-pointer select-none"
                 >
                   <div className="flex items-center gap-2.5 truncate">
                     <svg className="w-4 h-4 text-zinc-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -203,14 +224,14 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
 
                 {/* Dropdown Menu (Full Width of Column) */}
                 {isTrainDropdownOpen && (
-                  <div className="absolute left-0 top-[calc(100%+6px)] w-full rounded-lg bg-black border border-zinc-800 shadow-2xl z-30 overflow-hidden font-sans">
-                    <div className="p-2 border-b border-zinc-800/80">
+                  <div className="absolute left-0 top-[calc(100%+6px)] w-full rounded-lg bg-black border border-white/20 shadow-2xl z-30 overflow-hidden font-sans">
+                    <div className="p-2 border-b border-white/10">
                       <input
                         type="text"
                         placeholder="Search train no or name..."
                         value={trainSearchQuery}
                         onChange={(e) => setTrainSearchQuery(e.target.value)}
-                        className="w-full px-3 py-2 rounded-lg bg-transparent border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 font-normal"
+                        className="w-full px-3 py-2 rounded-lg bg-transparent border border-white/25 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-white/60 font-normal"
                         autoFocus
                       />
                     </div>
@@ -220,11 +241,7 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
                           <button
                             key={train.no}
                             type="button"
-                            onClick={() => {
-                              setSelectedTrain(train);
-                              setIsTrainDropdownOpen(false);
-                              setTrainSearchQuery('');
-                            }}
+                            onClick={() => handleSelectTrain(train)}
                             className="w-full p-3 text-left hover:bg-zinc-900/60 flex items-center justify-between transition-colors cursor-pointer"
                           >
                             <div>
@@ -235,7 +252,7 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
                                 {train.from} → {train.to}
                               </div>
                             </div>
-                            <span className="text-[10px] font-medium text-zinc-400 px-2 py-0.5 rounded bg-transparent border border-zinc-800">
+                            <span className="text-[10px] font-medium text-zinc-300 px-2 py-0.5 rounded bg-transparent border border-white/20">
                               {train.type}
                             </span>
                           </button>
@@ -250,7 +267,7 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
                 )}
               </div>
 
-              {/* Column 2: Operational Phase Pills (6 Phases) */}
+              {/* Row 1 - Column 2: Operational Phase Pills (6 Phases) */}
               <div className="w-full">
                 <label className="block text-[11px] font-semibold uppercase tracking-wider text-zinc-400 font-sans mb-2 select-none">
                   Operational Phase
@@ -269,10 +286,86 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
                         className={`h-11 px-2.5 sm:px-3 rounded-lg text-xs font-sans whitespace-nowrap shrink-0 transition-colors cursor-pointer select-none flex items-center justify-center ${
                           isSelected
                             ? 'bg-white text-black font-semibold border border-white shadow-sm'
-                            : 'bg-transparent border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-600 font-normal'
+                            : 'bg-transparent border border-white/25 text-zinc-300 hover:text-white hover:border-white/50 font-normal'
                         }`}
                       >
                         {phase.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Row 2 - Column 1: Assigned Platform (PF 1 to PF 8 in Single Row) */}
+              <div className="w-full">
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-zinc-400 font-sans mb-2 select-none">
+                  Assigned Platform
+                </label>
+
+                {/* PF 1 to PF 8 in a Single Unified Row (No wrapping) */}
+                <div className="flex items-center gap-1.5 sm:gap-2 flex-nowrap overflow-x-auto no-scrollbar">
+                  {PLATFORMS.map((pf) => {
+                    const isSelected = selectedPlatform === pf;
+
+                    return (
+                      <button
+                        key={pf}
+                        type="button"
+                        onClick={() => setSelectedPlatform(pf)}
+                        className={`h-11 px-2.5 sm:px-3 rounded-lg text-xs font-sans whitespace-nowrap shrink-0 transition-colors cursor-pointer select-none flex items-center justify-center flex-1 ${
+                          isSelected
+                            ? 'bg-white text-black font-semibold border border-white shadow-sm'
+                            : 'bg-transparent border border-white/25 text-zinc-300 hover:text-white hover:border-white/50 font-normal'
+                        }`}
+                      >
+                        {pf}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Row 2 - Column 2: Live Timings & Delay Status */}
+              <div className="w-full">
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-zinc-400 font-sans mb-2 select-none">
+                  Live Timings &amp; Delay Status
+                </label>
+
+                {/* Single Unified Row: Scheduled Time Box + Delay Pills */}
+                <div className="flex items-center gap-1.5 sm:gap-2 flex-nowrap overflow-x-auto no-scrollbar">
+                  
+                  {/* Scheduled Time Box */}
+                  <div className="h-11 px-3 rounded-lg bg-transparent border border-white/25 flex items-center gap-2 shrink-0 select-none">
+                    <svg className="w-3.5 h-3.5 text-zinc-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                    <span className="text-[10px] uppercase font-mono tracking-wider text-zinc-400">STA</span>
+                    <input
+                      type="text"
+                      value={scheduledTime}
+                      onChange={(e) => setScheduledTime(e.target.value)}
+                      className="w-13 bg-transparent text-xs font-mono font-medium text-white focus:outline-none text-center cursor-text"
+                      title="Scheduled Time of Arrival / Departure"
+                    />
+                  </div>
+
+                  {/* Delay Status Pills */}
+                  {DELAY_OPTIONS.map((delay) => {
+                    const isSelected = selectedDelay === delay.id;
+
+                    return (
+                      <button
+                        key={delay.id}
+                        type="button"
+                        onClick={() => setSelectedDelay(delay.id)}
+                        className={`h-11 px-2.5 sm:px-3 rounded-lg text-xs font-sans whitespace-nowrap shrink-0 transition-colors cursor-pointer select-none flex items-center justify-center flex-1 ${
+                          isSelected
+                            ? 'bg-white text-black font-semibold border border-white shadow-sm'
+                            : 'bg-transparent border border-white/25 text-zinc-300 hover:text-white hover:border-white/50 font-normal'
+                        }`}
+                      >
+                        {delay.label}
                       </button>
                     );
                   })}
