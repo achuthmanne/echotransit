@@ -582,6 +582,202 @@ const ANNOUNCEMENT_CATEGORIES = [
   { id: 'emergency', label: 'Emergency & Priority Override Announcements', desc: 'Medical SOS, doctor assistance & lost & found child alerts' },
 ];
 
+const TRANSLATION_MAP = {
+  stations: {
+    SC: { en: 'Secunderabad', te: 'సికింద్రాబాద్', hi: 'सिकंदराबाद', ta: 'செகந்திராபாத்', ml: 'സെക്കന്തരാബാദ്' },
+    HYB: { en: 'Hyderabad', te: 'హైదరాబాద్', hi: 'हैदराबाद', ta: 'ஹைதராபாத்', ml: 'ഹൈദരാബാദ്' },
+    KCG: { en: 'Kacheguda', te: 'కాచిగూడ', hi: 'काचीगुड़ा', ta: 'காச்சிகுடா', ml: 'കാച്ചെഗുഡ' },
+    LPI: { en: 'Lingampalli', te: 'లింగంపల్లి', hi: 'लिंगमपल्ली', ta: 'லிங்கம்பள்ளி', ml: 'ലിംഗംപള്ളി' },
+    BZA: { en: 'Vijayawada', te: 'విజయవాడ', hi: 'विजयवाड़ा', ta: 'விஜயவாடா', ml: 'വിജയവാഡ' },
+    GNT: { en: 'Guntur', te: 'గుంటూరు', hi: 'गुंटूर', ta: 'குண்டூர்', ml: 'ഗുണ്ടൂർ' },
+    VSKP: { en: 'Visakhapatnam', te: 'విశాఖపట్నం', hi: 'विशाखापट्टनम', ta: 'விசாகப்பட்டினம்', ml: 'വിശാഖപട്ടണം' },
+    TPTY: { en: 'Tirupati', te: 'తిరుపతి', hi: 'तिरुपति', ta: 'திருப்பதி', ml: 'തിരുപ്പതി' },
+    CTO: { en: 'Chittoor', te: 'చిత్తూరు', hi: 'चित्तूर', ta: 'சித்தூர்', ml: 'ചിറ്റൂർ' },
+    RAL: { en: 'Repalle', te: 'రేపల్లె', hi: 'रेपल्ले', ta: 'ரேபல்லே', ml: 'രേപല്ലെ' },
+    COA: { en: 'Kakinada Port', te: 'కాకినాడ పోర్ట్', hi: 'काकीनाडा पोर्ट', ta: 'காக்கிநாடா போர்ட்', ml: 'കാക്കിനട പോർട്ട്' },
+    MAS: { en: 'Chennai Central', te: 'చెన్నై సెంట్రల్', hi: 'चेन्नई सेंट्रल', ta: 'சென்னை சென்ட்ரல்', ml: 'ചെന്നൈ സെൻട്രൽ' },
+    TBM: { en: 'Tambaram', te: 'తాంబరం', hi: 'तांबरम', ta: 'தாம்பரம்', ml: 'താംബരം' },
+    TVC: { en: 'Thiruvananthapuram', te: 'తిరువనంతపురం', hi: 'तिरुवनंतपुरम', ta: 'திருவனந்தபுரம்', ml: 'തിരുവനന്തപുരം' },
+    NDLS: { en: 'New Delhi', te: 'న్యూఢిల్లీ', hi: 'नई दिल्ली', ta: 'புது தில்லி', ml: 'ന്യൂഡൽഹി' },
+    NZM: { en: 'Hazrat Nizamuddin', te: 'హజ్రత్ నిజాముద్దీన్', hi: 'हज़रत निज़ामुद्दीन', ta: 'ஹசரத் நிசாமுதீன்', ml: 'ഹസ്രത്ത് നിസാമുദ്ദീൻ' },
+    BSB: { en: 'Varanasi', te: 'వారణాసి', hi: 'वाराणसी', ta: 'வாரணாசி', ml: 'വാരാണസി' },
+    BPL: { en: 'Bhopal', te: 'భోపాల్', hi: 'भोपाल', ta: 'போபால்', ml: 'ഭോപ്പാൽ' },
+  },
+  trains: {
+    telangana_express: { en: 'Telangana Express', te: 'తెలంగాణ ఎక్స్‌ప్రెస్', hi: 'तेलंगाना एक्सप्रेस', ta: 'தெலுங்கானா எக்ஸ்பிரஸ்', ml: 'തെലങ്കാന എക്സ്പ്രസ്സ്' },
+    secunderabad_visakhapatnam_vande_bharat: { en: 'Vande Bharat Express', te: 'వందే భారత్ ఎక్స్‌ప్రెస్', hi: 'वंदे भारत एक्सप्रेस', ta: 'வந்தே பாரத் எக்ஸ்பிரஸ்', ml: 'വന്ദേ ഭാരത് എക്സ്പ്രസ്സ്' },
+    charminar_express: { en: 'Charminar Express', te: 'చార్మినార్ ఎక్స్‌ప్రెస్', hi: 'चारमीनार एक्सप्रेस', ta: 'சார்மினார் எக்ஸ்பிரஸ்', ml: 'ചാർമിനാർ എക്സ്പ്രസ്സ്' },
+    godavari_express: { en: 'Godavari Express', te: 'గోదావరి ఎక్స్‌ప్రెస్', hi: 'गोदावरी एक्सप्रेस', ta: 'கோதாவரி எக்ஸ்பிரஸ்', ml: 'ഗോദാവരി എക്സ്പ്രസ്സ്' },
+    gautami_express: { en: 'Gautami Express', te: 'గౌతమి ఎక్స్‌ప్రెస్', hi: 'गौतमी एक्सप्रेस', ta: 'கௌதமி எக்ஸ்பிரஸ்', ml: 'ഗൗതമി എക്സ്പ്രസ്സ്' },
+    guntur_secunderabad_intercity: { en: 'Intercity Express', te: 'ఇంటర్‌సిటీ ఎక్స్‌ప్రెస్', hi: 'इंटरसिटी एक्सप्रेस', ta: 'இன்டர்சிட்டி எக்ஸ்பிரஸ்', ml: 'ഇന്റർസിറ്റി എക്സ്പ്രസ്സ്' },
+    secunderabad_repalle_express: { en: 'Secunderabad - Repalle Express', te: 'సికింద్రాబాద్ - రేపల్లె ఎక్స్‌ప్రెస్', hi: 'सिकंदराबाद - रेपल्ले एक्सप्रेस', ta: 'செகந்திராபாத் - ரேபல்லே எக்ஸ்பிரஸ்', ml: 'സെക്കന്തരാബാദ് - രേപല്ലെ എക്സ്പ്രസ്സ്' },
+    venkatadri_express: { en: 'Venkatadri Express', te: 'వెంకటాద్రి ఎక్స్‌ప్రెస్', hi: 'वेंकटाद्रि एक्सप्रेस', ta: 'வெங்கடாத்ரி எக்ஸ்பிரஸ்', ml: 'വെങ്കടാദ്രി എക്സ്പ്രസ്സ്' },
+    pinakini_express: { en: 'Pinakini Express', te: 'పినాకిని ఎక్స్‌ప్రెస్', hi: 'पिनाकिनी एक्सप्रेस', ta: 'பினாகினி எக்ஸ்பிரஸ்', ml: 'പിനാകിനി എക്സ്പ്രസ്സ്' },
+    chennai_rajdhani_express: { en: 'Chennai Rajdhani Express', te: 'చెన్నై రాజధాని ఎక్స్‌ప్రెస్', hi: 'चेन्नई राजधानी एक्सप्रेस', ta: 'சென்னை ராஜதானி எக்ஸ்பிரஸ்', ml: 'ചെന്നൈ രാജധാനി എക്സ്പ്രസ്സ്' },
+    tamil_nadu_express: { en: 'Tamil Nadu Express', te: 'తమిళనాడు ఎక్స్‌ప్రెస్', hi: 'तमिलनाडु एक्सप्रेस', ta: 'தமிழ்நாடு எக்ஸ்பிரஸ்', ml: 'തമിഴ്‌നാട് എക്സ്പ്രസ്സ്' },
+    grand_trunk_express: { en: 'Grand Trunk Express', te: 'గ్రాండ్ ట్రంక్ ఎక్స్‌ప్రెస్', hi: 'ग्रैंड ट्रंक एक्सप्रेस', ta: 'கிராண்ட் ட்ரங்க் எக்ஸ்பிரஸ்', ml: 'ഗ്രാൻഡ് ട്രങ്ക് എക്സ്പ്രസ്സ്' },
+    kerala_express: { en: 'Kerala Express', te: 'కేరళ ఎక్స్‌ప్రెస్', hi: 'केरल एक्सप्रेस', ta: 'கேரளா எக்ஸ்பிரஸ்', ml: 'കേരള എക്സ്പ്രസ്സ്' },
+    swarna_jayanti_express: { en: 'Swarna Jayanti Express', te: 'స్వర్ణ జయంతి ఎక్స్‌ప్రెస్', hi: 'स्वर्ण जयंती एक्सप्रेस', ta: 'ஸ்வர்ண ஜெயந்தி எக்ஸ்பிரஸ்', ml: 'സ്വർണ്ണ ജയന്തി എക്സ്പ്രസ്സ്' },
+    varanasi_new_delhi_vande_bharat: { en: 'Vande Bharat Express', te: 'వందే భారత్ ఎక్స్‌ప్రెస్', hi: 'वंदे भारत एक्सप्रेस', ta: 'வந்தே பாரத் எக்ஸ்பிரஸ்', ml: 'വന്ദേ ഭാരത് എക്സ്പ്രസ്സ്' },
+    bhopal_shatabdi_express: { en: 'Bhopal Shatabdi Express', te: 'భోపాల్ శతాబ్ది ఎక్స్‌ప్రెస్', hi: 'भोपाल शताब्दी एक्सप्रेस', ta: 'போபால் சதாப்தி எக்ஸ்பிரஸ்', ml: 'ഭോപ്പാൽ ശതാബ്ദി എക്സ്പ്രസ്സ്' },
+  },
+};
+
+const getStationTranslation = (str, lang) => {
+  if (!str) return '';
+  const tokens = str.replace(/[(),]/g, ' ').split(/\s+/).filter(Boolean);
+  for (const token of tokens) {
+    const code = token.toUpperCase();
+    if (TRANSLATION_MAP.stations[code]) {
+      return TRANSLATION_MAP.stations[code][lang] || TRANSLATION_MAP.stations[code].en || str;
+    }
+  }
+  return str;
+};
+
+const generateAnnouncementText = (lang, { train, platform, phase, viaStations }) => {
+  if (!train) return '';
+  const trainNo = train.no;
+  const trainName = (TRANSLATION_MAP.trains[train.trainKey] && TRANSLATION_MAP.trains[train.trainKey][lang]) || train.name;
+  const from = getStationTranslation(train.from, lang);
+  const to = getStationTranslation(train.to, lang);
+  const viaList = (viaStations || []).map((v) => getStationTranslation(v, lang)).filter(Boolean);
+  const viaStr = viaList.join(', ');
+  const pfNum = (platform || 'PF 1').replace(/\D/g, '') || '1';
+
+  if (lang === 'te') {
+    const viaPart = viaStr ? `${viaStr} మీదుగా ` : '';
+    switch (phase) {
+      case 'approaching':
+        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${viaPart}${to} వరకు వెళ్ళునది, ${pfNum} వ నంబరు ప్లాట్‌ఫారమ్‌ను సమీపిస్తున్నది. ధన్యవాదములు.`;
+      case 'arrival':
+        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${viaPart}${to} వరకు వెళ్ళునది, మరికొద్ది నిమిషములలో ${pfNum} వ నంబరు ప్లాట్‌ఫారమ్ పైకి రానున్నది. ధన్యవాదములు.`;
+      case 'halting':
+        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${viaPart}${to} వరకు వెళ్ళునది, ${pfNum} వ నంబరు ప్లాట్‌ఫారమ్ పై ఆగి ఉన్నది. ధన్యవాదములు.`;
+      case 'departure':
+        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${viaPart}${to} వరకు వెళ్ళునది, ${pfNum} వ నంబరు ప్లాట్‌ఫారమ్ నుండి బయలుదేరుటకు సిద్ధంగా ఉన్నది. ధన్యవాదములు.`;
+      case 'terminated':
+        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి వచ్చినది, ఇక్కడితో తన ప్రయాణాన్ని ముగించింది. ధన్యవాదములు.`;
+      case 'delayed':
+        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${to} వరకు వెళ్ళునది, తన నిర్ణీత సమయానికంటే ఆలస్యంగా నడుస్తున్నది. ప్రయాణికులకు కలిగిన అసౌకర్యానికి చింతిస్తున్నాము.`;
+      case 'platform_change':
+        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${to} వరకు వెళ్ళునది, ఇప్పుడు ${pfNum} వ నంబరు ప్లాట్‌ఫారమ్ పైకి రానున్నది. ప్రయాణికులు ఈ మార్పును గమనించగలరు.`;
+      case 'diverted':
+        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${to} వరకు వెళ్ళునది, ${viaStr ? viaStr + ' మీదుగా ' : ''}దారి మళ్లించబడినది. ప్రయాణికులు గమనించగలరు.`;
+      case 'cancelled':
+        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${to} వరకు వెళ్ళునది, రద్దు చేయబడినది. ప్రయాణికులకు కలిగిన అసౌకర్యానికి చింతిస్తున్నాము.`;
+      default:
+        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${viaPart}${to} వరకు వెళ్ళునది, మరికొద్ది నిమిషములలో ${pfNum} వ నంబరు ప్లాట్‌ఫారమ్ పైకి రానున్నది. ధన్యవాదములు.`;
+    }
+  }
+
+  if (lang === 'hi') {
+    const viaPart = viaStr ? `${viaStr} के रास्ते, ` : '';
+    switch (phase) {
+      case 'approaching':
+        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर, ${viaPart}${to} को जाने वाली, प्लेटफार्म संख्या ${pfNum} के निकट आ रही है। धन्यवाद।`;
+      case 'arrival':
+        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर, ${viaPart}${to} को जाने वाली, थोड़ी ही देर में प्लेटफार्म संख्या ${pfNum} पर आ रही है। धन्यवाद।`;
+      case 'halting':
+        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर, ${viaPart}${to} को जाने वाली, प्लेटफार्म संख्या ${pfNum} पर खड़ी है। धन्यवाद।`;
+      case 'departure':
+        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर, ${viaPart}${to} को जाने वाली, प्लेटफार्म संख्या ${pfNum} से प्रस्थान करने के लिए तैयार है। धन्यवाद।`;
+      case 'terminated':
+        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर आई है, यहीं समाप्त होती है। धन्यवाद।`;
+      case 'delayed':
+        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर ${to} को जाने वाली, अपने निर्धारित समय से देरी से चल रही है। हुई असुविधा के लिए हमें खेद है।`;
+      case 'platform_change':
+        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर ${to} को जाने वाली, अब प्लेटफार्म संख्या ${pfNum} पर आएगी। यात्री कृपया इस परिवर्तन पर ध्यान दें।`;
+      case 'diverted':
+        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर ${to} को जाने वाली, ${viaStr ? viaStr + ' के रास्ते ' : ''}परिवर्तित की गयी है। यात्री ध्यान दें।`;
+      case 'cancelled':
+        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर ${to} को जाने वाली, रद्द कर दी गई है। हुई असुविधा के लिए हमें खेद है।`;
+      default:
+        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर, ${viaPart}${to} को जाने वाली, थोड़ी ही देर में प्लेटफार्म संख्या ${pfNum} पर आ रही है। धन्यवाद।`;
+    }
+  }
+
+  if (lang === 'en') {
+    const viaPart = viaStr ? `via ${viaStr} ` : '';
+    switch (phase) {
+      case 'approaching':
+        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} ${viaPart}to ${to}, is approaching platform number ${pfNum}. Thank you.`;
+      case 'arrival':
+        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} ${viaPart}to ${to}, is arriving shortly on platform number ${pfNum}. Thank you.`;
+      case 'halting':
+        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} ${viaPart}to ${to}, is halting on platform number ${pfNum}. Thank you.`;
+      case 'departure':
+        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} ${viaPart}to ${to}, is ready to leave platform number ${pfNum}. Thank you.`;
+      case 'terminated':
+        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from}, terminates here. Thank you.`;
+      case 'delayed':
+        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} to ${to}, is running late. Inconvenience caused is deeply regretted.`;
+      case 'platform_change':
+        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} to ${to}, will now arrive on platform number ${pfNum}. Passengers are requested to note this change.`;
+      case 'diverted':
+        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} to ${to}, has been diverted ${viaStr ? 'via ' + viaStr : ''}. Passengers may please note.`;
+      case 'cancelled':
+        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} to ${to}, has been cancelled. Inconvenience caused is deeply regretted.`;
+      default:
+        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} ${viaPart}to ${to}, is arriving shortly on platform number ${pfNum}. Thank you.`;
+    }
+  }
+
+  if (lang === 'ta') {
+    const viaPart = viaStr ? `${viaStr} வழியாக, ` : '';
+    switch (phase) {
+      case 'approaching':
+        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${viaPart}${to} வரை செல்லும், நடைமேடை எண் ${pfNum} ஐ நெருங்கிக் கொண்டிருக்கிறது. நன்றி.`;
+      case 'arrival':
+        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${viaPart}${to} வரை செல்லும், சற்று நேரத்தில் நடைமேடை எண் ${pfNum} க்கு வந்து சேரும். நன்றி.`;
+      case 'halting':
+        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${viaPart}${to} வரை செல்லும், நடைமேடை எண் ${pfNum} இல் நின்று கொண்டிருக்கிறது. நன்றி.`;
+      case 'departure':
+        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${viaPart}${to} வரை செல்லும், நடைமேடை எண் ${pfNum} லிருந்து புறப்பட தயாராக உள்ளது. நன்றி.`;
+      case 'terminated':
+        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து வந்துள்ளது, இத்துடன் தனது பயணத்தை முடித்துக் கொள்கிறது. நன்றி.`;
+      case 'delayed':
+        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${to} வரை செல்லும், தனது குறிப்பிட்ட நேரத்திலிருந்து தாமதமாக இயங்குகிறது. பயணிகளுக்கு ஏற்பட்ட சிரமத்திற்கு வருந்துகிறோம்.`;
+      case 'platform_change':
+        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${to} வரை செல்லும், இப்போது நடைமேடை எண் ${pfNum} க்கு வரும். பயணிகள் இந்த மாற்றத்தை கவனத்தில் கொள்ளவும்.`;
+      case 'diverted':
+        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${to} வரை செல்லும், ${viaStr ? viaStr + ' வழியாக ' : ''}மாற்றிவிடப்பட்டுள்ளது. பயணிகள் கவனிக்கவும்.`;
+      case 'cancelled':
+        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${to} வரை செல்லும், ரத்து செய்யப்பட்டுள்ளது. பயணிகளுக்கு ஏற்பட்ட சிரமத்திற்கு வருந்துகிறோம்.`;
+      default:
+        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${viaPart}${to} வரை செல்லும், சற்று நேரத்தில் நடைமேடை எண் ${pfNum} க்கு வந்து சேரும். நன்றி.`;
+    }
+  }
+
+  if (lang === 'ml') {
+    const viaPart = viaStr ? `${viaStr} വഴി, ` : '';
+    switch (phase) {
+      case 'approaching':
+        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${viaPart}${to} വരെ പോകുന്ന, പ്ലാറ്റ്‌ഫോം നമ്പർ ${pfNum} ലേക്ക് അടുത്തെത്തിയിരിക്കുന്നു. നന്ദി.`;
+      case 'arrival':
+        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${viaPart}${to} വരെ പോകുന്ന, അല്പ സമയത്തിനകം പ്ലാറ്റ്‌ഫോം നമ്പർ ${pfNum} ലേക്ക് എത്തിച്ചേരുന്നതാണ്. നന്ദി.`;
+      case 'halting':
+        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${viaPart}${to} വരെ പോകുന്ന, പ്ലാറ്റ്‌ഫോം നമ്പർ ${pfNum} ൽ നിർത്തിയിട്ടിരിക്കുന്നു. നന്ദി.`;
+      case 'departure':
+        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${viaPart}${to} വരെ പോകുന്ന, പ്ലാറ്റ്‌ഫോം നമ്പർ ${pfNum} ൽ നിന്നും പുറപ്പെടാൻ തയ്യാറായി നിൽക്കുന്നു. നന്ദി.`;
+      case 'terminated':
+        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ എത്തിയത്, ഇവിടെ യാത്ര അവസാനിപ്പിച്ചിരിക്കുന്നു. നന്ദി.`;
+      case 'delayed':
+        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${to} വരെ പോകുന്ന, നിശ്ചിത സമയത്തേക്കാൾ വൈകിയാണ് ഓടുന്നത്. യാത്രക്കാർക്കുണ്ടായ അസൗകര്യത്തിൽ ഖേദിക്കുന്നു.`;
+      case 'platform_change':
+        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${to} വരെ പോകുന്ന, ഇപ്പോൾ പ്ലാറ്റ്‌ഫോം നമ്പർ ${pfNum} ലേക്ക് വരുന്നതാണ്. യാത്രക്കാർ ഈ മാറ്റം ശ്രദ്ധിക്കേണ്ടതാണ്.`;
+      case 'diverted':
+        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${to} வரை പോകുന്ന, ${viaStr ? viaStr + ' വഴി ' : ''}തിരിച്ചുവിട്ടിരിക്കുന്നു. യാത്രക്കാർ ശ്രദ്ധിക്കുക.`;
+      case 'cancelled':
+        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${to} വരെ പോകുന്ന, റദ്ദാക്കിയിരിക്കുന്നു. യാത്രക്കാർക്കുണ്ടായ അസൗകര്യത്തിൽ ഖേദിക്കുന്നു.`;
+      default:
+        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${viaPart}${to} വരെ പോകുന്ന, അല്പ സമയത്തിനകം പ്ലാറ്റ്‌ഫോം നമ്പർ ${pfNum} ലേക്ക് എത്തിച്ചേരുന്നതാണ്. നന്ദി.`;
+    }
+  }
+
+  return '';
+};
+
 export default function TransitConsolePage({ onBackToLanding, activeMode, onSelectMode }) {
   const [selectedStation, setSelectedStation] = useState(RAILWAY_JUNCTIONS[0]); // Default: Secunderabad Junction (SC)
   const [isStationDropdownOpen, setIsStationDropdownOpen] = useState(false);
@@ -601,6 +797,7 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
   const [platformPage, setPlatformPage] = useState(0); // 0: PF 1-8, 1: PF 9-16, 2: PF 17-24
   const [selectedLanguages, setSelectedLanguages] = useState(['te', 'hi', 'en']); // Native Telugu + Hindi + English all active by default
   const [selectedZone, setSelectedZone] = useState('all'); // All Station by default
+  const [previewZoneActive, setPreviewZoneActive] = useState(false);
   const dropdownRef = useRef(null);
   const categoryDropdownRef = useRef(null);
   const stationDropdownRef = useRef(null);
@@ -898,12 +1095,13 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
 
       </header>
 
-      {/* Main Content Area (Centered in viewport with zero scroll) */}
-      <main className="relative z-10 flex-1 w-full flex flex-col items-center justify-center px-6 sm:px-10 py-4 sm:py-6 overflow-y-auto">
+      {/* Main Content Area */}
+      <main className={`relative z-10 flex-1 w-full flex flex-col items-center ${activeMode === 'rail' ? 'justify-start' : 'justify-start md:justify-center'} px-4 sm:px-8 md:px-10 py-6 sm:py-8 pb-16 sm:pb-24 overflow-y-auto`}>
         
         {/* Dedicated Rail Console View (/console/rail) */}
         {activeMode === 'rail' ? (
-          <div className="w-full max-w-[1380px] bg-black border border-zinc-800 rounded-xl p-6 sm:p-8 flex flex-col">
+          <div className="w-full max-w-[1380px] flex flex-col gap-6">
+            <div className="w-full bg-black border border-zinc-800 rounded-xl p-6 sm:p-8 flex flex-col">
             
             {/* Top Header: Station Name (Left) & Announcement Type Selector (Right) */}
             <div className="w-full py-1 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -1626,6 +1824,47 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
 
             </div>
 
+            {/* Full-Width Station Display Board (PIDS Passenger Announcement Scripts) */}
+            <div className="w-full mt-6 pt-5 border-t border-zinc-800/80 flex flex-col gap-2.5 select-none animate-fadeIn">
+              <div className="h-6 flex items-center justify-between mb-1 select-none font-sans">
+                <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 font-sans">
+                  Station Display Board
+                </label>
+                <span className="text-[11px] font-sans font-medium text-zinc-500">
+                  {selectedStation.code} • {selectedStation.policy}
+                </span>
+              </div>
+
+              <div className="w-full flex flex-col gap-2.5">
+                {(selectedStation.languages || ['te', 'hi', 'en']).map((langCode) => {
+                  const text = generateAnnouncementText(langCode, {
+                    train: selectedTrain,
+                    platform: selectedPlatform,
+                    phase: selectedPhase,
+                    viaStations: activeViaStations,
+                  });
+
+                  const fontClass =
+                    langCode === 'te' ? 'font-telugu' :
+                    langCode === 'hi' ? 'font-hindi' :
+                    langCode === 'ta' ? 'font-tamil' :
+                    langCode === 'ml' ? 'font-malayalam' :
+                    'font-sans';
+
+                  return (
+                    <div
+                      key={langCode}
+                      className="w-full rounded-lg bg-zinc-950/40 border border-white/20 hover:border-white/35 px-4 py-3 sm:py-3.5 transition-colors"
+                    >
+                      <p className={`text-[15px] sm:text-base leading-relaxed text-zinc-100 font-normal antialiased tracking-normal ${fontClass}`}>
+                        {text}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
             {/* Bottom Action Bar: SaaS Level (Status Left, Primary Button Right) */}
             <div className="w-full mt-6 pt-5 border-t border-zinc-800/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 select-none">
               
@@ -1652,7 +1891,79 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
             </div>
 
           </div>
-        ) : activeMode ? (
+
+          {/* Live Station Acoustic PA Zones Monitor (Testing / Coverage Matrix) */}
+          <div className="w-full bg-black border border-zinc-800 rounded-xl p-6 sm:p-8 flex flex-col animate-fadeIn select-none">
+            
+            {/* Header */}
+            <div className="w-full flex items-center justify-between pb-3 border-b border-zinc-800/80 mb-6 font-sans">
+              <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 font-sans">
+                Station Acoustic Broadcast Zones
+              </label>
+              <span className="text-[11px] font-sans font-medium text-zinc-500">
+                {selectedStation.name}
+              </span>
+            </div>
+
+            {/* Horizontal Zone Cards Strip (Previewing 1 Box Design for User Review) */}
+            <div className="w-full flex items-center gap-5 overflow-x-auto py-2 no-scrollbar">
+              
+              {/* Single Platform Acoustic Card */}
+              <div
+                onClick={() => setPreviewZoneActive(!previewZoneActive)}
+                className={`w-52 h-56 sm:w-56 sm:h-60 shrink-0 rounded-xl bg-zinc-950/60 border cursor-pointer select-none p-5 flex flex-col justify-between items-center transition-all duration-300 group ${
+                  previewZoneActive
+                    ? 'border-white/40 bg-zinc-900/30'
+                    : 'border-white/15 hover:border-white/30 hover:bg-zinc-950'
+                }`}
+                title="Click to toggle between Mic Off and Broadcasting"
+              >
+                {/* Top: PLATFORM 1 in Full Name with Neat Round Border */}
+                <div className="w-full flex items-center justify-center">
+                  <span className="px-3.5 py-1 rounded-full border border-white/20 bg-zinc-900/50 text-[11px] sm:text-xs font-semibold text-zinc-100 tracking-wider uppercase font-sans">
+                    PLATFORM 1
+                  </span>
+                </div>
+
+                {/* Middle: Clean Speaker Icon Alone (No Background Box, Flat Crisp Vectors) */}
+                <div className="my-auto py-2 flex items-center justify-center">
+                  {previewZoneActive ? (
+                    /* Active Speaker Broadcasting with Acoustic Waves (Clean, No Glow) */
+                    <svg className="w-14 h-14 text-white transition-transform scale-105" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                    </svg>
+                  ) : (
+                    /* Muted / Standby Speaker Icon */
+                    <svg className="w-14 h-14 text-zinc-600 group-hover:text-zinc-400 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                      <line x1="23" y1="9" x2="17" y2="15" />
+                      <line x1="17" y1="9" x2="23" y2="15" />
+                    </svg>
+                  )}
+                </div>
+
+                {/* Bottom: Mic Status (Mic Off / Broadcasting) */}
+                <div className="w-full flex items-center justify-center">
+                  <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-sans transition-colors ${
+                    previewZoneActive
+                      ? 'bg-white text-black font-semibold'
+                      : 'bg-zinc-900 border border-zinc-800 text-zinc-400 font-medium'
+                  }`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${previewZoneActive ? 'bg-black animate-pulse' : 'bg-zinc-600'}`} />
+                    <span>{previewZoneActive ? 'Broadcasting' : 'Mic Off'}</span>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      ) : activeMode ? (
           <div className="w-full max-w-xl bg-black border border-zinc-800 rounded-xl p-8 flex flex-col items-center text-center">
             <div className="w-14 h-14 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-white mb-4">
               <img

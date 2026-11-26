@@ -30,7 +30,9 @@ export default {
         inter: ['"Inter"', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
         telugu: ['"Noto Sans Telugu"', 'sans-serif'],
-        hindi: ['"Noto Sans Devanagari"', 'sans-serif']
+        hindi: ['"Noto Sans Devanagari"', 'sans-serif'],
+        tamil: ['"Noto Sans Tamil"', 'sans-serif'],
+        malayalam: ['"Noto Sans Malayalam"', 'sans-serif'],
       },
       boxShadow: {
         'cyan-glow': '0 0 25px -5px rgba(6, 182, 212, 0.3)',
