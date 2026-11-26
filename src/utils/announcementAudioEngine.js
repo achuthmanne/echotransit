@@ -92,11 +92,14 @@ export function buildRailwayAudioSequence({
   trainKey = 'telangana_express',
   fromStation = 'hyderabad',
   toStation = 'new_delhi',
+  viaStations = [],
   platform = '4',
   status = 'arriving', // 'approaching' | 'arriving' | 'arrived' | 'ready_to_leave' | 'running_late' | 'cancelled'
   isUrgent = false,
   delayHours = 0,
-  delayMinutes = 15
+  delayMinutes = 15,
+  depHours = '06',
+  depMins = '45'
 } = {}) {
   const sequence = [];
   const digits = String(trainNumber).replace(/\D/g, '').split('');
@@ -135,14 +138,40 @@ export function buildRailwayAudioSequence({
       sequence.push(`/audio_assets/stations/${toStation}.mp3`);
     }
 
+    // 6.1 Via Stations ("via Secunderabad, Bhopal, and Hazrat Nizamuddin")
+    if (viaStations && viaStations.length > 0) {
+      sequence.push('/audio_assets/phrases/via.mp3');
+      viaStations.forEach((vKey, idx) => {
+        if (idx === viaStations.length - 1 && viaStations.length > 1) {
+          sequence.push('/audio_assets/phrases/and.mp3');
+        }
+        sequence.push(`/audio_assets/stations/${vKey}.mp3`);
+      });
+    }
+
     // 7. Status / Platform
     if (status === 'approaching') {
-      sequence.push('/audio_assets/phrases/is_approaching.mp3');
-      sequence.push(`/audio_assets/numbers_en/${platNum}.mp3`);
-    } else if (status === 'arriving') {
       sequence.push('/audio_assets/phrases/arriving_shortly_on_platform.mp3');
       sequence.push(`/audio_assets/numbers_en/${platNum}.mp3`);
-    } else if (status === 'arrived') {
+    } else if (status === 'arrival' || status === 'arrived') {
+      sequence.push('/audio_assets/phrases/has_arrived_on_platform.mp3');
+      sequence.push(`/audio_assets/numbers_en/${platNum}.mp3`);
+    } else if (status === 'halting') {
+      // Halting scheduled departure time ("scheduled to depart at 6 45")
+      sequence.push('/audio_assets/phrases/scheduled_to_depart_at.mp3');
+      const hNum = parseInt(depHours, 10) || 6;
+      const mNum = parseInt(depMins, 10) || 0;
+
+      // Natural speech: e.g. "6" ("six") instead of "06" ("zero six")
+      sequence.push(`/audio_assets/numbers_en/${hNum}.mp3`);
+
+      if (mNum > 0) {
+        sequence.push(`/audio_assets/numbers_en/${mNum}.mp3`);
+      } else {
+        sequence.push('/audio_assets/phrases/hours.mp3');
+      }
+
+      // Halting platform arrival ("has arrived on platform number 1")
       sequence.push('/audio_assets/phrases/has_arrived_on_platform.mp3');
       sequence.push(`/audio_assets/numbers_en/${platNum}.mp3`);
     } else if (status === 'ready_to_leave') {
@@ -194,6 +223,17 @@ export function buildRailwayAudioSequence({
       sequence.push('/audio_assets/phrases_hi/se_chalkar.mp3');
     }
 
+    // 5.1 Via Stations ("सिकंदराबाद, भोपाल और हज़रत निज़ामुद्दीन के रास्ते")
+    if (viaStations && viaStations.length > 0) {
+      viaStations.forEach((vKey, idx) => {
+        if (idx === viaStations.length - 1 && viaStations.length > 1) {
+          sequence.push('/audio_assets/phrases_hi/aur.mp3');
+        }
+        sequence.push(`/audio_assets/stations_hi_ml/${vKey}.mp3`);
+      });
+      sequence.push('/audio_assets/phrases_hi/ke_raaste.mp3');
+    }
+
     // 6. To Station ("नई दिल्ली को जाने वाली")
     if (toStation) {
       const destFile = toStation === 'new_delhi' ? 'nai_dilli' : toStation;
@@ -203,15 +243,29 @@ export function buildRailwayAudioSequence({
 
     // 7. Status / Platform ("थोड़ी ही देर में प्लेटफार्म संख्या 4 पर आ रही है")
     if (status === 'approaching') {
-      sequence.push('/audio_assets/phrases_hi/platform_sankhya_core.mp3');
-      sequence.push(`/audio_assets/numbers_hi/${platNum}.mp3`);
-      sequence.push('/audio_assets/phrases_hi/nikat_aa_rahi_hai.mp3');
-    } else if (status === 'arriving') {
       sequence.push('/audio_assets/phrases_hi/thodi_hi_der_mein.mp3');
       sequence.push('/audio_assets/phrases_hi/platform_sankhya_core.mp3');
       sequence.push(`/audio_assets/numbers_hi/${platNum}.mp3`);
       sequence.push('/audio_assets/phrases_hi/par_aa_rahi_hai.mp3');
-    } else if (status === 'arrived') {
+    } else if (status === 'arrival' || status === 'arrived') {
+      sequence.push('/audio_assets/phrases_hi/platform_sankhya_core.mp3');
+      sequence.push(`/audio_assets/numbers_hi/${platNum}.mp3`);
+      sequence.push('/audio_assets/phrases_hi/par_aa_chuki_hai.mp3');
+    } else if (status === 'halting') {
+      // Halting departure first: "06 बजकर 45 मिनट पर प्रस्थान करेगी"
+      const hNum = parseInt(depHours, 10) || 6;
+      const mNum = parseInt(depMins, 10) || 0;
+      sequence.push(`/audio_assets/numbers_hi/${hNum}.mp3`);
+      if (mNum > 0) {
+        sequence.push('/audio_assets/phrases_hi/bajkar.mp3');
+        sequence.push(`/audio_assets/numbers_hi/${mNum}.mp3`);
+        sequence.push('/audio_assets/phrases_hi/at.mp3');
+      } else {
+        sequence.push('/audio_assets/phrases_hi/baje.mp3');
+      }
+      sequence.push('/audio_assets/phrases_hi/se_prasthan_karegi.mp3');
+
+      // Followed by platform arrival: "प्लेटफार्म संख्या 1 पर आ चुकी है"
       sequence.push('/audio_assets/phrases_hi/platform_sankhya_core.mp3');
       sequence.push(`/audio_assets/numbers_hi/${platNum}.mp3`);
       sequence.push('/audio_assets/phrases_hi/par_aa_chuki_hai.mp3');
@@ -263,6 +317,17 @@ export function buildRailwayAudioSequence({
       sequence.push('/audio_assets/phrases_te/nundi.mp3');
     }
 
+    // 5.1 Via Stations ("సికింద్రాబాద్, భోపాల్ మరియు హజ్రత్ నిజాముద్దీన్ మీదుగా")
+    if (viaStations && viaStations.length > 0) {
+      viaStations.forEach((vKey, idx) => {
+        if (idx === viaStations.length - 1 && viaStations.length > 1) {
+          sequence.push('/audio_assets/phrases_te/mariyu.mp3');
+        }
+        sequence.push(`/audio_assets/stations_te/${vKey}.mp3`);
+      });
+      sequence.push('/audio_assets/phrases_te/meeduga.mp3');
+    }
+
     // 6. To Station ("న్యూఢిల్లీ వరకు వెళ్ళునది")
     if (toStation) {
       sequence.push(`/audio_assets/stations_te/${toStation}.mp3`);
@@ -272,15 +337,29 @@ export function buildRailwayAudioSequence({
 
     // 7. Status & Platform
     if (status === 'approaching') {
-      const safePlat = Math.min(24, Math.max(1, platNum));
-      sequence.push(`/audio_assets/platforms_te/${safePlat}.mp3`);
-      sequence.push('/audio_assets/phrases_te/sameepisthunnadi.mp3');
-    } else if (status === 'arriving') {
       sequence.push('/audio_assets/phrases_te/marikoddi_nimishamulalo.mp3');
       const safePlat = Math.min(24, Math.max(1, platNum));
       sequence.push(`/audio_assets/platforms_te/${safePlat}.mp3`);
       sequence.push('/audio_assets/phrases_te/number_platform_paiki_raanunnadi.mp3');
-    } else if (status === 'arrived') {
+    } else if (status === 'arrival' || status === 'arrived') {
+      const safePlat = Math.min(24, Math.max(1, platNum));
+      sequence.push(`/audio_assets/platforms_te/${safePlat}.mp3`);
+      sequence.push('/audio_assets/phrases_te/number_platform_paiki_cherukunnadi.mp3');
+    } else if (status === 'halting') {
+      // Halting departure first: "06 గంటల 45 నిమిషములకు బయలుదేరవలసినది"
+      const hNum = parseInt(depHours, 10) || 6;
+      const mNum = parseInt(depMins, 10) || 0;
+      sequence.push(`/audio_assets/numbers_te/${hNum}.mp3`);
+      if (mNum > 0) {
+        sequence.push('/audio_assets/phrases_te/gantala.mp3');
+        sequence.push(`/audio_assets/numbers_te/${mNum}.mp3`);
+        sequence.push('/audio_assets/phrases_te/nimishalaku.mp3');
+      } else {
+        sequence.push('/audio_assets/phrases_te/gantalaku.mp3');
+      }
+      sequence.push('/audio_assets/phrases_te/bayaludeeravalasinadi.mp3');
+
+      // Followed by platform arrival: "1 వ నంబరు ప్లాట్‌ఫారమ్ పైకి చేరుకున్నది"
       const safePlat = Math.min(24, Math.max(1, platNum));
       sequence.push(`/audio_assets/platforms_te/${safePlat}.mp3`);
       sequence.push('/audio_assets/phrases_te/number_platform_paiki_cherukunnadi.mp3');
@@ -316,10 +395,48 @@ export function buildRailwayAudioSequence({
       sequence.push(`/audio_assets/digits_ta/${d}.mp3`);
     });
     sequence.push(`/audio_assets/trains_ta/${trainKey}.mp3`);
+    if (fromStation) {
+      sequence.push(`/audio_assets/stations_ta/${fromStation}.mp3`);
+      sequence.push('/audio_assets/phrases_ta/ilirundhu.mp3');
+    }
+    if (viaStations && viaStations.length > 0) {
+      viaStations.forEach((vKey, idx) => {
+        if (idx === viaStations.length - 1 && viaStations.length > 1) {
+          sequence.push('/audio_assets/phrases_ta/matrum.mp3');
+        }
+        sequence.push(`/audio_assets/stations_ta/${vKey}.mp3`);
+      });
+      sequence.push('/audio_assets/phrases_ta/sellum_vazhiyaaga.mp3');
+    }
+    if (toStation) {
+      sequence.push(`/audio_assets/stations_ta/${toStation}.mp3`);
+    }
     const safePlat = Math.min(24, Math.max(1, platNum));
-    sequence.push(`/audio_assets/platforms_ta/${safePlat}.mp3`);
     if (status === 'approaching') {
-      sequence.push('/audio_assets/phrases_ta/nerungi_kondirukkiradhu.mp3');
+      sequence.push('/audio_assets/phrases_ta/sattru_neerathil.mp3');
+      sequence.push(`/audio_assets/platforms_ta/${safePlat}.mp3`);
+      sequence.push('/audio_assets/phrases_ta/il_vandhu_serum.mp3');
+    } else if (status === 'arrival' || status === 'arrived') {
+      sequence.push(`/audio_assets/platforms_ta/${safePlat}.mp3`);
+      sequence.push('/audio_assets/phrases_ta/il_vandhu_serndhulladhu.mp3');
+    } else if (status === 'halting') {
+      const hNum = parseInt(depHours, 10) || 6;
+      const mNum = parseInt(depMins, 10) || 0;
+      sequence.push(`/audio_assets/numbers_ta/${hNum}.mp3`);
+      sequence.push('/audio_assets/phrases_ta/manikku.mp3');
+      if (mNum > 0) {
+        sequence.push(`/audio_assets/numbers_ta/${mNum}.mp3`);
+      }
+      sequence.push('/audio_assets/phrases_ta/ilirundhu_purappadum.mp3');
+
+      sequence.push(`/audio_assets/platforms_ta/${safePlat}.mp3`);
+      sequence.push('/audio_assets/phrases_ta/il_vandhu_serndhulladhu.mp3');
+    } else if (status === 'ready_to_leave') {
+      sequence.push(`/audio_assets/platforms_ta/${safePlat}.mp3`);
+      sequence.push('/audio_assets/phrases_ta/ilirundhu_purappada_thayaaraaga_ulladhu.mp3');
+    } else if (status === 'cancelled') {
+      sequence.push('/audio_assets/phrases_ta/raththu_seiyyappattulladhu.mp3');
+      sequence.push('/audio_assets/phrases_ta/eerpattra_shiramaththirku_varundhugirom.mp3');
     }
     sequence.push('/audio_assets/phrases_ta/nandri.mp3');
 
@@ -329,16 +446,53 @@ export function buildRailwayAudioSequence({
     } else {
       sequence.push('/audio_assets/phrases_ml/yathrakkarude_shraddhaykku.mp3');
     }
+    sequence.push('/audio_assets/phrases_ml/train_number.mp3');
     digits.forEach(d => {
       sequence.push(`/audio_assets/digits_ml/${d}.mp3`);
     });
     if (TRAIN_ASSETS[trainKey]) {
       sequence.push(TRAIN_ASSETS[trainKey].file);
     }
+    if (fromStation) {
+      sequence.push(`/audio_assets/stations_hi_ml/${fromStation}.mp3`);
+      sequence.push('/audio_assets/phrases_ml/muthal.mp3');
+    }
+    if (viaStations && viaStations.length > 0) {
+      viaStations.forEach((vKey) => {
+        sequence.push(`/audio_assets/stations_hi_ml/${vKey}.mp3`);
+      });
+      sequence.push('/audio_assets/phrases_ml/vazhi.mp3');
+    }
+    if (toStation) {
+      sequence.push(`/audio_assets/stations_hi_ml/${toStation}.mp3`);
+      sequence.push('/audio_assets/phrases_ml/vare_pokunna.mp3');
+    }
     const safePlat = Math.min(24, Math.max(1, platNum));
-    sequence.push(`/audio_assets/platforms_ml/${safePlat}.mp3`);
     if (status === 'approaching') {
-      sequence.push('/audio_assets/phrases_ml/aduthethiyirikkunnu.mp3');
+      sequence.push('/audio_assets/phrases_ml/alpa_samayathinakam.mp3');
+      sequence.push(`/audio_assets/platforms_ml/${safePlat}.mp3`);
+      sequence.push('/audio_assets/phrases_ml/platformilekku_ethicherunnathaanu.mp3');
+    } else if (status === 'arrival' || status === 'arrived') {
+      sequence.push(`/audio_assets/platforms_ml/${safePlat}.mp3`);
+      sequence.push('/audio_assets/phrases_ml/platformil_ethichernnirikkunnu.mp3');
+    } else if (status === 'halting') {
+      const hNum = parseInt(depHours, 10) || 6;
+      const mNum = parseInt(depMins, 10) || 0;
+      sequence.push(`/audio_assets/minutes_ml/${hNum}.mp3`);
+      sequence.push('/audio_assets/phrases_ml/manikku.mp3');
+      if (mNum > 0) {
+        sequence.push(`/audio_assets/minutes_ml/${mNum}.mp3`);
+      }
+      sequence.push('/audio_assets/phrases_ml/platformil_ninnum_purappedunnathaanu.mp3');
+
+      sequence.push(`/audio_assets/platforms_ml/${safePlat}.mp3`);
+      sequence.push('/audio_assets/phrases_ml/platformil_ethichernnirikkunnu.mp3');
+    } else if (status === 'ready_to_leave') {
+      sequence.push(`/audio_assets/platforms_ml/${safePlat}.mp3`);
+      sequence.push('/audio_assets/phrases_ml/platformil_ninnum_purappedan_thayyarayi_nilkkunnu.mp3');
+    } else if (status === 'cancelled') {
+      sequence.push('/audio_assets/phrases_ml/raddhaakkiyirikkunnu.mp3');
+      sequence.push('/audio_assets/phrases_ml/yaathrakkaarkkundaya_asowkaryathil_khedikkunnu.mp3');
     }
     sequence.push('/audio_assets/phrases_ml/nanni.mp3');
   }
@@ -358,11 +512,33 @@ export function buildRailwayAudioSequence({
 export async function calculateSequenceDuration(filePaths) {
   const promises = filePaths.map(src => {
     return new Promise((resolve) => {
+      const audioUrl = typeof src === 'string' ? src : (src?.src || '');
       const audio = new Audio();
       audio.preload = 'metadata';
-      audio.src = src;
-      audio.onloadedmetadata = () => resolve(audio.duration || 1.0);
-      audio.onerror = () => resolve(1.0); // fallback 1 sec
+      audio.src = audioUrl;
+
+      let resolved = false;
+      const done = (dur) => {
+        if (!resolved) {
+          resolved = true;
+          audio.onloadedmetadata = null;
+          audio.onerror = null;
+          resolve(dur);
+        }
+      };
+
+      // Failsafe timer (150ms) to prevent slow network from delaying announcement playback
+      const timer = setTimeout(() => done(0.8), 150);
+
+      audio.onloadedmetadata = () => {
+        clearTimeout(timer);
+        done(audio.duration || 0.8);
+      };
+
+      audio.onerror = () => {
+        clearTimeout(timer);
+        done(0.8);
+      };
     });
   });
   const durations = await Promise.all(promises);
@@ -445,6 +621,7 @@ function synthesizeRailwayChime(audioContext) {
 
 /**
  * High-performance gapless concatenative player for Indian Railway announcements.
+ * Guaranteed zero overlap across language switches, train changes, and operational phases.
  */
 export class RailwayAnnouncementPlayer {
   constructor({ onProgress, onEnded, onError } = {}) {
@@ -461,27 +638,37 @@ export class RailwayAnnouncementPlayer {
     this.totalDuration = 0;
     this.elapsedBefore = 0;
     this.animId = null;
+    this.sessionId = 0;
+    this.langMeta = null;
   }
 
   async play({ sequence, withChime = true, withAmbience = true, withChirp = true }) {
+    // 1. Invalidate any ongoing run immediately and halt all active sounds
     this.stop();
+
+    // 2. Generate unique execution token for this session
+    const currentSessionId = ++this.sessionId;
     this.isPlaying = true;
 
     // Ensure opening and closing mic chirps are present if withChirp is enabled
     let fullSequence = [...sequence];
     if (withChirp) {
-      if (fullSequence.length > 0 && fullSequence[0] !== '/audio_assets/mic_chirp.mp3') {
-        fullSequence.unshift('/audio_assets/mic_chirp.mp3');
+      const firstSrc = typeof fullSequence[0] === 'string' ? fullSequence[0] : (fullSequence[0]?.src || '');
+      if (fullSequence.length > 0 && firstSrc !== '/audio_assets/mic_chirp.mp3') {
+        fullSequence.unshift({ src: '/audio_assets/mic_chirp.mp3', isChirp: true, lang: null });
       }
-      if (fullSequence.length > 0 && fullSequence[fullSequence.length - 1] !== '/audio_assets/mic_chirp.mp3') {
-        fullSequence.push('/audio_assets/mic_chirp.mp3');
+      const lastSrc = typeof fullSequence[fullSequence.length - 1] === 'string'
+        ? fullSequence[fullSequence.length - 1]
+        : (fullSequence[fullSequence.length - 1]?.src || '');
+      if (fullSequence.length > 0 && lastSrc !== '/audio_assets/mic_chirp.mp3') {
+        fullSequence.push({ src: '/audio_assets/mic_chirp.mp3', isChirp: true, lang: null });
       }
     }
     this.sequence = fullSequence;
     this.currentIndex = 0;
     this.elapsedBefore = 0;
 
-    // 1. Play authentic station ambient background noise from start to finish
+    // 3. Play authentic station ambient background noise from start to finish
     if (withAmbience) {
       try {
         const amb = new Audio('/audio_assets/station_ambience.mp3');
@@ -494,72 +681,163 @@ export class RailwayAnnouncementPlayer {
       }
     }
 
-    // 2. Play authentic 3-tone chime first if requested
+    // 4. Play authentic 3-tone chime first if requested
     if (withChime) {
       if (!this.audioContext) {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (AudioCtx) this.audioContext = new AudioCtx();
       }
       await playRailwayChime(this.audioContext);
-      if (!this.isPlaying) return; // stopped while chiming
+      // Strictly verify session is still active after chime resolves
+      if (!this.isPlaying || this.sessionId !== currentSessionId) return;
     }
 
-    // 3. Pre-calculate total duration
+    // 5. Pre-calculate total duration with fast failsafe
     const meta = await calculateSequenceDuration(this.sequence);
+    if (!this.isPlaying || this.sessionId !== currentSessionId) return;
+
     this.totalDuration = meta.total;
     this.durations = meta.durations;
 
-    // 4. Begin chain
-    this._playNext();
-    this._startProgressLoop();
+    // Precompute language boundaries and total durations for live teleprompter
+    this.langMeta = {};
+    this.sequence.forEach((item, idx) => {
+      const l = typeof item === 'object' ? item?.lang : null;
+      if (l) {
+        if (!this.langMeta[l]) {
+          this.langMeta[l] = { total: 0, startIdx: idx, endIdx: idx };
+        }
+        this.langMeta[l].total += (this.durations[idx] || 0.8);
+        this.langMeta[l].endIdx = idx;
+      }
+    });
+
+    // 6. Begin strictly sequential chain
+    this._playNext(currentSessionId);
+    this._startProgressLoop(currentSessionId);
   }
 
-  _playNext() {
-    if (!this.isPlaying) return;
+  _playNext(currentSessionId) {
+    if (!this.isPlaying || this.sessionId !== currentSessionId) return;
 
     if (this.currentIndex >= this.sequence.length) {
+      const finalProgress = {};
+      if (this.langMeta) {
+        for (const lang of Object.keys(this.langMeta)) {
+          finalProgress[lang] = 1.0;
+        }
+      }
+      this.onProgress({
+        current: this.totalDuration,
+        total: this.totalDuration,
+        index: this.sequence.length,
+        file: '',
+        activeLang: null,
+        langProgress: finalProgress
+      });
       this.stop();
       this.onEnded();
       return;
     }
 
-    const src = this.sequence[this.currentIndex];
+    // Clean up any previously attached audio completely
+    if (this.currentAudio) {
+      try {
+        this.currentAudio.onended = null;
+        this.currentAudio.onerror = null;
+        this.currentAudio.pause();
+      } catch (e) {}
+      this.currentAudio = null;
+    }
+
+    const item = this.sequence[this.currentIndex];
+    const src = typeof item === 'string' ? item : (item?.src || '');
     const audio = new Audio(src);
     this.currentAudio = audio;
 
-    audio.onended = () => {
-      if (!this.isPlaying) return;
-      this.elapsedBefore += (this.durations[this.currentIndex] || audio.duration || 0);
+    let advanced = false;
+    const advanceStep = (success = false) => {
+      if (advanced) return;
+      advanced = true;
+
+      // Unhook listeners to avoid duplicate callbacks
+      audio.onended = null;
+      audio.onerror = null;
+
+      if (!this.isPlaying || this.sessionId !== currentSessionId) {
+        try {
+          audio.pause();
+        } catch (e) {}
+        return;
+      }
+
+      if (success) {
+        this.elapsedBefore += (this.durations[this.currentIndex] || audio.duration || 0);
+      }
       this.currentIndex++;
-      this._playNext();
+      this._playNext(currentSessionId);
+    };
+
+    audio.onended = () => {
+      advanceStep(true);
     };
 
     audio.onerror = (e) => {
-      console.warn(`Audio clip failed to load: ${src}`, e);
-      if (!this.isPlaying) return;
-      this.currentIndex++;
-      this._playNext();
+      console.warn(`[AudioEngine] Clip failed to load: ${src}`, e);
+      advanceStep(false);
     };
 
-    audio.play().catch(err => {
-      console.warn('Playback error:', err);
-      if (!this.isPlaying) return;
-      this.currentIndex++;
-      this._playNext();
+    audio.play().catch((err) => {
+      if (err.name === 'AbortError') {
+        // Paused or stopped deliberately, do NOT advance
+        return;
+      }
+      console.warn(`[AudioEngine] Playback error: ${src}`, err);
+      advanceStep(false);
     });
   }
 
-  _startProgressLoop() {
+  _startProgressLoop(currentSessionId) {
     const update = () => {
-      if (!this.isPlaying) return;
+      if (!this.isPlaying || this.sessionId !== currentSessionId) return;
 
+      const currentItem = this.sequence[this.currentIndex];
+      const src = typeof currentItem === 'string' ? currentItem : (currentItem?.src || '');
+      const activeLang = typeof currentItem === 'object' ? (currentItem?.lang || null) : null;
       const currentClipTime = this.currentAudio ? this.currentAudio.currentTime : 0;
       const current = Math.min(this.totalDuration, this.elapsedBefore + currentClipTime);
+
+      const langProgress = {};
+      if (this.langMeta) {
+        for (const lang of Object.keys(this.langMeta)) {
+          const meta = this.langMeta[lang];
+          if (this.currentIndex > meta.endIdx) {
+            langProgress[lang] = 1.0;
+          } else if (this.currentIndex < meta.startIdx) {
+            langProgress[lang] = 0.0;
+          } else {
+            let elapsedInLang = 0;
+            for (let k = meta.startIdx; k < this.currentIndex; k++) {
+              if (this.sequence[k]?.lang === lang) {
+                elapsedInLang += (this.durations[k] || 0.8);
+              }
+            }
+            if (this.sequence[this.currentIndex]?.lang === lang) {
+              elapsedInLang += currentClipTime;
+            }
+            const totalInLang = meta.total || 1;
+            langProgress[lang] = Math.min(1.0, Math.max(0.0, elapsedInLang / totalInLang));
+          }
+        }
+      }
+
       this.onProgress({
         current,
         total: this.totalDuration || 10,
         index: this.currentIndex,
-        file: this.sequence[this.currentIndex]
+        file: src,
+        activeLang,
+        langProgress
       });
 
       this.animId = requestAnimationFrame(update);
@@ -569,13 +847,20 @@ export class RailwayAnnouncementPlayer {
   }
 
   stop() {
+    // Invalidate running session immediately
+    this.sessionId++;
     this.isPlaying = false;
+    this.langMeta = null;
+
     if (this.animId) {
       cancelAnimationFrame(this.animId);
       this.animId = null;
     }
+
     if (this.currentAudio) {
       try {
+        this.currentAudio.onended = null;
+        this.currentAudio.onerror = null;
         this.currentAudio.pause();
         this.currentAudio.currentTime = 0;
       } catch (e) {
@@ -583,26 +868,14 @@ export class RailwayAnnouncementPlayer {
       }
       this.currentAudio = null;
     }
+
     if (this.ambienceAudio) {
       try {
         const amb = this.ambienceAudio;
-        let vol = amb.volume;
-        const fadeInterval = setInterval(() => {
-          vol -= 0.05;
-          if (vol <= 0.02) {
-            clearInterval(fadeInterval);
-            try {
-              amb.pause();
-              amb.currentTime = 0;
-            } catch (e) {}
-          } else {
-            amb.volume = Math.max(0, vol);
-          }
-        }, 40);
+        amb.pause();
+        amb.currentTime = 0;
       } catch (e) {
-        try {
-          this.ambienceAudio.pause();
-        } catch (err) {}
+        // ignore
       }
       this.ambienceAudio = null;
     }

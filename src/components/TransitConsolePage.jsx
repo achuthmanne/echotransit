@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { RailwayAnnouncementPlayer, buildRailwayAudioSequence } from '../utils/announcementAudioEngine';
 
 const RAILWAY_TRAINS = [
   // 1. Telangana Express (HYB ⇄ NDLS)
@@ -12,8 +13,8 @@ const RAILWAY_TRAINS = [
     toKey: 'new_delhi',
     type: 'Superfast',
     platform: 'PF 1',
-    sta: '06:25',
-    via: ['Secunderabad (SC)', 'Bhopal (BPL)'],
+    sta: '06:45',
+    via: ['Secunderabad (SC)', 'Bhopal (BPL)', 'Hazrat Nizamuddin (NZM)'],
     divertedVia: ['Bhopal (BPL)', 'Hazrat Nizamuddin (NZM)'],
     coaches: ['ENG', 'SLR', 'GS', 'GS', 'S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'A1', 'A2', 'H1', 'GS', 'SLR'],
   },
@@ -635,27 +636,62 @@ const getStationTranslation = (str, lang) => {
   return str;
 };
 
-const generateAnnouncementText = (lang, { train, platform, phase, viaStations }) => {
+const formatVia = (list, lang) => {
+  if (!list || list.length === 0) return '';
+  if (lang === 'en') {
+    if (list.length === 1) return `via ${list[0]}`;
+    return `via ${list.slice(0, -1).join(', ')}, and ${list[list.length - 1]}`;
+  }
+  if (lang === 'te') {
+    if (list.length === 1) return `${list[0]} మీదుగా`;
+    return `${list.slice(0, -1).join(', ')} మరియు ${list[list.length - 1]} మీదుగా`;
+  }
+  if (lang === 'hi') {
+    if (list.length === 1) return `${list[0]} के रास्ते`;
+    return `${list.slice(0, -1).join(', ')} और ${list[list.length - 1]} के रास्ते`;
+  }
+  if (lang === 'ta') {
+    if (list.length === 1) return `${list[0]} வழியாக`;
+    return `${list.slice(0, -1).join(', ')} மற்றும் ${list[list.length - 1]} வழியாக`;
+  }
+  if (lang === 'ml') {
+    return `${list.join(', ')} വഴി`;
+  }
+  return list.join(', ');
+};
+
+const generateAnnouncementText = (lang, {
+  train,
+  platform,
+  phase,
+  viaStations,
+  scheduledHours = '06',
+  scheduledMins = '45',
+}) => {
   if (!train) return '';
   const trainNo = train.no;
   const trainName = (TRANSLATION_MAP.trains[train.trainKey] && TRANSLATION_MAP.trains[train.trainKey][lang]) || train.name;
   const from = getStationTranslation(train.from, lang);
   const to = getStationTranslation(train.to, lang);
   const viaList = (viaStations || []).map((v) => getStationTranslation(v, lang)).filter(Boolean);
-  const viaStr = viaList.join(', ');
+  const viaPart = formatVia(viaList, lang);
   const pfNum = (platform || 'PF 1').replace(/\D/g, '') || '1';
+  const depH = String(scheduledHours || '06').padStart(2, '0');
+  const depM = String(scheduledMins || '45').padStart(2, '0');
+  const mVal = parseInt(scheduledMins, 10) || 0;
 
   if (lang === 'te') {
-    const viaPart = viaStr ? `${viaStr} మీదుగా ` : '';
     switch (phase) {
       case 'approaching':
-        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${viaPart}${to} వరకు వెళ్ళునది, ${pfNum} వ నంబరు ప్లాట్‌ఫారమ్‌ను సమీపిస్తున్నది. ధన్యవాదములు.`;
+        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${to} వరకు వెళ్ళునది, మరికొద్ది నిమిషములలో ${pfNum} వ నంబరు ప్లాట్‌ఫారమ్ పైకి రానున్నది. ధన్యవాదములు.`;
       case 'arrival':
-        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${viaPart}${to} వరకు వెళ్ళునది, మరికొద్ది నిమిషములలో ${pfNum} వ నంబరు ప్లాట్‌ఫారమ్ పైకి రానున్నది. ధన్యవాదములు.`;
-      case 'halting':
-        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${viaPart}${to} వరకు వెళ్ళునది, ${pfNum} వ నంబరు ప్లాట్‌ఫారమ్ పై ఆగి ఉన్నది. ధన్యవాదములు.`;
+        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${viaPart ? viaPart + ' ' : ''}${to} వరకు వెళ్ళునది, ${pfNum} వ నంబరు ప్లాట్‌ఫారమ్ పైకి చేరుకున్నది. ధన్యవాదములు.`;
+      case 'halting': {
+        const teTime = mVal > 0 ? `${depH} గంటల ${depM} నిమిషములకు` : `${depH} గంటలకు`;
+        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${viaPart ? viaPart + ' ' : ''}${to} వరకు వెళ్ళునది, ${teTime} బయలుదేరవలసినది, ${pfNum} వ నంబరు ప్లాట్‌ఫారమ్ పైకి చేరుకున్నది. ధన్యవాదములు.`;
+      }
       case 'departure':
-        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${viaPart}${to} వరకు వెళ్ళునది, ${pfNum} వ నంబరు ప్లాట్‌ఫారమ్ నుండి బయలుదేరుటకు సిద్ధంగా ఉన్నది. ధన్యవాదములు.`;
+        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${to} వరకు వెళ్ళునది, ${pfNum} వ నంబరు ప్లాట్‌ఫారమ్ నుండి బయలుదేరుటకు సిద్ధంగా ఉన్నది. ధన్యవాదములు.`;
       case 'terminated':
         return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి వచ్చినది, ఇక్కడితో తన ప్రయాణాన్ని ముగించింది. ధన్యవాదములు.`;
       case 'delayed':
@@ -663,25 +699,26 @@ const generateAnnouncementText = (lang, { train, platform, phase, viaStations })
       case 'platform_change':
         return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${to} వరకు వెళ్ళునది, ఇప్పుడు ${pfNum} వ నంబరు ప్లాట్‌ఫారమ్ పైకి రానున్నది. ప్రయాణికులు ఈ మార్పును గమనించగలరు.`;
       case 'diverted':
-        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${to} వరకు వెళ్ళునది, ${viaStr ? viaStr + ' మీదుగా ' : ''}దారి మళ్లించబడినది. ప్రయాణికులు గమనించగలరు.`;
+        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${to} వరకు వెళ్ళునది, ${viaPart ? viaPart + ' ' : ''}దారి మళ్లించబడినది. ప్రయాణికులు గమనించగలరు.`;
       case 'cancelled':
         return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${to} వరకు వెళ్ళునది, రద్దు చేయబడినది. ప్రయాణికులకు కలిగిన అసౌకర్యానికి చింతిస్తున్నాము.`;
       default:
-        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${viaPart}${to} వరకు వెళ్ళునది, మరికొద్ది నిమిషములలో ${pfNum} వ నంబరు ప్లాట్‌ఫారమ్ పైకి రానున్నది. ధన్యవాదములు.`;
+        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${viaPart ? viaPart + ' ' : ''}${to} వరకు వెళ్ళునది, మరికొద్ది నిమిషములలో ${pfNum} వ నంబరు ప్లాట్‌ఫారమ్ పైకి రానున్నది. ధన్యవాదములు.`;
     }
   }
 
   if (lang === 'hi') {
-    const viaPart = viaStr ? `${viaStr} के रास्ते, ` : '';
     switch (phase) {
       case 'approaching':
-        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर, ${viaPart}${to} को जाने वाली, प्लेटफार्म संख्या ${pfNum} के निकट आ रही है। धन्यवाद।`;
+        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर, ${to} को जाने वाली, थोड़ी ही देर में प्लेटफार्म संख्या ${pfNum} पर आ रही है। धन्यवाद।`;
       case 'arrival':
-        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर, ${viaPart}${to} को जाने वाली, थोड़ी ही देर में प्लेटफार्म संख्या ${pfNum} पर आ रही है। धन्यवाद।`;
-      case 'halting':
-        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर, ${viaPart}${to} को जाने वाली, प्लेटफार्म संख्या ${pfNum} पर खड़ी है। धन्यवाद।`;
+        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर, ${viaPart ? viaPart + ', ' : ''}${to} को जाने वाली, प्लेटफार्म संख्या ${pfNum} पर आ चुकी है। धन्यवाद।`;
+      case 'halting': {
+        const hiTime = mVal > 0 ? `${depH} बजकर ${depM} मिनट पर` : `${depH} बजे`;
+        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर, ${viaPart ? viaPart + ', ' : ''}${to} को जाने वाली, ${hiTime} प्रस्थान करेगी, प्लेटफार्म संख्या ${pfNum} पर आ चुकी है। धन्यवाद।`;
+      }
       case 'departure':
-        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर, ${viaPart}${to} को जाने वाली, प्लेटफार्म संख्या ${pfNum} से प्रस्थान करने के लिए तैयार है। धन्यवाद।`;
+        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर, ${to} को जाने वाली, प्लेटफार्म संख्या ${pfNum} से प्रस्थान करने के लिए तैयार है। धन्यवाद।`;
       case 'terminated':
         return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर आई है, यहीं समाप्त होती है। धन्यवाद।`;
       case 'delayed':
@@ -689,25 +726,26 @@ const generateAnnouncementText = (lang, { train, platform, phase, viaStations })
       case 'platform_change':
         return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर ${to} को जाने वाली, अब प्लेटफार्म संख्या ${pfNum} पर आएगी। यात्री कृपया इस परिवर्तन पर ध्यान दें।`;
       case 'diverted':
-        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर ${to} को जाने वाली, ${viaStr ? viaStr + ' के रास्ते ' : ''}परिवर्तित की गयी है। यात्री ध्यान दें।`;
+        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर ${to} को जाने वाली, ${viaPart ? viaPart + ' ' : ''}परिवर्तित की गयी है। यात्री ध्यान दें।`;
       case 'cancelled':
         return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर ${to} को जाने वाली, रद्द कर दी गई है। हुई असुविधा के लिए हमें खेद है।`;
       default:
-        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर, ${viaPart}${to} को जाने वाली, थोड़ी ही देर में प्लेटफार्म संख्या ${pfNum} पर आ रही है। धन्यवाद।`;
+        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर, ${viaPart ? viaPart + ', ' : ''}${to} को जाने वाली, थोड़ी ही देर में प्लेटफार्म संख्या ${pfNum} पर आ रही है। धन्यवाद।`;
     }
   }
 
   if (lang === 'en') {
-    const viaPart = viaStr ? `via ${viaStr} ` : '';
     switch (phase) {
       case 'approaching':
-        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} ${viaPart}to ${to}, is approaching platform number ${pfNum}. Thank you.`;
+        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} to ${to}, is arriving shortly on platform number ${pfNum}. Thank you.`;
       case 'arrival':
-        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} ${viaPart}to ${to}, is arriving shortly on platform number ${pfNum}. Thank you.`;
-      case 'halting':
-        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} ${viaPart}to ${to}, is halting on platform number ${pfNum}. Thank you.`;
+        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} to ${to}, ${viaPart ? viaPart + ', ' : ''}has arrived on platform number ${pfNum}. Thank you.`;
+      case 'halting': {
+        const enTime = mVal > 0 ? `${depH} ${depM}` : `${depH} hours`;
+        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} to ${to}, ${viaPart ? viaPart + ', ' : ''}scheduled to depart at ${enTime}, has arrived on platform number ${pfNum}. Thank you.`;
+      }
       case 'departure':
-        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} ${viaPart}to ${to}, is ready to leave platform number ${pfNum}. Thank you.`;
+        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} to ${to}, is ready to leave platform number ${pfNum}. Thank you.`;
       case 'terminated':
         return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from}, terminates here. Thank you.`;
       case 'delayed':
@@ -715,25 +753,26 @@ const generateAnnouncementText = (lang, { train, platform, phase, viaStations })
       case 'platform_change':
         return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} to ${to}, will now arrive on platform number ${pfNum}. Passengers are requested to note this change.`;
       case 'diverted':
-        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} to ${to}, has been diverted ${viaStr ? 'via ' + viaStr : ''}. Passengers may please note.`;
+        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} to ${to}, has been diverted ${viaPart ? viaPart + '. ' : ''}Passengers may please note.`;
       case 'cancelled':
         return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} to ${to}, has been cancelled. Inconvenience caused is deeply regretted.`;
       default:
-        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} ${viaPart}to ${to}, is arriving shortly on platform number ${pfNum}. Thank you.`;
+        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} to ${to}, ${viaPart ? viaPart + ', ' : ''}is arriving shortly on platform number ${pfNum}. Thank you.`;
     }
   }
 
   if (lang === 'ta') {
-    const viaPart = viaStr ? `${viaStr} வழியாக, ` : '';
     switch (phase) {
       case 'approaching':
-        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${viaPart}${to} வரை செல்லும், நடைமேடை எண் ${pfNum} ஐ நெருங்கிக் கொண்டிருக்கிறது. நன்றி.`;
+        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${to} வரை செல்லும், சற்று நேரத்தில் நடைமேடை எண் ${pfNum} க்கு வந்து சேரும். நன்றி.`;
       case 'arrival':
-        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${viaPart}${to} வரை செல்லும், சற்று நேரத்தில் நடைமேடை எண் ${pfNum} க்கு வந்து சேரும். நன்றி.`;
-      case 'halting':
-        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${viaPart}${to} வரை செல்லும், நடைமேடை எண் ${pfNum} இல் நின்று கொண்டிருக்கிறது. நன்றி.`;
+        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${viaPart ? viaPart + ', ' : ''}${to} வரை செல்லும், நடைமேடை எண் ${pfNum} இல் வந்து சேர்ந்துள்ளது. நன்றி.`;
+      case 'halting': {
+        const taTime = mVal > 0 ? `${depH} மணி ${depM} நிமிடத்திற்கு` : `${depH} மணிக்கு`;
+        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${viaPart ? viaPart + ', ' : ''}${to} வரை செல்லும், ${taTime} புறப்படும், நடைமேடை எண் ${pfNum} இல் வந்து சேர்ந்துள்ளது. நன்றி.`;
+      }
       case 'departure':
-        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${viaPart}${to} வரை செல்லும், நடைமேடை எண் ${pfNum} லிருந்து புறப்பட தயாராக உள்ளது. நன்றி.`;
+        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${to} வரை செல்லும், நடைமேடை எண் ${pfNum} லிருந்து புறப்பட தயாராக உள்ளது. நன்றி.`;
       case 'terminated':
         return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து வந்துள்ளது, இத்துடன் தனது பயணத்தை முடித்துக் கொள்கிறது. நன்றி.`;
       case 'delayed':
@@ -741,25 +780,26 @@ const generateAnnouncementText = (lang, { train, platform, phase, viaStations })
       case 'platform_change':
         return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${to} வரை செல்லும், இப்போது நடைமேடை எண் ${pfNum} க்கு வரும். பயணிகள் இந்த மாற்றத்தை கவனத்தில் கொள்ளவும்.`;
       case 'diverted':
-        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${to} வரை செல்லும், ${viaStr ? viaStr + ' வழியாக ' : ''}மாற்றிவிடப்பட்டுள்ளது. பயணிகள் கவனிக்கவும்.`;
+        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${to} வரை செல்லும், ${viaPart ? viaPart + ' ' : ''}மாற்றிவிடப்பட்டுள்ளது. பயணிகள் கவனிக்கவும்.`;
       case 'cancelled':
         return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${to} வரை செல்லும், ரத்து செய்யப்பட்டுள்ளது. பயணிகளுக்கு ஏற்பட்ட சிரமத்திற்கு வருந்துகிறோம்.`;
       default:
-        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${viaPart}${to} வரை செல்லும், சற்று நேரத்தில் நடைமேடை எண் ${pfNum} க்கு வந்து சேரும். நன்றி.`;
+        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${viaPart ? viaPart + ', ' : ''}${to} வரை செல்லும், சற்று நேரத்தில் நடைமேடை எண் ${pfNum} க்கு வந்து சேரும். நன்றி.`;
     }
   }
 
   if (lang === 'ml') {
-    const viaPart = viaStr ? `${viaStr} വഴി, ` : '';
     switch (phase) {
       case 'approaching':
-        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${viaPart}${to} വരെ പോകുന്ന, പ്ലാറ്റ്‌ഫോം നമ്പർ ${pfNum} ലേക്ക് അടുത്തെത്തിയിരിക്കുന്നു. നന്ദി.`;
+        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${to} വരെ പോകുന്ന, അല്പ സമയത്തിനകം പ്ലാറ്റ്‌ഫോം നമ്പർ ${pfNum} ലേക്ക് എത്തിച്ചേരുന്നതാണ്. നന്ദി.`;
       case 'arrival':
-        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${viaPart}${to} വരെ പോകുന്ന, അല്പ സമയത്തിനകം പ്ലാറ്റ്‌ഫോം നമ്പർ ${pfNum} ലേക്ക് എത്തിച്ചേരുന്നതാണ്. നന്ദി.`;
-      case 'halting':
-        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${viaPart}${to} വരെ പോകുന്ന, പ്ലാറ്റ്‌ഫോം നമ്പർ ${pfNum} ൽ നിർത്തിയിട്ടിരിക്കുന്നു. നന്ദി.`;
+        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${viaPart ? viaPart + ', ' : ''}${to} വരെ പോകുന്ന, പ്ലാറ്റ്‌ഫോം നമ്പർ ${pfNum} ൽ എത്തിച്ചേർന്നിരിക്കുന്നു. നന്ദി.`;
+      case 'halting': {
+        const mlTime = mVal > 0 ? `${depH} മണി ${depM} മിനിറ്റിന്` : `${depH} മണിക്ക്`;
+        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${viaPart ? viaPart + ', ' : ''}${to} വരെ പോകുന്ന, ${mlTime} പുറപ്പെടുന്ന, പ്ലാറ്റ്‌ഫോം നമ്പർ ${pfNum} ൽ എത്തിച്ചേർന്നിരിക്കുന്നു. നന്ദി.`;
+      }
       case 'departure':
-        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${viaPart}${to} വരെ പോകുന്ന, പ്ലാറ്റ്‌ഫോം നമ്പർ ${pfNum} ൽ നിന്നും പുറപ്പെടാൻ തയ്യാറായി നിൽക്കുന്നു. നന്ദി.`;
+        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${to} വരെ പോകുന്ന, പ്ലാറ്റ്‌ഫോം നമ്പർ ${pfNum} ൽ നിന്നും പുറപ്പെടാൻ തയ്യാറായി നിൽക്കുന്നു. നന്ദി.`;
       case 'terminated':
         return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ എത്തിയത്, ഇവിടെ യാത്ര അവസാനിപ്പിച്ചിരിക്കുന്നു. നന്ദി.`;
       case 'delayed':
@@ -767,11 +807,11 @@ const generateAnnouncementText = (lang, { train, platform, phase, viaStations })
       case 'platform_change':
         return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${to} വരെ പോകുന്ന, ഇപ്പോൾ പ്ലാറ്റ്‌ഫോം നമ്പർ ${pfNum} ലേക്ക് വരുന്നതാണ്. യാത്രക്കാർ ഈ മാറ്റം ശ്രദ്ധിക്കേണ്ടതാണ്.`;
       case 'diverted':
-        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${to} வரை പോകുന്ന, ${viaStr ? viaStr + ' വഴി ' : ''}തിരിച്ചുവിട്ടിരിക്കുന്നു. യാത്രക്കാർ ശ്രദ്ധിക്കുക.`;
+        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${to} വരെ പോകുന്ന, ${viaPart ? viaPart + ' ' : ''}തിരിച്ചുവിട്ടിരിക്കുന്നു. യാത്രക്കാർ ശ്രദ്ധിക്കുക.`;
       case 'cancelled':
         return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${to} വരെ പോകുന്ന, റദ്ദാക്കിയിരിക്കുന്നു. യാത്രക്കാർക്കുണ്ടായ അസൗകര്യത്തിൽ ഖേദിക്കുന്നു.`;
       default:
-        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${viaPart}${to} വരെ പോകുന്ന, അല്പ സമയത്തിനകം പ്ലാറ്റ്‌ഫോം നമ്പർ ${pfNum} ലേക്ക് എത്തിച്ചേരുന്നതാണ്. നന്ദി.`;
+        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${viaPart ? viaPart + ', ' : ''}${to} വരെ പോകുന്ന, അല്പ സമയത്തിനകം പ്ലാറ്റ്‌ഫോം നമ്പർ ${pfNum} ലേക്ക് എത്തിച്ചേരുന്നതാണ്. നന്ദി.`;
     }
   }
 
@@ -804,6 +844,94 @@ const PHASE_RECOMMENDED_ZONES = {
   cancelled: ['all'],
 };
 
+const LANG_DISPLAY_NAMES = {
+  te: 'TELUGU (తెలుగు)',
+  hi: 'HINDI (हिन्दी)',
+  en: 'ENGLISH',
+  ta: 'TAMIL (தமிழ்)',
+  ml: 'MALAYALAM (മലയാളം)',
+};
+
+function StationAnnouncementCard({ langCode, text, fontClass, progress = 0, isActive = false, isCompleted = false }) {
+  const graphemes = useMemo(() => {
+    if (!text) return [];
+    try {
+      if (typeof Intl !== 'undefined' && Intl.Segmenter) {
+        const seg = new Intl.Segmenter(langCode || 'en', { granularity: 'grapheme' });
+        return Array.from(seg.segment(text), (s) => s.segment);
+      }
+    } catch (e) {
+      // fallback
+    }
+    return Array.from(text);
+  }, [text, langCode]);
+
+  const isLit = isCompleted || progress >= 0.999;
+  const isUnlit = progress <= 0;
+
+  let litPart = '';
+  let unlitPart = text;
+
+  if (isLit) {
+    litPart = text;
+    unlitPart = '';
+  } else if (!isUnlit && graphemes.length > 0) {
+    const litCount = Math.min(graphemes.length, Math.floor(progress * graphemes.length));
+    litPart = graphemes.slice(0, litCount).join('');
+    unlitPart = graphemes.slice(litCount).join('');
+  }
+
+  return (
+    <div
+      className={`w-full rounded-lg px-4 py-3 sm:py-3.5 transition-colors duration-150 border bg-zinc-950/40 ${
+        isActive
+          ? 'border-white/35'
+          : isLit
+          ? 'border-white/25'
+          : 'border-white/15'
+      }`}
+    >
+      {/* Header bar: Language Label & Clean State */}
+      <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10 select-none font-sans">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 font-sans">
+          {LANG_DISPLAY_NAMES[langCode] || langCode.toUpperCase()}
+        </span>
+        {isActive ? (
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wider text-sky-400 font-sans">
+            <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+            Broadcasting Now
+          </span>
+        ) : isLit ? (
+          <span className="inline-flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-emerald-400 font-sans">
+            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+            </svg>
+            Broadcast Complete
+          </span>
+        ) : (
+          <span className="text-[10px] font-medium uppercase tracking-wider text-zinc-600 font-sans">
+            Standby
+          </span>
+        )}
+      </div>
+
+      {/* Real-time Spoken Text (Clean, crisp, zero blur/glow) */}
+      <p className={`text-[15px] sm:text-base leading-relaxed antialiased tracking-normal ${fontClass}`}>
+        {litPart && (
+          <span className="text-white font-medium">
+            {litPart}
+          </span>
+        )}
+        {unlitPart && (
+          <span className="text-zinc-500 font-normal">
+            {unlitPart}
+          </span>
+        )}
+      </p>
+    </div>
+  );
+}
+
 export default function TransitConsolePage({ onBackToLanding, activeMode, onSelectMode }) {
   const [selectedStation, setSelectedStation] = useState(RAILWAY_JUNCTIONS[0]); // Default: Secunderabad Junction (SC)
   const [isStationDropdownOpen, setIsStationDropdownOpen] = useState(false);
@@ -817,34 +945,55 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
   const [phasePage, setPhasePage] = useState(0); // 0: Live Movement (5), 1: Alerts & Exceptions (4)
   const [selectedPlatform, setSelectedPlatform] = useState('PF 1');
   const [scheduledHours, setScheduledHours] = useState('06');
-  const [scheduledMins, setScheduledMins] = useState('25');
+  const [scheduledMins, setScheduledMins] = useState('45');
   const [customHours, setCustomHours] = useState('06');
-  const [customMins, setCustomMins] = useState('25');
+  const [customMins, setCustomMins] = useState('45');
   const [platformPage, setPlatformPage] = useState(0); // 0: PF 1-8, 1: PF 9-16, 2: PF 17-24
   const [selectedLanguages, setSelectedLanguages] = useState(['te', 'hi', 'en']); // Native Telugu + Hindi + English all active by default
   const [selectedZones, setSelectedZones] = useState(PHASE_RECOMMENDED_ZONES['arrival']); // Auto recommended based on operational phase
   const [isBroadcastingActive, setIsBroadcastingActive] = useState(false);
-  const [activePfs, setActivePfs] = useState({});
+  const [broadcastProgress, setBroadcastProgress] = useState({
+    activeLang: null,
+    langProgress: {},
+  });
+  const lastProgressUpdateRef = useRef(0);
+  const railwayPlayerRef = useRef(null);
   const dropdownRef = useRef(null);
   const categoryDropdownRef = useRef(null);
   const stationDropdownRef = useRef(null);
   const customMinsRef = useRef(null);
+
+  // Stop any active audio broadcast on component unmount
+  useEffect(() => {
+    return () => {
+      if (railwayPlayerRef.current) {
+        railwayPlayerRef.current.stop();
+      }
+    };
+  }, []);
 
   // Dynamic platforms based on selected Junction (Max 24)
   const currentPlatforms = Array.from({ length: selectedStation.platforms }, (_, i) => `PF ${i + 1}`);
   const totalPlatformPages = Math.max(1, Math.ceil(currentPlatforms.length / 8));
 
   const handleSelectPhase = (phaseId) => {
+    if (railwayPlayerRef.current) {
+      railwayPlayerRef.current.stop();
+    }
+    setIsBroadcastingActive(false);
+    setBroadcastProgress({ activeLang: null, langProgress: {} });
     setSelectedPhase(phaseId);
     const recommended = PHASE_RECOMMENDED_ZONES[phaseId];
     if (recommended) {
       setSelectedZones(recommended);
-      setActivePfs({});
+    }
+    // Lock platform strictly to assigned platform when not in platform_change
+    if (phaseId !== 'platform_change' && selectedTrain) {
+      setSelectedPlatform(selectedTrain.platform || 'PF 1');
     }
   };
 
   const handleToggleZone = (zoneId) => {
-    setActivePfs({});
     if (zoneId === 'all') {
       setSelectedZones(['all']);
       return;
@@ -909,17 +1058,14 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
     return cards;
   }, [currentPlatforms, selectedZones, selectedPlatform]);
 
-  const isCardBroadcasting = (card) => {
-    if (activePfs[card.id] !== undefined) {
-      return activePfs[card.id];
-    }
-    if (!isBroadcastingActive) {
-      return false;
-    }
-    return true;
-  };
+  const isCardBroadcasting = () => isBroadcastingActive;
 
   const toggleLanguage = (id) => {
+    if (railwayPlayerRef.current) {
+      railwayPlayerRef.current.stop();
+    }
+    setIsBroadcastingActive(false);
+    setBroadcastProgress({ activeLang: null, langProgress: {} });
     setSelectedLanguages((prev) => {
       if (prev.includes(id)) {
         if (prev.length === 1) return prev; // Keep at least one active language
@@ -931,6 +1077,11 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
   };
 
   const handleSelectTrain = (train, targetStation = selectedStation) => {
+    if (railwayPlayerRef.current) {
+      railwayPlayerRef.current.stop();
+    }
+    setIsBroadcastingActive(false);
+    setBroadcastProgress({ activeLang: null, langProgress: {} });
     setSelectedTrain(train);
     if (train.platform) {
       const pfNum = parseInt(train.platform.replace('PF ', ''), 10);
@@ -954,11 +1105,14 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
   };
 
   const handleSelectStation = (station) => {
+    if (railwayPlayerRef.current) {
+      railwayPlayerRef.current.stop();
+    }
+    setIsBroadcastingActive(false);
+    setBroadcastProgress({ activeLang: null, langProgress: {} });
     setSelectedStation(station);
     setIsStationDropdownOpen(false);
     setStationSearchQuery('');
-    setActivePfs({});
-    setIsBroadcastingActive(false);
     
     // Dynamically apply official Indian Railways language policy for this station
     const newLangs = station.languages || ['hi', 'en'];
@@ -982,6 +1136,163 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
         handleSelectTrain(matchingTrain, station);
       }
     }
+  };
+
+  // Operational Logic for Via Route Visibility:
+  // VIA ON (3 Phases): Arrival, Halting, Diverted (ONLY when category is movement and train actually has via stations)
+  // VIA OFF (6 Phases): Approaching, Departure, Terminated, Delayed, Platform Change, Cancelled
+  const isViaRouteActive = ['arrival', 'halting', 'diverted'].includes(selectedPhase);
+  const isDiverted = selectedPhase === 'diverted';
+  const rawViaStations = isDiverted 
+    ? (selectedTrain?.divertedVia || selectedTrain?.via || [])
+    : (selectedTrain?.via || []);
+  const isViaInputVisible = selectedCategory === 'movement' && isViaRouteActive && rawViaStations.length > 0;
+  const activeViaStations = isViaInputVisible ? rawViaStations : [];
+
+  // 100% Authentic CRIS RDSO Concatenative Audio Broadcast Engine Trigger
+  const handleStartAnnouncement = () => {
+    if (isBroadcastingActive) {
+      if (railwayPlayerRef.current) {
+        railwayPlayerRef.current.stop();
+      }
+      setIsBroadcastingActive(false);
+      setBroadcastProgress({ activeLang: null, langProgress: {} });
+      return;
+    }
+
+    // Map operational railway phase to authentic CRIS audio sequence status
+    let statusKey = 'arrival';
+    if (selectedPhase === 'approaching') statusKey = 'approaching';
+    else if (selectedPhase === 'arrival') statusKey = 'arrival';
+    else if (selectedPhase === 'halting') statusKey = 'halting';
+    else if (selectedPhase === 'terminated') statusKey = 'arrival';
+    else if (selectedPhase === 'departure') statusKey = 'ready_to_leave';
+    else if (selectedPhase === 'delayed') statusKey = 'running_late';
+    else if (selectedPhase === 'cancelled') statusKey = 'cancelled';
+    else if (selectedPhase === 'platform_change' || selectedPhase === 'diverted') statusKey = 'approaching';
+
+    const isUrgent = ['platform_change', 'cancelled', 'diverted'].includes(selectedPhase);
+    const platNumber = selectedPlatform.replace(/\D/g, '') || '1';
+
+    // Extract via audio keys strictly when via route is active and shown on screen (matches Display Board text 100%)
+    const viaAudioKeys = activeViaStations.map((s) => {
+      const match = s.match(/\(([A-Z]+)\)/);
+      const code = match ? match[1] : s.trim().toUpperCase();
+      const jn = RAILWAY_JUNCTIONS.find((j) => j.code === code);
+      return jn ? jn.audioKey : '';
+    }).filter(Boolean);
+
+    // Build multi-lingual audio sequence across station's official priority languages
+    const langs = selectedStation.languages || ['te', 'hi', 'en'];
+    const langKeyMap = {
+      te: 'telugu',
+      hi: 'hindi',
+      en: 'english',
+      ta: 'tamil',
+      ml: 'malayalam',
+    };
+
+    const structuredSequence = [
+      { src: '/audio_assets/mic_chirp.mp3', isChirp: true, lang: null },
+    ];
+
+    langs.forEach((langCode, idx) => {
+      const langKey = langKeyMap[langCode] || 'english';
+      const langSeq = buildRailwayAudioSequence({
+        language: langKey,
+        trainNumber: selectedTrain?.no || '12723',
+        trainKey: selectedTrain?.trainKey || 'telangana_express',
+        fromStation: selectedTrain?.fromKey || 'hyderabad',
+        toStation: selectedTrain?.toKey || 'new_delhi',
+        viaStations: viaAudioKeys,
+        platform: platNumber,
+        status: statusKey,
+        isUrgent,
+        delayHours: 0,
+        delayMinutes: 15,
+        depHours: customHours || scheduledHours || '06',
+        depMins: customMins || scheduledMins || '45',
+      });
+
+      // Strip opening and closing mic_chirp from individual language sequences
+      const contentClips = langSeq.filter((f) => {
+        const path = typeof f === 'string' ? f : (f?.src || '');
+        return path !== '/audio_assets/mic_chirp.mp3';
+      });
+
+      if (idx > 0) {
+        // Natural CRIS RDSO key-tone transition between languages
+        structuredSequence.push({
+          src: '/audio_assets/mic_chirp.mp3',
+          isChirp: true,
+          lang: null,
+        });
+      }
+
+      contentClips.forEach((clip) => {
+        const path = typeof clip === 'string' ? clip : (clip?.src || '');
+        structuredSequence.push({
+          src: path,
+          lang: langCode,
+        });
+      });
+    });
+
+    structuredSequence.push({
+      src: '/audio_assets/mic_chirp.mp3',
+      isChirp: true,
+      lang: null,
+    });
+
+    const onProgress = ({ activeLang, langProgress }) => {
+      const now = performance.now();
+      if (now - lastProgressUpdateRef.current > 30) {
+        lastProgressUpdateRef.current = now;
+        setBroadcastProgress({
+          activeLang,
+          langProgress: { ...langProgress },
+        });
+      }
+    };
+
+    const onEnded = () => {
+      setIsBroadcastingActive(false);
+      const allDone = {};
+      langs.forEach((l) => { allDone[l] = 1.0; });
+      setBroadcastProgress({ activeLang: null, langProgress: allDone });
+    };
+
+    const onError = (err) => {
+      console.warn('Railway PA Announcement Error:', err);
+      setIsBroadcastingActive(false);
+      setBroadcastProgress({ activeLang: null, langProgress: {} });
+    };
+
+    if (!railwayPlayerRef.current) {
+      railwayPlayerRef.current = new RailwayAnnouncementPlayer({
+        onProgress,
+        onEnded,
+        onError,
+      });
+    } else {
+      railwayPlayerRef.current.onProgress = onProgress;
+      railwayPlayerRef.current.onEnded = onEnded;
+      railwayPlayerRef.current.onError = onError;
+    }
+
+    setBroadcastProgress({ activeLang: null, langProgress: {} });
+    setIsBroadcastingActive(true);
+
+    railwayPlayerRef.current.play({
+      sequence: structuredSequence,
+      withChime: true,
+      withAmbience: true,
+      withChirp: false,
+    }).catch((err) => {
+      console.warn('PA Play error:', err);
+      setIsBroadcastingActive(false);
+      setBroadcastProgress({ activeLang: null, langProgress: {} });
+    });
   };
 
   // Sync platform page with active selectedPlatform (e.g. if PF 10 selected, jump to page 1)
@@ -1064,15 +1375,6 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
     return { label: `${Math.abs(diff)} Min Early`, isDelay: false };
   };
   const delayInfo = getDelayInfo();
-
-  // Operational Logic for Via Route Visibility:
-  // VIA ON (3 Phases): Arrival, Halting, Diverted
-  // VIA OFF (6 Phases): Approaching, Departure, Terminated, Delayed, Platform Change, Cancelled
-  const isViaRouteActive = ['arrival', 'halting', 'diverted'].includes(selectedPhase);
-  const isDiverted = selectedPhase === 'diverted';
-  const activeViaStations = isDiverted 
-    ? (selectedTrain?.divertedVia || selectedTrain?.via || [])
-    : (selectedTrain?.via || []);
 
   // Operational Logic: Platform change enabled ONLY in Platform Change phase
   const isPlatformChangeActive = selectedPhase === 'platform_change';
@@ -1336,6 +1638,11 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
                           key={cat.id}
                           type="button"
                           onClick={() => {
+                            if (railwayPlayerRef.current) {
+                              railwayPlayerRef.current.stop();
+                            }
+                            setIsBroadcastingActive(false);
+                            setBroadcastProgress({ activeLang: null, langProgress: {} });
                             setSelectedCategory(cat.id);
                             setIsCategoryDropdownOpen(false);
                           }}
@@ -1574,11 +1881,14 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
                 </div>
               </div>
 
-              {/* Row 2 - Column 1: Assigned Platform (Dynamic based on selected Junction, Max 24) */}
+              {/* Row 2 - Column 1: Platform (Dynamic based on selected Junction, Max 24) */}
               <div className="w-full">
                 <div className="h-6 flex items-center justify-between mb-2 select-none font-sans">
-                  <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 font-sans">
-                    Assigned Platform
+                  <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 font-sans flex items-center gap-2">
+                    Platform
+                    <span className="text-[11px] font-mono text-zinc-200 font-semibold normal-case bg-white/10 px-2 py-0.5 rounded border border-white/20">
+                      {selectedPlatform}
+                    </span>
                   </label>
 
                   {/* Navigation Controls (< >) - Only shown if more than 1 page (> 8 platforms) */}
@@ -1650,16 +1960,20 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
                               key={pf}
                               type="button"
                               onClick={() => {
-                                if (isPlatformChangeActive) {
-                                  setSelectedPlatform(pf);
+                                if (!isPlatformChangeActive) return;
+                                if (railwayPlayerRef.current) {
+                                  railwayPlayerRef.current.stop();
                                 }
+                                setIsBroadcastingActive(false);
+                                setBroadcastProgress({ activeLang: null, langProgress: {} });
+                                setSelectedPlatform(pf);
                               }}
                               className={`h-11 w-full rounded-lg text-xs font-sans whitespace-nowrap transition-colors select-none flex items-center justify-center ${
                                 isSelected
                                   ? 'bg-white text-black font-semibold border border-white shadow-sm'
                                   : isPlatformChangeActive
                                   ? 'bg-transparent border border-white/25 text-zinc-300 hover:text-white hover:border-white/50 font-normal cursor-pointer'
-                                  : 'bg-transparent border border-white/10 text-zinc-600 font-normal cursor-default'
+                                  : 'bg-transparent border border-white/20 text-zinc-400 font-normal cursor-default'
                               }`}
                             >
                               {pf}
@@ -1852,8 +2166,8 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
                 </div>
               </div>
 
-              {/* Row 4: Train Movement Announcements -> Full-Width Via Route (Only ON for Arrival, Halting, Diverted) */}
-              {selectedCategory === 'movement' && isViaRouteActive && (
+              {/* Row 4: Train Movement Announcements -> Full-Width Via Route (Only ON for Arrival, Halting, Diverted when via stations exist) */}
+              {isViaInputVisible && (
                 <div className="col-span-1 lg:col-span-2 w-full animate-fadeIn">
                   <div className="flex items-center justify-between mb-2 select-none font-sans">
                     <div className="flex items-center gap-2">
@@ -1956,6 +2270,8 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
                     platform: selectedPlatform,
                     phase: selectedPhase,
                     viaStations: activeViaStations,
+                    scheduledHours: customHours || scheduledHours || '06',
+                    scheduledMins: customMins || scheduledMins || '45',
                   });
 
                   const fontClass =
@@ -1965,15 +2281,20 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
                     langCode === 'ml' ? 'font-malayalam' :
                     'font-sans';
 
+                  const prog = broadcastProgress.langProgress?.[langCode] || 0;
+                  const isActive = isBroadcastingActive && broadcastProgress.activeLang === langCode;
+                  const isCompleted = prog >= 0.999;
+
                   return (
-                    <div
+                    <StationAnnouncementCard
                       key={langCode}
-                      className="w-full rounded-lg bg-zinc-950/40 border border-white/20 hover:border-white/35 px-4 py-3 sm:py-3.5 transition-colors"
-                    >
-                      <p className={`text-[15px] sm:text-base leading-relaxed text-zinc-100 font-normal antialiased tracking-normal ${fontClass}`}>
-                        {text}
-                      </p>
-                    </div>
+                      langCode={langCode}
+                      text={text}
+                      fontClass={fontClass}
+                      progress={prog}
+                      isActive={isActive}
+                      isCompleted={isCompleted}
+                    />
                   );
                 })}
               </div>
@@ -1992,27 +2313,24 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
               {/* Right: Sharp High-Contrast Primary Button [ 🎙️ Start Announcement / Stop Announcement ] */}
               <button
                 type="button"
-                onClick={() => {
-                  setIsBroadcastingActive(!isBroadcastingActive);
-                  setActivePfs({});
-                }}
-                className={`w-full sm:w-auto px-8 h-11 rounded-lg font-semibold text-xs sm:text-[13px] font-sans tracking-tight transition-colors flex items-center justify-center gap-2 select-none cursor-pointer shadow-sm ${
-                  isBroadcastingActive
-                    ? 'bg-zinc-900 border border-white/40 text-white hover:bg-zinc-850'
-                    : 'bg-white hover:bg-zinc-200 text-black'
-                }`}
+                onClick={handleStartAnnouncement}
+                className="w-full sm:w-auto px-8 h-11 rounded-lg bg-white hover:bg-zinc-200 text-black font-semibold text-xs sm:text-[13px] font-sans tracking-tight transition-colors flex items-center justify-center gap-2.5 select-none cursor-pointer shadow-sm"
               >
                 {isBroadcastingActive ? (
                   <>
-                    <span className="w-2.5 h-2.5 rounded-sm bg-white shrink-0 animate-pulse" />
+                    <svg className="w-4 h-4 text-black shrink-0 animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="2" fill="currentColor" />
+                      <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49" />
+                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14" />
+                    </svg>
                     <span>Stop Announcement</span>
                   </>
                 ) : (
                   <>
-                    <svg className="w-3.5 h-3.5 text-black shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
-                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                      <line x1="12" y1="19" x2="12" y2="22" />
+                    <svg className="w-4 h-4 text-black shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="2" fill="currentColor" />
+                      <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49" />
+                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14" />
                     </svg>
                     <span>Start Announcement</span>
                   </>
@@ -2031,20 +2349,9 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
               <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 font-sans">
                 Station Acoustic Broadcast Zones
               </label>
-              <div className="flex items-center gap-2">
-                {isBroadcastingActive && (
-                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-sans font-semibold uppercase tracking-widest bg-white text-black animate-pulse">
-                    Broadcasting
-                  </span>
-                )}
-                <span className="text-[11px] font-sans font-medium text-zinc-500">
-                  {selectedStation.name} • {
-                    selectedZones.includes('all')
-                      ? 'All Station'
-                      : selectedZones.map((z) => z === 'platform' ? `${selectedPlatform} Only` : z === 'concourse' ? 'Concourse' : 'Waiting Halls').join(' + ')
-                  } ({activeZoneCards.length} Zones)
-                </span>
-              </div>
+              <span className="text-sm font-outfit text-zinc-300 font-medium tracking-wide">
+                {selectedStation.name}
+              </span>
             </div>
 
             {/* Horizontal Zone Cards Strip (Filtered and routed by Station Audio Zone) */}
@@ -2057,23 +2364,16 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
               className="w-full flex items-center gap-4 sm:gap-5 overflow-x-auto py-2 no-scrollbar scroll-smooth"
             >
               {activeZoneCards.map((card) => {
-                const isBroadcasting = isCardBroadcasting(card);
+                const isBroadcasting = isCardBroadcasting();
 
                 return (
                   <div
                     key={card.id}
-                    onClick={() => {
-                      setActivePfs((prev) => ({
-                        ...prev,
-                        [card.id]: !isBroadcasting,
-                      }));
-                    }}
-                    className={`w-52 h-56 sm:w-56 sm:h-60 shrink-0 rounded-xl bg-zinc-950/60 border cursor-pointer select-none p-5 flex flex-col justify-between items-center transition-all duration-300 group ${
+                    className={`w-52 h-56 sm:w-56 sm:h-60 shrink-0 rounded-xl select-none p-5 flex flex-col justify-between items-center transition-all duration-300 ${
                       isBroadcasting
-                        ? 'border-white/40 bg-zinc-900/30'
-                        : 'border-white/15 hover:border-white/30 hover:bg-zinc-950'
+                        ? 'border border-white/40 bg-zinc-900/30'
+                        : 'border border-white/15 bg-zinc-950/60'
                     }`}
-                    title={`Click to toggle ${card.name} between Mic Off and Broadcasting`}
                   >
                     {/* Top: Zone Name in Full Name with Neat Round Border */}
                     <div className="w-full flex items-center justify-center">
@@ -2097,7 +2397,7 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
                         </svg>
                       ) : (
                         /* Muted / Standby Speaker Icon */
-                        <svg className="w-14 h-14 text-zinc-600 group-hover:text-zinc-400 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                        <svg className="w-14 h-14 text-zinc-600 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                           <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
                           <line x1="23" y1="9" x2="17" y2="15" />
                           <line x1="17" y1="9" x2="23" y2="15" />
