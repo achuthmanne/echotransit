@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 
 const RAILWAY_TRAINS = [
   // 1. Telangana Express (HYB ⇄ NDLS)
@@ -778,6 +778,32 @@ const generateAnnouncementText = (lang, { train, platform, phase, viaStations })
   return '';
 };
 
+const STATION_ACOUSTIC_FACILITIES = {
+  concourse: [
+    { id: 'concourse_main', name: 'MAIN CONCOURSE', type: 'concourse' },
+    { id: 'concourse_fob', name: 'FOOT OVERBRIDGE', type: 'concourse' },
+    { id: 'concourse_circulating', name: 'PASSENGER FOYER', type: 'concourse' },
+  ],
+  lounges: [
+    { id: 'lounge_ac', name: 'AC WAITING LOUNGE', type: 'lounges' },
+    { id: 'lounge_general', name: 'GENERAL WAITING HALL', type: 'lounges' },
+    { id: 'lounge_ladies', name: 'LADIES WAITING HALL', type: 'lounges' },
+    { id: 'lounge_executive', name: 'EXECUTIVE LOUNGE', type: 'lounges' },
+  ],
+};
+
+const PHASE_RECOMMENDED_ZONES = {
+  approaching: ['platform', 'concourse', 'lounges'],
+  arrival: ['platform', 'concourse'],
+  halting: ['platform'],
+  departure: ['platform'],
+  terminated: ['platform', 'concourse'],
+  delayed: ['lounges', 'concourse'],
+  platform_change: ['all'],
+  diverted: ['all'],
+  cancelled: ['all'],
+};
+
 export default function TransitConsolePage({ onBackToLanding, activeMode, onSelectMode }) {
   const [selectedStation, setSelectedStation] = useState(RAILWAY_JUNCTIONS[0]); // Default: Secunderabad Junction (SC)
   const [isStationDropdownOpen, setIsStationDropdownOpen] = useState(false);
@@ -796,8 +822,9 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
   const [customMins, setCustomMins] = useState('25');
   const [platformPage, setPlatformPage] = useState(0); // 0: PF 1-8, 1: PF 9-16, 2: PF 17-24
   const [selectedLanguages, setSelectedLanguages] = useState(['te', 'hi', 'en']); // Native Telugu + Hindi + English all active by default
-  const [selectedZone, setSelectedZone] = useState('all'); // All Station by default
-  const [previewZoneActive, setPreviewZoneActive] = useState(false);
+  const [selectedZones, setSelectedZones] = useState(PHASE_RECOMMENDED_ZONES['arrival']); // Auto recommended based on operational phase
+  const [isBroadcastingActive, setIsBroadcastingActive] = useState(false);
+  const [activePfs, setActivePfs] = useState({});
   const dropdownRef = useRef(null);
   const categoryDropdownRef = useRef(null);
   const stationDropdownRef = useRef(null);
@@ -806,6 +833,91 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
   // Dynamic platforms based on selected Junction (Max 24)
   const currentPlatforms = Array.from({ length: selectedStation.platforms }, (_, i) => `PF ${i + 1}`);
   const totalPlatformPages = Math.max(1, Math.ceil(currentPlatforms.length / 8));
+
+  const handleSelectPhase = (phaseId) => {
+    setSelectedPhase(phaseId);
+    const recommended = PHASE_RECOMMENDED_ZONES[phaseId];
+    if (recommended) {
+      setSelectedZones(recommended);
+      setActivePfs({});
+    }
+  };
+
+  const handleToggleZone = (zoneId) => {
+    setActivePfs({});
+    if (zoneId === 'all') {
+      setSelectedZones(['all']);
+      return;
+    }
+
+    setSelectedZones((prev) => {
+      if (prev.includes('all')) {
+        return [zoneId];
+      }
+      if (prev.includes(zoneId)) {
+        if (prev.length === 1) return prev;
+        return prev.filter((z) => z !== zoneId);
+      }
+      return [...prev, zoneId];
+    });
+  };
+
+  const isZonePillSelected = (zoneId) => {
+    if (zoneId === 'all') {
+      return selectedZones.includes('all');
+    }
+    if (selectedZones.includes('all')) {
+      return false;
+    }
+    return selectedZones.includes(zoneId);
+  };
+
+  // Dynamic audio broadcast zone cards routed strictly by selectedZones
+  const activeZoneCards = useMemo(() => {
+    const allPfCards = currentPlatforms.map((pfStr, idx) => ({
+      id: `pf_${idx + 1}`,
+      name: `PLATFORM ${idx + 1}`,
+      pfStr,
+      type: 'platform',
+    }));
+
+    if (selectedZones.includes('all')) {
+      return [
+        ...allPfCards,
+        ...STATION_ACOUSTIC_FACILITIES.concourse,
+        ...STATION_ACOUSTIC_FACILITIES.lounges,
+      ];
+    }
+
+    const cards = [];
+    if (selectedZones.includes('platform')) {
+      const targetPfCard = allPfCards.find((c) => c.pfStr === selectedPlatform) || {
+        id: `pf_${selectedPlatform.replace('PF ', '')}`,
+        name: `PLATFORM ${selectedPlatform.replace('PF ', '')}`,
+        pfStr: selectedPlatform,
+        type: 'platform',
+      };
+      cards.push(targetPfCard);
+    }
+    if (selectedZones.includes('concourse')) {
+      cards.push(...STATION_ACOUSTIC_FACILITIES.concourse);
+    }
+    if (selectedZones.includes('lounges')) {
+      cards.push(...STATION_ACOUSTIC_FACILITIES.lounges);
+    }
+
+    return cards;
+  }, [currentPlatforms, selectedZones, selectedPlatform]);
+
+  const isCardBroadcasting = (card) => {
+    if (activePfs[card.id] !== undefined) {
+      return activePfs[card.id];
+    }
+    if (!isBroadcastingActive) {
+      return false;
+    }
+    return true;
+  };
 
   const toggleLanguage = (id) => {
     setSelectedLanguages((prev) => {
@@ -845,6 +957,8 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
     setSelectedStation(station);
     setIsStationDropdownOpen(false);
     setStationSearchQuery('');
+    setActivePfs({});
+    setIsBroadcastingActive(false);
     
     // Dynamically apply official Indian Railways language policy for this station
     const newLangs = station.languages || ['hi', 'en'];
@@ -1414,7 +1528,7 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
                             key={phase.id}
                             type="button"
                             title={phase.full}
-                            onClick={() => setSelectedPhase(phase.id)}
+                            onClick={() => handleSelectPhase(phase.id)}
                             className={`h-11 w-full px-1 sm:px-2 rounded-lg text-[11px] sm:text-xs font-sans whitespace-nowrap transition-colors cursor-pointer select-none flex items-center justify-center ${
                               isSelected
                                 ? 'bg-white text-black font-semibold border border-white shadow-sm'
@@ -1437,7 +1551,7 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
                             key={phase.id}
                             type="button"
                             title={phase.full}
-                            onClick={() => setSelectedPhase(phase.id)}
+                            onClick={() => handleSelectPhase(phase.id)}
                             className={`h-11 w-full px-1.5 sm:px-2.5 rounded-lg text-[11px] sm:text-xs font-sans whitespace-nowrap transition-colors cursor-pointer select-none flex items-center justify-center ${
                               isSelected
                                 ? 'bg-white text-black font-semibold border border-white shadow-sm'
@@ -1718,13 +1832,13 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
                     { id: 'concourse', label: 'Concourse' },
                     { id: 'lounges', label: 'Waiting Halls' },
                   ].map((zone) => {
-                    const isSelected = selectedZone === zone.id;
+                    const isSelected = isZonePillSelected(zone.id);
 
                     return (
                       <button
                         key={zone.id}
                         type="button"
-                        onClick={() => setSelectedZone(zone.id)}
+                        onClick={() => handleToggleZone(zone.id)}
                         className={`h-11 w-full px-1.5 sm:px-2 rounded-lg text-[11px] sm:text-xs font-sans whitespace-nowrap transition-colors cursor-pointer select-none flex items-center justify-center ${
                           isSelected
                             ? 'bg-white text-black font-semibold border border-white shadow-sm'
@@ -1875,17 +1989,34 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
                 </span>
               </div>
 
-              {/* Right: Sharp High-Contrast Primary Button [ 🎙️ Start Announcement ] */}
+              {/* Right: Sharp High-Contrast Primary Button [ 🎙️ Start Announcement / Stop Announcement ] */}
               <button
                 type="button"
-                className="w-full sm:w-auto px-8 h-11 rounded-lg bg-white hover:bg-zinc-200 text-black font-semibold text-xs sm:text-[13px] font-sans tracking-tight transition-colors flex items-center justify-center gap-2 select-none cursor-pointer shadow-sm"
+                onClick={() => {
+                  setIsBroadcastingActive(!isBroadcastingActive);
+                  setActivePfs({});
+                }}
+                className={`w-full sm:w-auto px-8 h-11 rounded-lg font-semibold text-xs sm:text-[13px] font-sans tracking-tight transition-colors flex items-center justify-center gap-2 select-none cursor-pointer shadow-sm ${
+                  isBroadcastingActive
+                    ? 'bg-zinc-900 border border-white/40 text-white hover:bg-zinc-850'
+                    : 'bg-white hover:bg-zinc-200 text-black'
+                }`}
               >
-                <svg className="w-3.5 h-3.5 text-black shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
-                  <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                  <line x1="12" y1="19" x2="12" y2="22" />
-                </svg>
-                <span>Start Announcement</span>
+                {isBroadcastingActive ? (
+                  <>
+                    <span className="w-2.5 h-2.5 rounded-sm bg-white shrink-0 animate-pulse" />
+                    <span>Stop Announcement</span>
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-3.5 h-3.5 text-black shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                      <line x1="12" y1="19" x2="12" y2="22" />
+                    </svg>
+                    <span>Start Announcement</span>
+                  </>
+                )}
               </button>
 
             </div>
@@ -1900,64 +2031,95 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
               <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 font-sans">
                 Station Acoustic Broadcast Zones
               </label>
-              <span className="text-[11px] font-sans font-medium text-zinc-500">
-                {selectedStation.name}
-              </span>
+              <div className="flex items-center gap-2">
+                {isBroadcastingActive && (
+                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-sans font-semibold uppercase tracking-widest bg-white text-black animate-pulse">
+                    Broadcasting
+                  </span>
+                )}
+                <span className="text-[11px] font-sans font-medium text-zinc-500">
+                  {selectedStation.name} • {
+                    selectedZones.includes('all')
+                      ? 'All Station'
+                      : selectedZones.map((z) => z === 'platform' ? `${selectedPlatform} Only` : z === 'concourse' ? 'Concourse' : 'Waiting Halls').join(' + ')
+                  } ({activeZoneCards.length} Zones)
+                </span>
+              </div>
             </div>
 
-            {/* Horizontal Zone Cards Strip (Previewing 1 Box Design for User Review) */}
-            <div className="w-full flex items-center gap-5 overflow-x-auto py-2 no-scrollbar">
-              
-              {/* Single Platform Acoustic Card */}
-              <div
-                onClick={() => setPreviewZoneActive(!previewZoneActive)}
-                className={`w-52 h-56 sm:w-56 sm:h-60 shrink-0 rounded-xl bg-zinc-950/60 border cursor-pointer select-none p-5 flex flex-col justify-between items-center transition-all duration-300 group ${
-                  previewZoneActive
-                    ? 'border-white/40 bg-zinc-900/30'
-                    : 'border-white/15 hover:border-white/30 hover:bg-zinc-950'
-                }`}
-                title="Click to toggle between Mic Off and Broadcasting"
-              >
-                {/* Top: PLATFORM 1 in Full Name with Neat Round Border */}
-                <div className="w-full flex items-center justify-center">
-                  <span className="px-3.5 py-1 rounded-full border border-white/20 bg-zinc-900/50 text-[11px] sm:text-xs font-semibold text-zinc-100 tracking-wider uppercase font-sans">
-                    PLATFORM 1
-                  </span>
-                </div>
+            {/* Horizontal Zone Cards Strip (Filtered and routed by Station Audio Zone) */}
+            <div 
+              onWheel={(e) => {
+                if (e.deltaY !== 0) {
+                  e.currentTarget.scrollLeft += e.deltaY;
+                }
+              }}
+              className="w-full flex items-center gap-4 sm:gap-5 overflow-x-auto py-2 no-scrollbar scroll-smooth"
+            >
+              {activeZoneCards.map((card) => {
+                const isBroadcasting = isCardBroadcasting(card);
 
-                {/* Middle: Clean Speaker Icon Alone (No Background Box, Flat Crisp Vectors) */}
-                <div className="my-auto py-2 flex items-center justify-center">
-                  {previewZoneActive ? (
-                    /* Active Speaker Broadcasting with Acoustic Waves (Clean, No Glow) */
-                    <svg className="w-14 h-14 text-white transition-transform scale-105" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-                    </svg>
-                  ) : (
-                    /* Muted / Standby Speaker Icon */
-                    <svg className="w-14 h-14 text-zinc-600 group-hover:text-zinc-400 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                      <line x1="23" y1="9" x2="17" y2="15" />
-                      <line x1="17" y1="9" x2="23" y2="15" />
-                    </svg>
-                  )}
-                </div>
+                return (
+                  <div
+                    key={card.id}
+                    onClick={() => {
+                      setActivePfs((prev) => ({
+                        ...prev,
+                        [card.id]: !isBroadcasting,
+                      }));
+                    }}
+                    className={`w-52 h-56 sm:w-56 sm:h-60 shrink-0 rounded-xl bg-zinc-950/60 border cursor-pointer select-none p-5 flex flex-col justify-between items-center transition-all duration-300 group ${
+                      isBroadcasting
+                        ? 'border-white/40 bg-zinc-900/30'
+                        : 'border-white/15 hover:border-white/30 hover:bg-zinc-950'
+                    }`}
+                    title={`Click to toggle ${card.name} between Mic Off and Broadcasting`}
+                  >
+                    {/* Top: Zone Name in Full Name with Neat Round Border */}
+                    <div className="w-full flex items-center justify-center">
+                      <span className={`px-3.5 py-1 rounded-full border text-[11px] sm:text-xs font-semibold tracking-wider uppercase font-sans transition-colors text-center truncate max-w-full ${
+                        isBroadcasting
+                          ? 'border-white/35 bg-white/10 text-white'
+                          : 'border-white/20 bg-zinc-900/50 text-zinc-100'
+                      }`}>
+                        {card.name}
+                      </span>
+                    </div>
 
-                {/* Bottom: Mic Status (Mic Off / Broadcasting) */}
-                <div className="w-full flex items-center justify-center">
-                  <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-sans transition-colors ${
-                    previewZoneActive
-                      ? 'bg-white text-black font-semibold'
-                      : 'bg-zinc-900 border border-zinc-800 text-zinc-400 font-medium'
-                  }`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${previewZoneActive ? 'bg-black animate-pulse' : 'bg-zinc-600'}`} />
-                    <span>{previewZoneActive ? 'Broadcasting' : 'Mic Off'}</span>
+                    {/* Middle: Clean Speaker Icon Alone (No Background Box, Flat Crisp Vectors) */}
+                    <div className="my-auto py-2 flex items-center justify-center">
+                      {isBroadcasting ? (
+                        /* Active Speaker Broadcasting with Acoustic Waves (Clean, No Glow) */
+                        <svg className="w-14 h-14 text-white transition-transform scale-105" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                          <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                          <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                        </svg>
+                      ) : (
+                        /* Muted / Standby Speaker Icon */
+                        <svg className="w-14 h-14 text-zinc-600 group-hover:text-zinc-400 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                          <line x1="23" y1="9" x2="17" y2="15" />
+                          <line x1="17" y1="9" x2="23" y2="15" />
+                        </svg>
+                      )}
+                    </div>
+
+                    {/* Bottom: Mic Status (Mic Off / Broadcasting) */}
+                    <div className="w-full flex items-center justify-center">
+                      <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-sans transition-colors ${
+                        isBroadcasting
+                          ? 'bg-white text-black font-semibold'
+                          : 'bg-zinc-900 border border-zinc-800 text-zinc-400 font-medium'
+                      }`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${isBroadcasting ? 'bg-black animate-pulse' : 'bg-zinc-600'}`} />
+                        <span>{isBroadcasting ? 'Broadcasting' : 'Mic Off'}</span>
+                      </div>
+                    </div>
+
                   </div>
-                </div>
-
-              </div>
-
+                );
+              })}
             </div>
 
           </div>
