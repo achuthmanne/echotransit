@@ -133,13 +133,13 @@ export function buildRailwayAudioSequence({
     }
 
     // 6. To Station ("to New Delhi")
-    if (toStation) {
+    if (toStation && status !== 'terminated') {
       sequence.push('/audio_assets/phrases/to.mp3');
       sequence.push(`/audio_assets/stations/${toStation}.mp3`);
     }
 
     // 6.1 Via Stations ("via Secunderabad, Bhopal, and Hazrat Nizamuddin")
-    if (viaStations && viaStations.length > 0) {
+    if (viaStations && viaStations.length > 0 && status !== 'terminated') {
       sequence.push('/audio_assets/phrases/via.mp3');
       viaStations.forEach((vKey, idx) => {
         if (idx === viaStations.length - 1 && viaStations.length > 1) {
@@ -156,6 +156,10 @@ export function buildRailwayAudioSequence({
     } else if (status === 'arrival' || status === 'arrived') {
       sequence.push('/audio_assets/phrases/has_arrived_on_platform.mp3');
       sequence.push(`/audio_assets/numbers_en/${platNum}.mp3`);
+    } else if (status === 'terminated') {
+      sequence.push('/audio_assets/phrases/has_arrived_on_platform.mp3');
+      sequence.push(`/audio_assets/numbers_en/${platNum}.mp3`);
+      sequence.push('/audio_assets/phrases/terminates_here.mp3');
     } else if (status === 'halting') {
       // Halting scheduled departure time ("scheduled to depart at 6 45")
       sequence.push('/audio_assets/phrases/scheduled_to_depart_at.mp3');
@@ -224,7 +228,7 @@ export function buildRailwayAudioSequence({
     }
 
     // 5.1 Via Stations ("सिकंदराबाद, भोपाल और हज़रत निज़ामुद्दीन के रास्ते")
-    if (viaStations && viaStations.length > 0) {
+    if (viaStations && viaStations.length > 0 && status !== 'terminated') {
       viaStations.forEach((vKey, idx) => {
         if (idx === viaStations.length - 1 && viaStations.length > 1) {
           sequence.push('/audio_assets/phrases_hi/aur.mp3');
@@ -235,7 +239,7 @@ export function buildRailwayAudioSequence({
     }
 
     // 6. To Station ("नई दिल्ली को जाने वाली")
-    if (toStation) {
+    if (toStation && status !== 'terminated') {
       const destFile = toStation === 'new_delhi' ? 'nai_dilli' : toStation;
       sequence.push(`/audio_assets/stations_hi_ml/${destFile}.mp3`);
       sequence.push('/audio_assets/phrases_hi/ko_jaane_wali.mp3');
@@ -251,6 +255,11 @@ export function buildRailwayAudioSequence({
       sequence.push('/audio_assets/phrases_hi/platform_sankhya_core.mp3');
       sequence.push(`/audio_assets/numbers_hi/${platNum}.mp3`);
       sequence.push('/audio_assets/phrases_hi/par_aa_chuki_hai.mp3');
+    } else if (status === 'terminated') {
+      sequence.push('/audio_assets/phrases_hi/platform_sankhya_core.mp3');
+      sequence.push(`/audio_assets/numbers_hi/${platNum}.mp3`);
+      sequence.push('/audio_assets/phrases_hi/par_aa_chuki_hai.mp3');
+      sequence.push('/audio_assets/phrases_hi/yahin_samaapt_hogi.mp3');
     } else if (status === 'halting') {
       // Halting departure first: "06 बजकर 45 मिनट पर प्रस्थान करेगी"
       const hNum = parseInt(depHours, 10) || 6;
@@ -318,7 +327,7 @@ export function buildRailwayAudioSequence({
     }
 
     // 5.1 Via Stations ("సికింద్రాబాద్, భోపాల్ మరియు హజ్రత్ నిజాముద్దీన్ మీదుగా")
-    if (viaStations && viaStations.length > 0) {
+    if (viaStations && viaStations.length > 0 && status !== 'terminated') {
       viaStations.forEach((vKey, idx) => {
         if (idx === viaStations.length - 1 && viaStations.length > 1) {
           sequence.push('/audio_assets/phrases_te/mariyu.mp3');
@@ -329,7 +338,7 @@ export function buildRailwayAudioSequence({
     }
 
     // 6. To Station ("న్యూఢిల్లీ వరకు వెళ్ళునది")
-    if (toStation) {
+    if (toStation && status !== 'terminated') {
       sequence.push(`/audio_assets/stations_te/${toStation}.mp3`);
       sequence.push('/audio_assets/phrases_te/varaku.mp3');
       sequence.push('/audio_assets/phrases_te/vellunadi.mp3');
@@ -345,6 +354,11 @@ export function buildRailwayAudioSequence({
       const safePlat = Math.min(24, Math.max(1, platNum));
       sequence.push(`/audio_assets/platforms_te/${safePlat}.mp3`);
       sequence.push('/audio_assets/phrases_te/number_platform_paiki_cherukunnadi.mp3');
+    } else if (status === 'terminated') {
+      const safePlat = Math.min(24, Math.max(1, platNum));
+      sequence.push(`/audio_assets/platforms_te/${safePlat}.mp3`);
+      sequence.push('/audio_assets/phrases_te/number_platform_paiki_cherukunnadi.mp3');
+      sequence.push('/audio_assets/phrases_te/ikkaditho_tana_prayaananni_mugistundi.mp3');
     } else if (status === 'halting') {
       // Halting departure first: "06 గంటల 45 నిమిషములకు బయలుదేరవలసినది"
       const hNum = parseInt(depHours, 10) || 6;
@@ -408,7 +422,7 @@ export function buildRailwayAudioSequence({
       });
       sequence.push('/audio_assets/phrases_ta/sellum_vazhiyaaga.mp3');
     }
-    if (toStation) {
+    if (toStation && status !== 'terminated') {
       sequence.push(`/audio_assets/stations_ta/${toStation}.mp3`);
     }
     const safePlat = Math.min(24, Math.max(1, platNum));
@@ -419,6 +433,10 @@ export function buildRailwayAudioSequence({
     } else if (status === 'arrival' || status === 'arrived') {
       sequence.push(`/audio_assets/platforms_ta/${safePlat}.mp3`);
       sequence.push('/audio_assets/phrases_ta/il_vandhu_serndhulladhu.mp3');
+    } else if (status === 'terminated') {
+      sequence.push(`/audio_assets/platforms_ta/${safePlat}.mp3`);
+      sequence.push('/audio_assets/phrases_ta/il_vandhu_serndhulladhu.mp3');
+      sequence.push('/audio_assets/phrases_ta/iththudan_thanadhu_payanaththai_mudiththuk_kolgiradhu.mp3');
     } else if (status === 'halting') {
       const hNum = parseInt(depHours, 10) || 6;
       const mNum = parseInt(depMins, 10) || 0;
@@ -463,7 +481,7 @@ export function buildRailwayAudioSequence({
       });
       sequence.push('/audio_assets/phrases_ml/vazhi.mp3');
     }
-    if (toStation) {
+    if (toStation && status !== 'terminated') {
       sequence.push(`/audio_assets/stations_hi_ml/${toStation}.mp3`);
       sequence.push('/audio_assets/phrases_ml/vare_pokunna.mp3');
     }
@@ -475,6 +493,10 @@ export function buildRailwayAudioSequence({
     } else if (status === 'arrival' || status === 'arrived') {
       sequence.push(`/audio_assets/platforms_ml/${safePlat}.mp3`);
       sequence.push('/audio_assets/phrases_ml/platformil_ethichernnirikkunnu.mp3');
+    } else if (status === 'terminated') {
+      sequence.push(`/audio_assets/platforms_ml/${safePlat}.mp3`);
+      sequence.push('/audio_assets/phrases_ml/platformil_ethichernnirikkunnu.mp3');
+      sequence.push('/audio_assets/phrases_ml/ivide_yaathra_avasanippikkunnathaanu.mp3');
     } else if (status === 'halting') {
       const hNum = parseInt(depHours, 10) || 6;
       const mNum = parseInt(depMins, 10) || 0;

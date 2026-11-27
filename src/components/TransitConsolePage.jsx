@@ -693,7 +693,7 @@ const generateAnnouncementText = (lang, {
       case 'departure':
         return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${to} వరకు వెళ్ళునది, ${pfNum} వ నంబరు ప్లాట్‌ఫారమ్ నుండి బయలుదేరుటకు సిద్ధంగా ఉన్నది. ధన్యవాదములు.`;
       case 'terminated':
-        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి వచ్చినది, ఇక్కడితో తన ప్రయాణాన్ని ముగించింది. ధన్యవాదములు.`;
+        return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి వచ్చినది, ${pfNum} వ నంబరు ప్లాట్‌ఫారమ్ పైకి చేరుకున్నది, ఇక్కడితో తన ప్రయాణాన్ని ముగించింది. ధన్యవాదములు.`;
       case 'delayed':
         return `ప్రయాణికులకు విజ్ఞప్తి. రైలు నంబరు ${trainNo}, ${trainName}, ${from} నుండి ${to} వరకు వెళ్ళునది, తన నిర్ణీత సమయానికంటే ఆలస్యంగా నడుస్తున్నది. ప్రయాణికులకు కలిగిన అసౌకర్యానికి చింతిస్తున్నాము.`;
       case 'platform_change':
@@ -720,7 +720,7 @@ const generateAnnouncementText = (lang, {
       case 'departure':
         return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर, ${to} को जाने वाली, प्लेटफार्म संख्या ${pfNum} से प्रस्थान करने के लिए तैयार है। धन्यवाद।`;
       case 'terminated':
-        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर आई है, यहीं समाप्त होती है। धन्यवाद।`;
+        return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर आई है, प्लेटफार्म संख्या ${pfNum} पर आ चुकी है, यहीं समाप्त होती है। धन्यवाद।`;
       case 'delayed':
         return `यात्रीगण कृपया ध्यान दें। गाड़ी संख्या ${trainNo}, ${trainName}, ${from} से चलकर ${to} को जाने वाली, अपने निर्धारित समय से देरी से चल रही है। हुई असुविधा के लिए हमें खेद है।`;
       case 'platform_change':
@@ -747,7 +747,7 @@ const generateAnnouncementText = (lang, {
       case 'departure':
         return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} to ${to}, is ready to leave platform number ${pfNum}. Thank you.`;
       case 'terminated':
-        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from}, terminates here. Thank you.`;
+        return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from}, has arrived on platform number ${pfNum}, terminates here. Thank you.`;
       case 'delayed':
         return `May I have your attention please. Train number ${trainNo}, ${trainName}, from ${from} to ${to}, is running late. Inconvenience caused is deeply regretted.`;
       case 'platform_change':
@@ -774,7 +774,7 @@ const generateAnnouncementText = (lang, {
       case 'departure':
         return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${to} வரை செல்லும், நடைமேடை எண் ${pfNum} லிருந்து புறப்பட தயாராக உள்ளது. நன்றி.`;
       case 'terminated':
-        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து வந்துள்ளது, இத்துடன் தனது பயணத்தை முடித்துக் கொள்கிறது. நன்றி.`;
+        return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து வந்துள்ளது, நடைமேடை எண் ${pfNum} இல் வந்து சேர்ந்துள்ளது, இத்துடன் தனது பயணத்தை முடித்துக் கொள்கிறது. நன்றி.`;
       case 'delayed':
         return `பயணிகளின் கவனத்திற்கு. வண்டி எண் ${trainNo}, ${trainName}, ${from} லிருந்து ${to} வரை செல்லும், தனது குறிப்பிட்ட நேரத்திலிருந்து தாமதமாக இயங்குகிறது. பயணிகளுக்கு ஏற்பட்ட சிரமத்திற்கு வருந்துகிறோம்.`;
       case 'platform_change':
@@ -801,7 +801,7 @@ const generateAnnouncementText = (lang, {
       case 'departure':
         return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${to} വരെ പോകുന്ന, പ്ലാറ്റ്‌ഫോം നമ്പർ ${pfNum} ൽ നിന്നും പുറപ്പെടാൻ തയ്യാറായി നിൽക്കുന്നു. നന്ദി.`;
       case 'terminated':
-        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ എത്തിയത്, ഇവിടെ യാത്ര അവസാനിപ്പിച്ചിരിക്കുന്നു. നന്ദി.`;
+        return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ എത്തിയത്, പ്ലാറ്റ്‌ഫോം നമ്പർ ${pfNum} ൽ എത്തിച്ചേർന്നിരിക്കുന്നു, ഇവിടെ യാത്ര അവസാനിപ്പിക്കുന്നതാണ്. നന്ദി.`;
       case 'delayed':
         return `യാത്രക്കാരുടെ ശ്രദ്ധയ്ക്ക്. വണ്ടി നമ്പർ ${trainNo}, ${trainName}, ${from} മുതൽ ${to} വരെ പോകുന്ന, നിശ്ചിത സമയത്തേക്കാൾ വൈകിയാണ് ഓടുന്നത്. യാത്രക്കാർക്കുണ്ടായ അസൗകര്യത്തിൽ ഖേദിക്കുന്നു.`;
       case 'platform_change':
@@ -1165,7 +1165,7 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
     if (selectedPhase === 'approaching') statusKey = 'approaching';
     else if (selectedPhase === 'arrival') statusKey = 'arrival';
     else if (selectedPhase === 'halting') statusKey = 'halting';
-    else if (selectedPhase === 'terminated') statusKey = 'arrival';
+    else if (selectedPhase === 'terminated') statusKey = 'terminated';
     else if (selectedPhase === 'departure') statusKey = 'ready_to_leave';
     else if (selectedPhase === 'delayed') statusKey = 'running_late';
     else if (selectedPhase === 'cancelled') statusKey = 'cancelled';
@@ -1881,14 +1881,11 @@ export default function TransitConsolePage({ onBackToLanding, activeMode, onSele
                 </div>
               </div>
 
-              {/* Row 2 - Column 1: Platform (Dynamic based on selected Junction, Max 24) */}
+              {/* Row 2 - Column 1: Assigned Platform (Dynamic based on selected Junction, Max 24) */}
               <div className="w-full">
                 <div className="h-6 flex items-center justify-between mb-2 select-none font-sans">
-                  <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 font-sans flex items-center gap-2">
-                    Platform
-                    <span className="text-[11px] font-mono text-zinc-200 font-semibold normal-case bg-white/10 px-2 py-0.5 rounded border border-white/20">
-                      {selectedPlatform}
-                    </span>
+                  <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 font-sans">
+                    Assigned Platform
                   </label>
 
                   {/* Navigation Controls (< >) - Only shown if more than 1 page (> 8 platforms) */}
